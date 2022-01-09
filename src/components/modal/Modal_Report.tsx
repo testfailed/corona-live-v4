@@ -1,0 +1,192 @@
+import React, { useState } from "react";
+
+import { rem } from "polished";
+
+import { css, styled } from "@styles/stitches.config";
+import { useObjectState } from "@hooks/useObjectState";
+import { CITY_GU_NAME_LIST, EMAIL } from "@constants/constants";
+
+import { Modal } from "@components/Modal";
+import LoadingText from "@components/LoadingText";
+import DropdownInput from "@components/DropdownInput";
+
+interface Form {
+  message: string;
+  email: string;
+  src: string;
+  cases: string;
+  website: string;
+  title: string;
+}
+
+const initialState = {
+  message: "",
+  email: "",
+  src: "",
+  cases: "",
+  website: "",
+  title: "",
+};
+
+export const REPORT_API = `https://64t2pyuhje.execute-api.ap-northeast-2.amazonaws.com/corona-live-email`;
+export const URL_REGEX =
+  /(https?:\/\/(www\.)?)?[a-z][-a-zA-Z0-9@:%._\+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}([-a-zA-Z0-9()@:%_\+.~#?&//=]*)?.\w+/gi;
+
+interface Props {
+  reportType?: "report" | "error";
+  reportTitle?: string;
+}
+
+const ReportModalTrigger: React.FC<Props> = ({
+  reportType = "report",
+  reportTitle,
+  children,
+}) => {
+  const [isLoading, setIsLoading] = useState(false);
+  const [{ email, title, cases, website }, setForm] = useObjectState<Form>({
+    ...initialState,
+    title:
+      reportType === "error" && reportTitle !== undefined ? reportTitle : "",
+  });
+
+  const onChange = (e) => {
+    const { name, value } = e.target;
+    setForm({ [name]: value });
+  };
+
+  const setTitleValue = (value: string) => {
+    setForm({ title: value });
+  };
+
+  const onSumbit = async (closeModal) => {
+    if (reportType === "report") {
+      if (title.trim().length == 0) return alert("지역을 적어주세요");
+      if (!CITY_GU_NAME_LIST.includes(title.trim()))
+        return alert("유효한 지역을 적어주세요");
+      if (website.trim().length > 0 && !website.match(URL_REGEX))
+        return alert("링크란에는 링크만 적어주세요 (선택)");
+    }
+
+    if (cases.trim().length == 0) return alert("확진자수를 적어주세요");
+    if (cases.match(/[^\d]/g)) return alert("확진자수 숫자만 적어주세요");
+
+    setIsLoading(true);
+
+    await fetch(REPORT_API, {
+      method: "POST",
+      mode: "no-cors",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ email, content: `${cases}명 ${website}`, title }),
+    });
+    setIsLoading(false);
+    setForm(initialState);
+    closeModal();
+  };
+
+  return (
+    <Modal
+      // modalId="report"
+      triggerNode={children}
+      title="제보하기"
+      confirmText={<LoadingText isLoading={isLoading} text="제보하기" />}
+      onConfrim={onSumbit}
+      className={css({
+        width: "90%",
+        padding: rem(16),
+
+        "@md": {
+          width: rem(360),
+          maxHeight: "80%",
+        },
+      })}
+    >
+      <Wrapper>
+        <InputWrapper>
+          <DropdownInput list={CITY_GU_NAME_LIST} onChange={setTitleValue}>
+            <Input
+              name="title"
+              onChange={onChange}
+              value={title}
+              placeholder={"지역"}
+            />
+          </DropdownInput>
+          <Input
+            placeholder="링크 (선택)"
+            value={website}
+            onChange={onChange}
+            name="website"
+          />
+          <Input
+            placeholder="확진자수 (필수)"
+            value={cases}
+            onChange={onChange}
+            name="cases"
+          />
+        </InputWrapper>
+
+        <Info>
+          <div>개선사항이나 문의는 이메일로 보내주세요</div>
+          <a href={`mailto: ${EMAIL}`}>{EMAIL}</a>
+        </Info>
+      </Wrapper>
+    </Modal>
+  );
+};
+
+const Wrapper = styled("div", {
+  column: true,
+  paddingTop: rem(8),
+
+  "& a": {
+    color: "$gray900",
+  },
+});
+
+const InputWrapper = styled("div", {
+  column: true,
+  overflow: "hidden",
+  borderRadius: rem(8),
+
+  border: `${rem(1)} solid $sectionBorder`,
+
+  boxShadow: "$elevation1",
+});
+
+const Input = styled("input", {
+  body1: true,
+  height: rem(40),
+  border: "none",
+  borderBottom: `${rem(1)} solid $sectionBorder`,
+  background: "transparent",
+  boxShadow: "none",
+  paddingLeft: rem(12),
+  "-webkit-border-radius": 0,
+  "-webkit-appearance": "none",
+
+  "&:focus": {
+    outline: "none",
+  },
+  "&::placeholder": {
+    color: "$gray500",
+  },
+  "&:last-child": {
+    borderBottom: "none",
+  },
+
+  "@md": {
+    height: rem(42),
+    body1: true,
+  },
+});
+
+const Info = styled("div", {
+  marginTop: rem(20),
+  marginBottom: rem(26),
+  color: "gray900",
+  textAlign: "center",
+  body3: true,
+});
+
+export default ReportModalTrigger;
