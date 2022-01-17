@@ -1,4 +1,4 @@
-import React, { useMemo, useState } from "react";
+import React, { useMemo } from "react";
 
 import create from "zustand";
 
@@ -35,6 +35,7 @@ import type {
 
 type DomesticStat =
   | "confirmed"
+  | "confirmed-overseas"
   | "deceased"
   | "tested"
   | "confirmed-severe-symptoms"
@@ -98,6 +99,13 @@ const DomesticChartSection: React.FC = () => {
             },
           ],
         },
+        "confirmed-overseas": {
+          label: "해외유입",
+          options: {
+            type: chartTypeOptions({ omit: ["live", "accumulated"] }),
+            range: chartRangeOptions(),
+          },
+        },
         deceased: {
           label: "사망자",
           options: {
@@ -134,24 +142,6 @@ const DomesticChartSection: React.FC = () => {
             range: chartRangeOptions({ disable: ["all"] }),
           },
         },
-        // recovered: {
-        //   label: "완치자",
-        //   options: {
-        //     type: chartTypeOptions({
-        //       omit: ["live", "accumulated", "monthly"],
-        //     }),
-        //     range: chartRangeOptions({ disable: ["all"] }),
-        //   },
-        // },
-        // "confirmed-omicron": {
-        //   label: "오미크론",
-        //   options: {
-        //     type: chartTypeOptions({
-        //       omit: ["live", "accumulated", "monthly"],
-        //     }),
-        //     range: chartRangeOptions({ disable: ["all"] }),
-        //   },
-        // },
       }),
     [forceUpdate]
   );
