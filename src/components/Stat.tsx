@@ -35,7 +35,7 @@ const Stat: React.FC<Props> = ({ color, label, value, delta, percentage }) => {
 export const StatSkeleton = () => {
   return (
     <Wrapper>
-      <Space h={2} />
+      <Space h={3} />
       <Label>
         <Skeleton w={32} h={15} />
       </Label>
