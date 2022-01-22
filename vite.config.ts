@@ -8,6 +8,9 @@ export default defineConfig({
   resolve: {
     alias: {},
   },
+  build: {
+    outDir: "./build",
+  },
   server: {
     port: 4950,
   },
