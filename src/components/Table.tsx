@@ -119,7 +119,7 @@ const Table = <T extends string>(props: Props<T>) => {
         <TBody>
           {sortedRows.map((row, index) => (
             <Tr key={index}>
-              {columns.map(({ id, width }, index) => {
+              {columns.map(({ id, width, deltaPosition }, index) => {
                 return (
                   <Td
                     key={index}

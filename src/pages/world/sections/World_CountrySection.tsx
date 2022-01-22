@@ -11,11 +11,17 @@ import Table, { TableColumn, TableRow } from "@components/Table";
 import { WorldTableKey } from "@_types/world-type";
 import WorldApi from "@apis/world-api";
 
-const columns: Array<TableColumn<WorldTableKey | "countryName">> = [
+const columns: Array<TableColumn<WorldTableKey | "index" | "countryName">> = [
+  {
+    id: "index",
+    name: "",
+    width: rem(10),
+  },
   {
     id: "countryName",
     name: "나라",
     width: rem(110),
+    deltaPosition: "right",
   },
 
   {
@@ -53,11 +59,12 @@ const WorldCountrySection: React.FC = () => {
   const [rowsCount, setRowsCount] = useState(15);
 
   const rows: Array<TableRow<ColumnKey>> = Object.keys(data.countries)
-    .map((countryId) => {
+    .map((countryId, index) => {
       const countryName = COUNTRY_NAMES[countryId];
       const { confirmed, deceased, recovered, casesPerMil } =
         data.countries[countryId];
       return {
+        index: { text: index + 1 },
         countryName: {
           text: countryName,
           image: `${ASSETS_URL}/flags/${countryId.toLowerCase()}.svg`,
