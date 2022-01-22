@@ -6,13 +6,18 @@ import { rem } from "polished";
 import {
   EmailIconBox,
   InstagramIconBox,
+  LinkIconBox,
   TwitterIconBox,
 } from "@components/SnsIconBox";
 import Space from "@components/Space";
+import { EMAIL } from "@constants/constants";
 import DonationIcon from "@components/icon/Icon_Donation";
 import DonationModalTrigger from "@components/modal/Modal_Donation";
+import GithubIcon from "@components/icon/Icon_Github";
+import EmailIcon from "@components/icon/Icon_Email";
 
 const LayoutFooter: React.FC = (props) => {
+  // useKakaoButton();
   return (
     <Section css={{ margin: 0 }}>
       <Wrapper className="user-select">
@@ -51,15 +56,15 @@ const LayoutFooter: React.FC = (props) => {
           <br />
         </Text>
 
-        <Space h={32} />
+        <Space h={36} />
 
         <InfoText>
           <div>
-            BY<b>CHINCHILLA</b>
+            MADE BY<b>CHINCHILLA</b>
           </div>
         </InfoText>
 
-        <Space h={24} />
+        <Space h={32} />
       </Wrapper>
     </Section>
   );
@@ -67,7 +72,8 @@ const LayoutFooter: React.FC = (props) => {
 
 const Wrapper = styled("div", {
   columnCenteredX: true,
-  padding: rem(16),
+  paddingY: rem(16),
+  paddingX: rem(8),
 });
 
 const SubText = styled("div", {
@@ -95,8 +101,8 @@ const SnsContainer = styled("div", {
 });
 
 const InfoText = styled("div", {
-  // rowCenteredY: true,
   columnCentered: true,
+  whiteSpace: "nowrap",
   "& span": {
     caption1: true,
 
@@ -105,16 +111,16 @@ const InfoText = styled("div", {
   "& div": {
     rowCenteredY: true,
     caption1: true,
-    color: "$gray800",
-
     paddingX: rem(12),
     paddingY: rem(4),
     borderRadius: rem(16),
-    transform: "scaleY(0.9)",
+    transform: "scaleY(0.95)",
+    color: "$gray700",
 
     "& b": {
       marginLeft: rem(4),
       fontWeight: 700,
+      color: "$gray800",
     },
   },
 });
