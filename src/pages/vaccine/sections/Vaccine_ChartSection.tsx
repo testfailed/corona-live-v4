@@ -147,7 +147,7 @@ const VaccineChart: React.FC = () => {
               chartType: "bar",
               zIndex: 100,
               tooltipLabel: "1차",
-              color: theme.colors.blue300,
+              color: theme.colors.blue200,
               showLabel: range === "oneWeek",
               tooltipUnit: "",
             }
