@@ -30,7 +30,7 @@
   },
   "scripts": {
     "start": "vite --config ./vite.config.ts",
-    "build": "tsc && vite build && react-snap",
+    "build": "vite build && react-snap",
     "serve": "vite preview"
   },
   "reactSnap": {
