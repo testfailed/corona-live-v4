@@ -206,11 +206,11 @@ const Content = styled(DialogContent, {
 
   '&[data-state="open"]': {
     willChange: "transform, opacity",
-    animation: `${fadeInUpCentered}  4000ms cubic-bezier(0.16, 1, 0.3, 1)`,
+    animation: `${fadeInUpCentered}  400ms cubic-bezier(0.16, 1, 0.3, 1)`,
   },
   '&[data-state="closed"]': {
     willChange: "transform, opacity",
-    animation: `${fadeOutDonwCentered} 4000ms cubic-bezier(0.16, 1, 0.3, 1)`,
+    animation: `${fadeOutDonwCentered} 400ms cubic-bezier(0.16, 1, 0.3, 1)`,
   },
 
   "&:focus, & *:focus": {

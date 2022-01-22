@@ -4,11 +4,12 @@ import { rem } from "polished";
 
 import { css, styled } from "@styles/stitches.config";
 import { useObjectState } from "@hooks/useObjectState";
-import { CITY_GU_NAME_LIST, EMAIL } from "@constants/constants";
+import { CITY_GU_NAME_LIST, EMAIL, MINUTE } from "@constants/constants";
 
 import { Modal } from "@components/Modal";
 import LoadingText from "@components/LoadingText";
 import DropdownInput from "@components/DropdownInput";
+import { useLocalStorage } from "@hooks/useLocalStorage";
 
 interface Form {
   message: string;
@@ -49,6 +50,11 @@ const ReportModalTrigger: React.FC<Props> = ({
       reportType === "error" && reportTitle !== undefined ? reportTitle : "",
   });
 
+  const [submittedReportAt, setSubmittedReportAt] = useLocalStorage<number>(
+    "submitted-report-at",
+    0
+  );
+
   const onChange = (e) => {
     const { name, value } = e.target;
     setForm({ [name]: value });
@@ -59,6 +65,11 @@ const ReportModalTrigger: React.FC<Props> = ({
   };
 
   const onSumbit = async (closeModal) => {
+    const now = new Date().getTime();
+
+    if (now - submittedReportAt < MINUTE * 1)
+      return alert("제보는 5분 내에 한 번만 하실 수 있습니다");
+
     if (reportType === "report") {
       if (title.trim().length == 0) return alert("지역을 적어주세요");
       if (!CITY_GU_NAME_LIST.includes(title.trim()))
@@ -82,6 +93,7 @@ const ReportModalTrigger: React.FC<Props> = ({
     });
     setIsLoading(false);
     setForm(initialState);
+    setSubmittedReportAt(now);
     closeModal();
   };
 
