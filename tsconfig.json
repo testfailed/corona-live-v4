@@ -2,12 +2,8 @@
   "compilerOptions": {
     "jsx": "react",
     "baseUrl": ".",
-    "target": "es5",
-    "lib": [
-      "dom",
-      "dom.iterable",
-      "esnext"
-    ],
+    "target": "ESNext",
+    "lib": ["dom", "dom.iterable", "esnext"],
     "module": "esnext",
     "noEmit": true,
     "strict": true,
@@ -26,12 +22,7 @@
     "noFallthroughCasesInSwitch": true,
     "experimentalDecorators": true
   },
-  "include": [
-    "**/*.ts",
-    "**/*.tsx"
-  ],
-  "exclude": [
-    "node_modules"
-  ],
+  "include": ["**/*.ts", "**/*.tsx"],
+  "exclude": ["node_modules"],
   "extends": "./tsconfig.paths.json"
 }

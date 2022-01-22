@@ -19,7 +19,7 @@ export const HOUR = MINUTE * 60;
 export const DAY = HOUR * 24;
 
 export const ASSETS_URL = `https://assets.corona-live.com`;
-export const API_URL = process.env.REACT_APP_API_URL;
+export const API_URL = process.env.API_URL;
 export const WEB_URL = "https://corona-live.com";
 
 export const KAKAOPAY_URL = `https://qr.kakaopay.com/281006011172839271003566`;
