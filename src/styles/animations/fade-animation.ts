@@ -43,6 +43,6 @@ export const fadeOutDonwCentered = keyframes({
   "0%": { opacity: 1, transform: "translate3d(-50%, -50%, 0rem)" },
   "100%": {
     opacity: 0,
-    transform: "translate3d(-50%, -55%, 0rem)",
+    transform: `translate3d(-50%, calc(-50% + ${rem(20)}), 0rem)`,
   },
 });
