@@ -35,13 +35,11 @@ import type {
 
 type DomesticStat =
   | "confirmed"
-  | "confirmed-overseas"
   | "deceased"
   | "tested"
   | "confirmed-severe-symptoms"
   | "tested-positive-rates";
-// | "recovered";
-// | "confirmed-omicron";
+
 type DomesticOption = ChartDefaultOption | "compare";
 
 interface State {
@@ -98,13 +96,6 @@ const DomesticChartSection: React.FC = () => {
               },
             },
           ],
-        },
-        "confirmed-overseas": {
-          label: "해외유입",
-          options: {
-            type: chartTypeOptions({ omit: ["live", "accumulated"] }),
-            range: chartRangeOptions(),
-          },
         },
         deceased: {
           label: "사망자",
