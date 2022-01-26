@@ -94,7 +94,6 @@ const DomesticTable: React.FC = () => {
 };
 
 const Wrapper = styled("div", {
-  // overflowX: "scroll",
   overflowX: "hidden",
 });
 

@@ -18,7 +18,8 @@ const Domestic_CitySection: React.FC = () => {
 
   return (
     <Section>
-      <Container>
+      {/* <Wrapper> */}
+      <TabsContainer>
         <Tabs
           value={viewType}
           onChange={setViewType}
@@ -27,10 +28,11 @@ const Domestic_CitySection: React.FC = () => {
           <Tab value="map" text="지도" icon={<MapIcon />} />
           <Tab value="list" text="리스트" icon={<TableIcon size={20} />} />
         </Tabs>
-        <Space h={16} />
-        {viewType === "map" && <DomesticCityMap />}
-        {viewType === "list" && <DomesticCityTable />}
-      </Container>
+      </TabsContainer>
+      {/* <Space h={16} /> */}
+      {viewType === "map" && <DomesticCityMap />}
+      {viewType === "list" && <DomesticCityTable />}
+      {/* </Wrapper> */}
     </Section>
   );
 };
@@ -39,12 +41,20 @@ export const DomesticCitySectionSkeleton = () => {
   return <Section css={{ height: rem(1044) }}></Section>;
 };
 
-const Container = styled("div", {
-  padding: rem(12),
-  paddingTop: rem(16),
+const Wrapper = styled("div", {
+  paddingY: rem(16),
 
   "@md": {
-    padding: rem(20),
+    paddingY: rem(20),
+  },
+});
+
+const TabsContainer = styled("div", {
+  paddingX: rem(12),
+  paddingY: rem(16),
+
+  "@md": {
+    paddingX: rem(20),
   },
 });
 

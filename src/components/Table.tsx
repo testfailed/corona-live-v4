@@ -176,6 +176,13 @@ const Wrapper = styled("div", {
   // fadeInUp: true,
   overflowX: "auto",
   position: "relative",
+  paddingBottom: rem(16),
+
+  paddingX: rem(12),
+
+  "@md": {
+    paddingX: rem(20),
+  },
 });
 
 const Root = styled("table", {
