@@ -114,7 +114,7 @@ export const WorldCountrySectionSkeleton = () => {
 
 const Wrapper = styled(Section, {
   overflowX: "hidden",
-  padding: rem(20),
+  paddingY: rem(20),
 });
 
 export default WorldCountrySection;
