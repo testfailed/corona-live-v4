@@ -69,6 +69,8 @@ const Table = <T extends string>(props: Props<T>) => {
     delay: 100,
   });
 
+  console.log(inView);
+
   return (
     <Wrapper>
       <InViewCheck ref={ref} />
@@ -173,7 +175,6 @@ const Table = <T extends string>(props: Props<T>) => {
 };
 
 const Wrapper = styled("div", {
-  // fadeInUp: true,
   overflowX: "auto",
   position: "relative",
   paddingBottom: rem(16),
@@ -296,7 +297,7 @@ const Td = styled("td", {
       content: "",
       position: "absolute",
       background: "inherit",
-      boxShadow: `${rem(4)} 0 ${rem(14)} ${rem(4)} #00000000`,
+      boxShadow: `${rem(4)} 0 ${rem(14)} ${rem(4)} #00000005`,
       transition: "150ms",
       width: rem(0.1),
       height: "100%",
