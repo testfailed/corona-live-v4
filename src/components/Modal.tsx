@@ -128,6 +128,8 @@ export const ModalContent: React.FC<ModalContentProps> = ({
         <Content className={className?.toString()}>
           {title && (
             <Heading>
+              <EmptySpace />
+              {title && <Title>{title}</Title>}
               {showCloseButton ? (
                 <Close asChild>
                   <Button icon>
@@ -137,8 +139,6 @@ export const ModalContent: React.FC<ModalContentProps> = ({
               ) : (
                 <EmptySpace />
               )}
-              {title && <Title>{title}</Title>}
-              <EmptySpace />
             </Heading>
           )}
           {children}
