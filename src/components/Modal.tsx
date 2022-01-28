@@ -15,6 +15,7 @@ import { styled } from "@styles/stitches.config";
 import { CssComponent } from "@stitches/react/types/styled-component";
 import {
   fadeIn,
+  fadeInUp,
   fadeInUpCentered,
   fadeOut,
   fadeOutDonwCentered,
@@ -188,10 +189,10 @@ const Overlay = styled(DialogOverlay, {
   zIndex: 10000,
 
   '&[data-state="open"]': {
-    animation: `${fadeIn} 250ms cubic-bezier(0.16, 1, 0.3, 1)`,
+    animation: `${fadeIn} 400ms cubic-bezier(0.16, 1, 0.3, 1)`,
   },
   '&[data-state="closed"]': {
-    animation: `${fadeOut} 250ms cubic-bezier(0.16, 1, 0.3, 1)`,
+    animation: `${fadeOut} 400ms cubic-bezier(0.16, 1, 0.3, 1)`,
   },
 });
 
@@ -206,7 +207,7 @@ const Content = styled(DialogContent, {
 
   '&[data-state="open"]': {
     willChange: "transform, opacity",
-    animation: `${fadeIn}  400ms cubic-bezier(0.16, 1, 0.3, 1)`,
+    animation: `${fadeInUpCentered}  400ms cubic-bezier(0.16, 1, 0.3, 1)`,
   },
   '&[data-state="closed"]': {
     willChange: "transform, opacity",

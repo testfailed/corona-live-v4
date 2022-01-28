@@ -32,6 +32,7 @@ import type {
   ChartData,
   ChartVisualizerData,
 } from "@components/chart/Chart_Visualizer";
+import { formatObjectValues } from "@utils/object-util";
 
 type DomesticStat =
   | "confirmed"
@@ -208,7 +209,10 @@ const DomesticChartSection: React.FC = () => {
 
       dataSet = [
         {
-          data: data.domestic,
+          data: formatObjectValues(
+            data.domestic,
+            (value, key) => value + data.overseas[key]
+          ),
           config: getDefaultChartConfig(
             {
               type,
@@ -217,21 +221,6 @@ const DomesticChartSection: React.FC = () => {
             {
               color: theme.colors.blue500,
               tooltipLabel: "국내",
-              chartType: "bar",
-              isStack: true,
-            }
-          ),
-        },
-        {
-          data: data.overseas,
-          config: getDefaultChartConfig(
-            {
-              type,
-              range,
-            },
-            {
-              color: theme.colors.gray400,
-              tooltipLabel: "해외",
               chartType: "bar",
               isStack: true,
             }
