@@ -23,6 +23,7 @@ import {
 import { ChevronLeftIcon } from "./icon/Icon_Chevron";
 import Button from "./Button";
 import Child from "./Child";
+import CloseIcon from "./icon/Icon_Close";
 
 interface ModalProps extends ModalContentProps {
   open?: DialogProps["open"];
@@ -134,7 +135,7 @@ export const ModalContent: React.FC<ModalContentProps> = ({
               {showCloseButton ? (
                 <Close asChild>
                   <Button icon>
-                    <ChevronLeftIcon />
+                    <CloseIcon />
                   </Button>
                 </Close>
               ) : (
