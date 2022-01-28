@@ -244,7 +244,7 @@ export const getDefaultChartXAxis = (
           _value = value as Dayjs;
           return `${_value.month() + 1}월`;
         default:
-          return dayjs(value).format("MM/DD");
+          return dayjs(value).format("M.DD");
         // return dayjs(value).subtract(1, "day").format("MM/DD");
       }
     },
@@ -273,10 +273,10 @@ export const getDefaultChartXAxis = (
 
           return `${dayjs(value)
             // .subtract(1, "day")
-            .format("YYYY-MM-DD")} (${day})`;
+            .format("YYYY.MM.DD")} (${day})`;
 
         default:
-          return dayjs(value).format("YYYY-MM-DD");
+          return dayjs(value).format("YYYY.MM.DD");
         // return dayjs(value).subtract(1, "day").format("YYYY-MM-DD");
       }
     },
