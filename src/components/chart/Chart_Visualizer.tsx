@@ -78,7 +78,7 @@ export interface ChartVisualizerData {
 }
 
 const TRANSITION_DURATION = 400;
-const DEFAULT_CHART_BAR_THICKNESS = 8;
+const DEFAULT_CHART_BAR_THICKNESS = 9;
 
 const getYAxisStepSize = (maxY) => {
   let stepSize = `${Math.ceil(maxY / 4)}`;
@@ -455,7 +455,6 @@ const ChartVisualizer: React.FC<Props> = ({
                 .attr("opacity", (x) => (selectedX === x ? 1 : 0.6))
                 .attr("x", barLeft)
                 .attr("y", (x) => barTop(x))
-                .attr("rx", 20)
             )
             .transition(t)
             .attr("width", barThickness)
@@ -464,8 +463,8 @@ const ChartVisualizer: React.FC<Props> = ({
             .attr("opacity", (x) => (selectedX === x ? 1 : 0.6))
             .attr("x", barLeft)
             .attr("y", (x) => barTop(x))
-            .attr("rx", 3)
-            .attr("ry", 3);
+            .attr("rx", 4)
+            .attr("ry", 4);
         };
 
         const drawLines = () => {
