@@ -78,7 +78,9 @@ export const Modal: React.FC<ModalProps> = ({
     onOpenChange?.(value);
   };
 
-  const childrenProps = { ...props, modalId, onClose };
+  console.log(modalId, transition);
+
+  const childrenProps = { ...props, modalId, onClose, transition };
 
   return (
     <Root {...(open && { open })} onOpenChange={handleOpenChange}>
@@ -119,7 +121,7 @@ export const ModalContent: React.FC<ModalContentProps> = ({
   confirmText,
   onConfrim,
   onClose,
-  transition = { open: fadeInUpCentered, closed: fadeOut },
+  transition,
 }) => {
   const onConfirmButtonClick = () => {
     onConfrim?.(onClose);
@@ -131,10 +133,12 @@ export const ModalContent: React.FC<ModalContentProps> = ({
         <Overlay />
         <Content
           className={className?.toString()}
-          css={{
-            "--open-animation": transition.open,
-            "--closed-animation": transition.closed,
-          }}
+          style={
+            {
+              "--open-animation": transition?.open ?? fadeInUpCentered,
+              "--closed-animation": transition?.closed ?? fadeOut,
+            } as React.CSSProperties
+          }
         >
           {title && (
             <Heading>
@@ -216,7 +220,7 @@ const Content = styled(DialogContent, {
 
   '&[data-state="open"]': {
     willChange: "transform, opacity",
-    animation: `var(--open-animation)  400ms cubic-bezier(0.16, 1, 0.3, 1)`,
+    animation: `var(--open-animation) 400ms cubic-bezier(0.16, 1, 0.3, 1)`,
   },
   '&[data-state="closed"]': {
     willChange: "transform, opacity",

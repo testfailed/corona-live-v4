@@ -4,6 +4,7 @@ import { rem } from "polished";
 
 import { useTheme } from "@contexts/ThemeContext";
 import { css, styled } from "@styles/stitches.config";
+import { fadeIn } from "@styles/animations/fade-animation";
 
 import Row from "@components/Row";
 import Switch from "@components/Switch";
@@ -23,6 +24,7 @@ const LayoutMobileMenuModalTrigger: React.FC<Props> = ({ children }) => {
       triggerNode={children}
       title="메뉴"
       showCloseButton
+      transition={{ open: fadeIn }}
       className={css({
         width: "100%",
         height: "100%",
@@ -31,8 +33,6 @@ const LayoutMobileMenuModalTrigger: React.FC<Props> = ({ children }) => {
 
         "@md": {
           height: "100%",
-
-          // height: "initial",
           maxWidth: rem(360),
           maxHeight: "85vh",
           borderRadius: `${rem(8)}!important`,
