@@ -67,18 +67,18 @@ export const Modal: React.FC<ModalProps> = ({
   const handleOpenChange = (value) => {
     if (!onOpenChange) {
       if (value === false && modalId !== undefined) {
-        window.location.hash = (window.location.hash ?? "").replace(
-          `/${modalId}`,
-          ""
-        );
-        if (window.location.hash === "")
-          window.history.replaceState(null, " ", " ");
+        window.location.hash = window.location.hash.replace(`/${modalId}`, "");
+        if (window.location.hash === "") {
+          window.history.replaceState(
+            null,
+            null,
+            window.location.href.replace("#", "")
+          );
+        }
       }
     }
     onOpenChange?.(value);
   };
-
-  console.log(modalId, transition);
 
   const childrenProps = { ...props, modalId, onClose, transition };
 

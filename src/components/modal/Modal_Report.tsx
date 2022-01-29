@@ -99,7 +99,7 @@ const ReportModalTrigger: React.FC<Props> = ({
 
   return (
     <Modal
-      // modalId="report"
+      modalId="report"
       triggerNode={children}
       title="제보하기"
       confirmText={<LoadingText isLoading={isLoading} text="제보하기" />}

@@ -69,8 +69,6 @@ const Table = <T extends string>(props: Props<T>) => {
     delay: 100,
   });
 
-  console.log(inView);
-
   return (
     <Wrapper>
       <InViewCheck ref={ref} />
