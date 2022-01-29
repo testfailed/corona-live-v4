@@ -34,7 +34,6 @@ const DomesticPage: React.FC = () => {
         fallback={<DomesticSkeleton />}
       >
         <Column>
-          <DomesticSkeleton />
           <DomesticStatSection />
           <DomesticLiveSection />
           <DomesticChartSection />

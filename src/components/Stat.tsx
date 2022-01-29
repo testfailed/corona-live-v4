@@ -16,16 +16,14 @@ interface Props {
   label: string;
   value: number | string;
   delta: number;
-  percentage?: number;
 }
 
-const Stat: React.FC<Props> = ({ color, label, value, delta, percentage }) => {
+const Stat: React.FC<Props> = ({ color, label, value, delta }) => {
   return (
     <Wrapper color={color}>
       <Label>{label}</Label>
       <Value>
-        {typeof value === "number" ? numberWithCommas(value) : value}{" "}
-        {/* {percentage ? <span>({percentage}%)</span> : <></>} */}
+        {typeof value === "number" ? numberWithCommas(value) : value}
       </Value>
       <DeltaTag delta={delta} color={color} />
     </Wrapper>
@@ -35,7 +33,7 @@ const Stat: React.FC<Props> = ({ color, label, value, delta, percentage }) => {
 export const StatSkeleton = () => {
   return (
     <Wrapper>
-      <Space h={3} />
+      <Space h={4} />
       <Label>
         <Skeleton w={32} h={15} />
       </Label>
