@@ -9,7 +9,7 @@ import Column from "@components/Column";
 import Skeleton from "@components/Skeleton";
 import Row from "@components/Row";
 
-interface VaccineRatioProps {
+interface VaccineRatesProps {
   first: number;
   second: number;
   third: number;
@@ -20,7 +20,7 @@ interface VaccineRatioProps {
   labelPosition?: "bottom" | "top";
 }
 
-const VaccineRatio: React.FC<VaccineRatioProps> = ({
+const VaccineRates: React.FC<VaccineRatesProps> = ({
   first,
   second,
   third,
@@ -120,12 +120,12 @@ const VaccineRatio: React.FC<VaccineRatioProps> = ({
   );
 };
 
-export const VaccineRatioSkeleton = () => (
+export const VaccineRatesSkeleton = () => (
   <Container
     css={{
-      height: rem(61),
+      height: rem(56),
       "@md": {
-        height: rem(72),
+        height: rem(67),
       },
     }}
   >
@@ -349,4 +349,4 @@ const Container = styled("div", {
   },
 });
 
-export default VaccineRatio;
+export default VaccineRates;

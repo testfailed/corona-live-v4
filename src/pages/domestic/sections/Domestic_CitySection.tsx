@@ -10,8 +10,8 @@ import { Tab, Tabs } from "@components/Tabs";
 import MapIcon from "@components/icon/Icon_Map";
 import TableIcon from "@components/icon/Icon_Table";
 
-import DomesticCityMap from "./city/Domestic_CityMap";
-import DomesticCityTable from "./city/Domestic_CityTable";
+import DomesticCityMap from "./domestic-city/Domestic_CityMap";
+import DomesticCityTable from "./domestic-city/Domestic_CityTable";
 
 const Domestic_CitySection: React.FC = () => {
   const [viewType, setViewType] = useState<"list" | "map">("list");

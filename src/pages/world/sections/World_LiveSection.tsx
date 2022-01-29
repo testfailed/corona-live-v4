@@ -1,15 +1,15 @@
 import React, { useMemo } from "react";
 
 import useApi from "@hooks/useApi";
+import WorldApi from "@apis/world-api";
+import { transformWorldUpdates } from "@utils/world-util";
 
 import LiveBoard, {
   LiveBoardComparedValue,
   LiveBoardSkeleton,
 } from "@components/LiveBoard";
-import WorldLiveUpdatesModalTrigger from "./live/World_UpdatesModal";
-import WorldApi from "@apis/world-api";
-import { transformWorldUpdates } from "@utils/world-util";
 import Section from "@components/Section";
+import WorldLiveUpdatesModalTrigger from "./world-live/World_UpdatesModal";
 
 const WorldLiveSection: React.FC = () => {
   const { data } = useApi(WorldApi.live);

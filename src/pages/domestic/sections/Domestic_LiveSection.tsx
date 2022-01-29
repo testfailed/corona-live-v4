@@ -5,7 +5,7 @@ import LiveBoard, {
   LiveBoardComparedValue,
   LiveBoardSkeleton,
 } from "@components/LiveBoard";
-import DomesticUpdatesModalTrigger from "./live/Domestic_LiveUpdatesModal";
+import DomesticUpdatesModalTrigger from "./domestic-live/Domestic_LiveUpdatesModal";
 import DomesticApi from "@apis/domestic-api";
 import { transformDomesticUpdates } from "@utils/domestic-util";
 import Section from "@components/Section";

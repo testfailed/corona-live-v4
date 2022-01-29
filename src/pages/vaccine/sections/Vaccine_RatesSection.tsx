@@ -4,11 +4,13 @@ import useApi from "@hooks/useApi";
 import VaccinApi from "@apis/vaccine-api";
 import { styled } from "@styles/stitches.config";
 
-import Section, { SubSection } from "@components/Section";
-import VaccineRatio, { VaccineRatioSkeleton } from "./ratio/Vaccine_Ratio";
 import Row from "@components/Row";
+import Section, { SubSection } from "@components/Section";
+import VaccineRates, {
+  VaccineRatesSkeleton,
+} from "./vaccine-rates/Vaccine_Rates";
 
-const VaccineRatioSection: React.FC = () => {
+const VaccineRatesSection: React.FC = () => {
   const { data } = useApi(VaccinApi.stat);
 
   const { partiallyVaccinated, fullyVaccinated, booster } = data!.overview;
@@ -16,7 +18,7 @@ const VaccineRatioSection: React.FC = () => {
   return (
     <>
       <Section>
-        <VaccineRatio
+        <VaccineRates
           first={partiallyVaccinated.rates}
           second={fullyVaccinated.rates}
           third={booster.rates}
@@ -42,7 +44,7 @@ const VaccineRatioSection: React.FC = () => {
       <Section>
         <Wrapper>
           <SubSection>
-            <VaccineRatio
+            <VaccineRates
               first={partiallyVaccinated.over18rates}
               second={fullyVaccinated.over18rates}
               third={booster.over18rates}
@@ -52,7 +54,7 @@ const VaccineRatioSection: React.FC = () => {
             />
           </SubSection>
 
-          <VaccineRatio
+          <VaccineRates
             first={partiallyVaccinated.over60rates}
             second={fullyVaccinated.over60rates}
             third={booster.over60rates}
@@ -66,18 +68,18 @@ const VaccineRatioSection: React.FC = () => {
   );
 };
 
-export const VaccineRatioSectionSkeleton = () => {
+export const VaccineRatesSectionSkeleton = () => {
   return (
     <>
       <Section>
-        <VaccineRatioSkeleton />
+        <VaccineRatesSkeleton />
       </Section>
       <Section>
         <Wrapper>
           <SubSection>
-            <VaccineRatioSkeleton />
+            <VaccineRatesSkeleton />
           </SubSection>
-          <VaccineRatioSkeleton />
+          <VaccineRatesSkeleton />
         </Wrapper>
       </Section>
     </>
@@ -88,4 +90,4 @@ const Wrapper = styled("div", {
   column: true,
 });
 
-export default VaccineRatioSection;
+export default VaccineRatesSection;

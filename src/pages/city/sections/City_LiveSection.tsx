@@ -1,15 +1,17 @@
 import React, { useMemo } from "react";
 
 import { useParams } from "react-router-dom";
+
 import useApi from "@hooks/useApi";
+import CityApi from "@apis/city-api";
+import { transformDomesticUpdates } from "@utils/domestic-util";
+
 import LiveBoard, {
   LiveBoardComparedValue,
   LiveBoardSkeleton,
 } from "@components/LiveBoard";
-import CityApi from "@apis/city-api";
-import { transformDomesticUpdates } from "@utils/domestic-util";
-import DomesticLiveUpdatesModalTrigger from "@pages/domestic/sections/live/Domestic_LiveUpdatesModal";
 import Section from "@components/Section";
+import DomesticLiveUpdatesModalTrigger from "@pages/domestic/sections/domestic-live/Domestic_LiveUpdatesModal";
 
 const CityLive: React.FC = () => {
   const params = useParams<{ cityId: string }>();

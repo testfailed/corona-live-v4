@@ -106,7 +106,7 @@ const App: React.FC = () => {
 
       <NotificationModal />
       <AnnouncementModal />
-      <FinalCasesModal />
+      {/* <FinalCasesModal /> */}
       <SamsungDarkModeAlertModal />
 
       <MutationHandler />
