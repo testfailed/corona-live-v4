@@ -129,8 +129,8 @@ const getYAxisTickValues = (
 const getXAxisTickValues = (range, xParser) => {
   let ticksInterval =
     range.length < 20
-      ? Math.ceil(range.length / 8)
-      : Math.floor(range.length / 8);
+      ? Math.ceil(range.length / (range.length > 8 ? 6 : 8))
+      : Math.floor(range.length / (range.length > 8 ? 6 : 8));
   let R = range.length;
   return range.reduce((arr, val, i) => {
     if ((R - i - 1) % ticksInterval === 0) arr.push(xParser(val));
