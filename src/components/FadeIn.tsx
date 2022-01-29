@@ -45,7 +45,8 @@ const FadeIn: React.FC<Props> = ({ show, fallback, children }) => {
 };
 
 const FallbackFadeAnimation = styled("div", {
-  zIndex: 0,
+  zIndex: 2,
+
   '&[data-state="hide"]': {
     animation: `${fadeOut} 2000ms cubic-bezier(0.16, 1, 0.3, 1)`,
   },
@@ -55,10 +56,10 @@ const FadeAnimation = styled("div", {
   zIndex: 1,
 
   '&[data-state="show"]': {
-    animation: `${fadeIn} 1500ms cubic-bezier(0.16, 1, 0.3, 1)`,
+    animation: `${fadeIn} 750ms cubic-bezier(0.16, 1, 0.3, 1)`,
   },
   '&[data-state="hide"]': {
-    animation: `${fadeOut} 1500ms cubic-bezier(0.16, 1, 0.3, 1)`,
+    animation: `${fadeOut} 750ms cubic-bezier(0.16, 1, 0.3, 1)`,
   },
 });
 
