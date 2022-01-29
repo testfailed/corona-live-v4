@@ -23,6 +23,7 @@ import type { ChartMode } from "@_types/chart-type";
 import type { ChartStatOptions } from "@_types/chart-type";
 import ShrinkIcon from "@components/icon/Icon_Shrink";
 import ExpandIcon from "@components/icon/Icon_Expand";
+import useChartSize from "@hooks/useChartSize";
 
 const getInitialSelectedOptions = <Stat extends string, Option extends string>(
   chartStatOptions: ChartStatOptions<Stat, Option>
@@ -330,58 +331,73 @@ const LoadingContainer = styled("div", {
   },
 });
 
-export const ChartSkeleton = ({ tabs }: { tabs: number }) => (
-  <Wrapper css={{ height: rem(430) }}>
-    <Section sub>
-      <Box
-        css={{
-          overflow: "hidden",
-          transform: `translate(${rem(-1)}, ${rem(-1)})`,
-          height: rem(52),
-          rowCenteredY: true,
-        }}
-      >
-        {[...Array(tabs)].map((_, index) => (
-          <Box
-            key={index}
-            css={{
-              paddingX: rem(12),
-              "&:first-of-type": {
-                paddingLeft: rem(20),
-              },
-              "&:last-of-type": {
-                paddingRight: rem(20),
-              },
-            }}
-          >
-            <Skeleton w={{ _: 38, md: 46 }} h={20} />
-          </Box>
-        ))}
-      </Box>
-    </Section>
+export const ChartSkeleton = ({ tabs }: { tabs: number }) => {
+  const { width, height } = useChartSize({ mode: "DEFAULT" });
 
-    <Container>
-      <Space h={16} />
-      <Row css={{ justifyContent: "space-between", width: "100%" }}>
-        <Skeleton w={{ _: 180, md: 230 }} h={36} />
-        <Skeleton w={{ _: 120, md: 150 }} h={36} />
-      </Row>
-      <Space h={12} />
-      <Row
-        css={{
-          justifyContent: "flex-end",
-          width: "100%",
-          paddingRight: rem(42),
-          height: rem(42),
-          "@md": {
-            height: rem(46),
-          },
-        }}
-      ></Row>
-      <Space h={12} />
-      <Skeleton w={{ _: "100%", md: 460 }} h={226} />
-    </Container>
-  </Wrapper>
-);
+  console.log({ width, height });
+
+  return (
+    <Wrapper
+      css={{
+        height: rem(181 + height),
+        "@md": {
+          height: rem(195 + height),
+        },
+      }}
+    >
+      <Section sub>
+        <Box
+          css={{
+            overflow: "hidden",
+            transform: `translate(${rem(-1)}, ${rem(-1)})`,
+            height: rem(52),
+            rowCenteredY: true,
+          }}
+        >
+          {[...Array(tabs)].map((_, index) => (
+            <Box
+              key={index}
+              css={{
+                paddingX: rem(12),
+                "&:first-of-type": {
+                  paddingLeft: rem(20),
+                },
+                "&:last-of-type": {
+                  paddingRight: rem(20),
+                },
+              }}
+            >
+              <Skeleton w={{ _: 38, md: 46 }} h={20} />
+            </Box>
+          ))}
+        </Box>
+      </Section>
+
+      <Container>
+        <Space h={16} />
+        <Row css={{ justifyContent: "space-between", width: "100%" }}>
+          <Skeleton w={{ _: 180, md: 230 }} h={36} />
+          <Skeleton w={{ _: 120, md: 150 }} h={36} />
+        </Row>
+        <Space h={12} />
+        <Row
+          css={{
+            justifyContent: "flex-end",
+            width: "100%",
+            paddingRight: rem(42),
+            height: rem(42),
+            "@md": {
+              height: rem(46),
+            },
+          }}
+        >
+          <Skeleton w={250} h={{ _: 46, md: 54 }} />
+        </Row>
+        <Space h={12} />
+        <Skeleton w={{ _: "100%", md: 460 }} h={height - 8} />
+      </Container>
+    </Wrapper>
+  );
+};
 
 export default ChartNew;

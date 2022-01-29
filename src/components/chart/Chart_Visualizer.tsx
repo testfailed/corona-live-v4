@@ -857,6 +857,7 @@ const Wrapper = styled("div", {
 });
 
 const TooltipContainer = styled("div", {
+  height: rem(54),
   marginTop: rem(12),
   marginBottom: rem(2),
   background: "$shadowBackground1",
