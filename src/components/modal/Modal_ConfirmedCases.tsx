@@ -8,10 +8,10 @@ import { numberWithCommas } from "@utils/number-util";
 import { css, styled } from "@styles/stitches.config";
 
 import { Modal } from "@components/Modal";
-import { InstagramIconBox, TwitterIconBox } from "@components/SnsIconBox";
 import DomesticApi from "@apis/domestic-api";
+import { InstagramIconBox, TwitterIconBox } from "@components/SnsIconBox";
 
-const FinalCasesModal: React.FC = () => {
+const ConfirmedCasesModal: React.FC = () => {
   const [openModal, setOpenModal] = useState(false);
   const { data } = useApi(DomesticApi.live, { suspense: false });
 
@@ -70,7 +70,6 @@ const FinalCasesModal: React.FC = () => {
         <Text>최소수치</Text>
         <Cases>{numberWithCommas(data.live.today)}</Cases>
         <SnsContainer>
-          {/* <Text>SNS로 보기</Text> */}
           <SnsIcons>
             <TwitterIconBox type="profile" />
             <InstagramIconBox />
@@ -114,4 +113,4 @@ const SnsIcons = styled("div", {
   marginTop: rem(6),
 });
 
-export default FinalCasesModal;
+export default ConfirmedCasesModal;

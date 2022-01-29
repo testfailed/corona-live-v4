@@ -115,7 +115,7 @@ export const LiveBoardSkeleton: React.FC<{ columns: number }> = ({
           <CurrentValueLabel>
             <Skeleton w={42} h={17} />
           </CurrentValueLabel>
-          <Space h={6} />
+          <Space h={8} />
           <CurrentValue>
             <Skeleton w={75} h={35} />
           </CurrentValue>
@@ -124,9 +124,9 @@ export const LiveBoardSkeleton: React.FC<{ columns: number }> = ({
           <Column key={index}>
             {column.map((_, index) => (
               <ComparedValueContainer key={index}>
-                <Skeleton w={50} h={20} />
+                <Skeleton w={50} h={21} />
                 <Space w={6} />
-                <Skeleton w={60} h={20} />
+                <Skeleton w={60} h={21} />
               </ComparedValueContainer>
             ))}
           </Column>

@@ -15,9 +15,9 @@ import { globalCss } from "@styles/stitches.config";
 
 import Layout from "@components/layout/Layout";
 import MutationHandler from "@components/MutationHandler";
-import FinalCasesModal from "@components/modal/Modal_FinalCases";
 import NotificationModal from "@components/modal/Modal_Notification";
 import AnnouncementModal from "@components/modal/Modal_Announcement";
+import ConfirmedCasesModal from "@components/modal/Modal_ConfirmedCases";
 
 import Domestic from "@pages/domestic/Domestic_Page";
 import CityPageSkelton from "@pages/city/City_PageSkeleton";
@@ -106,7 +106,7 @@ const App: React.FC = () => {
 
       <NotificationModal />
       <AnnouncementModal />
-      {/* <FinalCasesModal /> */}
+      {/* <ConfirmedCasesModal /> */}
       <SamsungDarkModeAlertModal />
 
       <MutationHandler />
