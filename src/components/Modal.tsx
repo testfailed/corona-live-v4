@@ -11,26 +11,26 @@ import {
 } from "@radix-ui/react-dialog";
 import { rem } from "polished";
 
-import { styled } from "@styles/stitches.config";
-import { CssComponent } from "@stitches/react/types/styled-component";
 import {
   fadeIn,
-  fadeInUp,
   fadeInUpCentered,
   fadeOut,
-  fadeOutDonwCentered,
 } from "@styles/animations/fade-animation";
-import { ChevronLeftIcon } from "./icon/Icon_Chevron";
+import { Keyframe, styled } from "@styles/stitches.config";
+import { CssComponent } from "@stitches/react/types/styled-component";
+
 import Button from "./Button";
 import Child from "./Child";
 import CloseIcon from "./icon/Icon_Close";
 
+type ModalTransition = "";
 interface ModalProps extends ModalContentProps {
   open?: DialogProps["open"];
   onOpenChange?: DialogProps["onOpenChange"];
   asChild?: boolean;
   triggerNode?: React.ReactNode;
   modalId?: string;
+  transition?: { open?: Keyframe; closed?: Keyframe };
 }
 
 export const Modal: React.FC<ModalProps> = ({
@@ -40,7 +40,7 @@ export const Modal: React.FC<ModalProps> = ({
   modalId,
   asChild = true,
   triggerNode,
-
+  transition,
   ...props
 }) => {
   const closeRef = useRef<any>(null);
@@ -108,6 +108,7 @@ interface ModalContentProps {
   modalId?: string;
   onClose?: () => void;
   title?: string;
+  transition?: { open?: Keyframe; closed?: Keyframe };
 }
 
 export const ModalContent: React.FC<ModalContentProps> = ({
@@ -118,6 +119,7 @@ export const ModalContent: React.FC<ModalContentProps> = ({
   confirmText,
   onConfrim,
   onClose,
+  transition = { open: fadeInUpCentered, closed: fadeOut },
 }) => {
   const onConfirmButtonClick = () => {
     onConfrim?.(onClose);
@@ -127,7 +129,13 @@ export const ModalContent: React.FC<ModalContentProps> = ({
     <>
       <Portal>
         <Overlay />
-        <Content className={className?.toString()}>
+        <Content
+          className={className?.toString()}
+          css={{
+            "--open-animation": transition.open,
+            "--closed-animation": transition.closed,
+          }}
+        >
           {title && (
             <Heading>
               <EmptySpace />
@@ -208,11 +216,11 @@ const Content = styled(DialogContent, {
 
   '&[data-state="open"]': {
     willChange: "transform, opacity",
-    animation: `${fadeInUpCentered}  400ms cubic-bezier(0.16, 1, 0.3, 1)`,
+    animation: `var(--open-animation)  400ms cubic-bezier(0.16, 1, 0.3, 1)`,
   },
   '&[data-state="closed"]': {
     willChange: "transform, opacity",
-    animation: `${fadeOut} 400ms cubic-bezier(0.16, 1, 0.3, 1)`,
+    animation: `var(--closed-animation) 400ms cubic-bezier(0.16, 1, 0.3, 1)`,
   },
 
   "&:focus, & *:focus": {

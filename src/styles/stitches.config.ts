@@ -245,3 +245,5 @@ export const { styled, css, theme, createTheme, globalCss, config, keyframes } =
       }),
     },
   });
+
+export type Keyframe = ReturnType<typeof keyframes>;
