@@ -25,6 +25,7 @@ import { ChartSkeleton } from "@components/chart/Chart";
 
 import type {
   ChartDefaultOption,
+  ChartMode,
   ChartRangeOption,
   ChartTypeOption,
 } from "@_types/chart-type";
@@ -140,7 +141,8 @@ const DomesticChartSection: React.FC = () => {
 
   const getChartData = async (
     stat: DomesticStat,
-    option: Record<DomesticOption, string>
+    option: Record<DomesticOption, string>,
+    mode: ChartMode
   ): Promise<ChartVisualizerData> => {
     let dataSet: ChartData[] = [];
 
@@ -148,116 +150,120 @@ const DomesticChartSection: React.FC = () => {
     const range = option?.range as ChartRangeOption;
     const compare = option?.compare;
 
-    const xAxis = getDefaultChartXAxis({ type, range });
-    const yAxis = getDefaultChartYAxis(
-      { type, range },
-      { right: { id: stat } }
-    );
+    let xAxis, yAxis;
 
-    if (stat === "confirmed" && type === "live") {
-      const today = liveData.hourlyLive["today"];
-      const compared = liveData.hourlyLive[compare];
-
-      const liveLabel: Record<string, string> = {
-        yesterday: "어제",
-        weekAgo: "1주전",
-        twoWeeksAgo: "2주전",
-        monthAgo: "한달전",
-      };
-
-      dataSet = [
-        {
-          data: compared,
-          config: getDefaultChartConfig(
-            {
-              type,
-              range,
-            },
-            {
-              color: theme.colors.gray400,
-              tooltipLabel: liveLabel[compare],
-              chartType: "line",
-              showPoints: true,
-            }
-          ),
-        },
-        {
-          data: today,
-          config: getDefaultChartConfig(
-            {
-              type,
-              range,
-            },
-            {
-              color: theme.colors.blue500,
-              tooltipLabel: "오늘",
-              chartType: "line",
-              showPoints: true,
-            }
-          ),
-        },
-      ];
-    } else if (
-      stat === "confirmed" &&
-      range === "oneWeek" &&
-      type === "daily"
-    ) {
-      const data = await getCachedChartData(
-        "confirmed-domestic-overseas",
-        range
-      );
-
-      dataSet = [
-        {
-          data: formatObjectValues(
-            data.domestic,
-            (value, key) => value + data.overseas[key]
-          ),
-          config: getDefaultChartConfig(
-            {
-              type,
-              range,
-            },
-            {
-              color: theme.colors.blue500,
-              tooltipLabel: "국내",
-              chartType: "bar",
-              isStack: true,
-            }
-          ),
-        },
-      ];
+    if (mode === "EXPANDED") {
     } else {
-      const data = await getCachedChartData(stat, range);
-      dataSet = [
-        {
-          data,
-          config: getDefaultChartConfig(
-            { type, range },
-            stat === "tested-positive-rates"
-              ? {
-                  tooltipUnit: "%",
-                  tooltipLabel: "7일 평균",
-                }
-              : {}
-          ),
-        },
-      ];
-    }
+      xAxis = getDefaultChartXAxis({ type, range });
+      yAxis = getDefaultChartYAxis({ type, range }, { right: { id: stat } });
 
-    return {
-      dataSet: dataSet.map(({ data, config }) => ({
-        config,
-        data: transformChartData(
-          data,
-          type,
-          stat === "confirmed" && range === "oneWeek" ? "oneWeekExtra" : range,
-          stat === "tested-positive-rates" ? 2 : 0
-        ),
-      })),
-      xAxis,
-      yAxis,
-    };
+      if (stat === "confirmed" && type === "live") {
+        const today = liveData.hourlyLive["today"];
+        const compared = liveData.hourlyLive[compare];
+
+        const liveLabel: Record<string, string> = {
+          yesterday: "어제",
+          weekAgo: "1주전",
+          twoWeeksAgo: "2주전",
+          monthAgo: "한달전",
+        };
+
+        dataSet = [
+          {
+            data: compared,
+            config: getDefaultChartConfig(
+              {
+                type,
+                range,
+              },
+              {
+                color: theme.colors.gray400,
+                tooltipLabel: liveLabel[compare],
+                chartType: "line",
+                showPoints: true,
+              }
+            ),
+          },
+          {
+            data: today,
+            config: getDefaultChartConfig(
+              {
+                type,
+                range,
+              },
+              {
+                color: theme.colors.blue500,
+                tooltipLabel: "오늘",
+                chartType: "line",
+                showPoints: true,
+              }
+            ),
+          },
+        ];
+      } else if (
+        stat === "confirmed" &&
+        range === "oneWeek" &&
+        type === "daily"
+      ) {
+        const data = await getCachedChartData(
+          "confirmed-domestic-overseas",
+          range
+        );
+
+        dataSet = [
+          {
+            data: formatObjectValues(
+              data.domestic,
+              (value, key) => value + data.overseas[key]
+            ),
+            config: getDefaultChartConfig(
+              {
+                type,
+                range,
+              },
+              {
+                color: theme.colors.blue500,
+                tooltipLabel: "국내",
+                chartType: "bar",
+                isStack: true,
+              }
+            ),
+          },
+        ];
+      } else {
+        const data = await getCachedChartData(stat, range);
+        dataSet = [
+          {
+            data,
+            config: getDefaultChartConfig(
+              { type, range },
+              stat === "tested-positive-rates"
+                ? {
+                    tooltipUnit: "%",
+                    tooltipLabel: "7일 평균",
+                  }
+                : {}
+            ),
+          },
+        ];
+      }
+
+      return {
+        dataSet: dataSet.map(({ data, config }) => ({
+          config,
+          data: transformChartData(
+            data,
+            type,
+            stat === "confirmed" && range === "oneWeek"
+              ? "oneWeekExtra"
+              : range,
+            stat === "tested-positive-rates" ? 2 : 0
+          ),
+        })),
+        xAxis,
+        yAxis,
+      };
+    }
   };
 
   return (

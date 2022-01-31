@@ -179,7 +179,7 @@ const ChartNew = <Stat extends string, Option extends string>(
       setIsLoading(true);
       getChartData(selectedStat, selectedOptions, mode).then((chartData) => {
         if (chartData) {
-          setChartData([chartData]);
+          setChartData([].concat(chartData));
           setIsLoading(false);
         }
       });
@@ -226,10 +226,10 @@ const ChartNew = <Stat extends string, Option extends string>(
             </Row>
           )}
         </Row>
-        {/* <ChartModeButton onClick={toggleChartMode}>
+        <ChartModeButton onClick={toggleChartMode}>
           {mode === "EXPANDED" && <ShrinkIcon stroke={theme.colors.gray900} />}
           {mode === "DEFAULT" && <ExpandIcon stroke={theme.colors.gray900} />}
-        </ChartModeButton> */}
+        </ChartModeButton>
       </Heading>
 
       <Container>
@@ -333,8 +333,6 @@ const LoadingContainer = styled("div", {
 
 export const ChartSkeleton = ({ tabs }: { tabs: number }) => {
   const { width, height } = useChartSize({ mode: "DEFAULT" });
-
-  console.log({ width, height });
 
   return (
     <Wrapper

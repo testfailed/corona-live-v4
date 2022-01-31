@@ -633,7 +633,9 @@ const ChartVisualizer: React.FC<Props> = ({
       const { showPoints, type, isStack } = config;
 
       const drawPoints = () => {
-        const { pointColor, pointRadius } = config;
+        const { pointColor, pointRadius, lineColor } = config;
+
+        const color = (pointColor as any).token.match(/[^\d]+/)[0];
 
         group
           .selectAll(`.points-${i}-box-shadow`)
@@ -644,9 +646,9 @@ const ChartVisualizer: React.FC<Props> = ({
                 .append("circle")
                 .attr("class", `points-${i}-box-shadow`)
                 .attr("fill", pointColor)
-                .attr("r", pointRadius)
-                .attr("stroke", theme.colors[`${pointColor}50`])
-                .attr("stroke-width", pointRadius * 3)
+                .attr("r", showPoints ? pointRadius : 4)
+                .attr("stroke", theme.colors[`${color}A050`])
+                .attr("stroke-width", showPoints ? pointRadius * 3 : 10)
                 .attr("opacity", (x) => (x === selectedX ? 1 : 0))
 
                 .attr("cx", (x) => xScale(xParser(x)))
@@ -727,7 +729,7 @@ const ChartVisualizer: React.FC<Props> = ({
           .attr("ry", 3);
       };
 
-      if (showPoints) drawPoints();
+      if (type === "line") drawPoints();
       if (type === "bar") drawBars();
     });
   }, [svgRef, selectedX, yScales]);
@@ -857,7 +859,7 @@ const Wrapper = styled("div", {
 });
 
 const TooltipContainer = styled("div", {
-  height: rem(54),
+  height: rem(50),
   marginTop: rem(12),
   marginBottom: rem(2),
   background: "$shadowBackground1",
@@ -871,6 +873,7 @@ const TooltipContainer = styled("div", {
   paddingY: rem(6),
 
   "@md": {
+    height: rem(54),
     marginTop: rem(16),
     border: `${rem(1)} solid $sectionBorder`,
   },
