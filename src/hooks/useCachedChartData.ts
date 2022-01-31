@@ -4,9 +4,13 @@ import axios from "axios";
 import create from "zustand";
 
 import { isInTimeRange } from "@utils/date-util";
-import { getChartRangeLength, getChartRangeSlug } from "@utils/chart-util";
+import {
+  getChartRangeLength,
+  getChartRangeSlug,
+  parseCompressedChartData,
+} from "@utils/chart-util";
 
-import type { ChartRangeOption } from "@_types/chart-type";
+import type { ChartMode, ChartRangeOption } from "@_types/chart-type";
 
 interface State {
   data: any;
@@ -20,7 +24,7 @@ const useStore = create<State>((set) => ({
   },
 }));
 
-const fetcher = (url: string) =>
+const fetcher = (url: string): any =>
   axios
     .get(`${url}.json?timestamp=${new Date().getTime()}`)
     .then(async ({ data }) => {
@@ -44,9 +48,17 @@ const useCachedChartData = (slug: string) => {
   }, []);
 
   const getCachedChartData = useCallback(
-    async (type: string, range: ChartRangeOption) => {
-      const cached = cachedRef.current;
-
+    async ({
+      type,
+      range,
+      isCompressed,
+      mode,
+    }: {
+      type?: string;
+      range: ChartRangeOption;
+      isCompressed?: boolean;
+      mode?: ChartMode;
+    }) => {
       let rangeSlug = getChartRangeSlug(range);
       const rangeLength = getChartRangeLength(range);
 
@@ -55,9 +67,23 @@ const useCachedChartData = (slug: string) => {
       }
 
       const cacheData = async () => {
-        const data = await fetcher(`${slug}/ts/${type}/${rangeSlug}`);
-        cached[type] = data;
+        const data = await fetcher(
+          `${slug}/ts/${type}/${rangeSlug}${isCompressed ? "/compressed" : ""}`
+        ).then((d) => (isCompressed ? parseCompressedChartData(d) : d));
+
+        if (mode === "EXPANDED" || !type) {
+          cachedRef.current = { ...cachedRef.current, ...data };
+        } else {
+          cachedRef.current[type] = data;
+        }
       };
+
+      const cached = cachedRef.current;
+
+      // await fetcher("domestic/ts/all/90");
+      // const test = await fetcher("domestic/ts/all/90/compressed");
+      // const test = await fetcher("domestic/ts/confirmed/all/compressed");
+      // parseCompressedChartData(test as any);
 
       if (
         !cached[type] ||
@@ -80,6 +106,7 @@ const useCachedChartData = (slug: string) => {
           // console.log(`${type} is cached`);
         }
       }
+
       return cached[type];
     },
     []
