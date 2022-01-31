@@ -14,7 +14,8 @@
     <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png" />
     <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png" />
     <link rel="mask-icon" href="/safari-pinned-tab.svg" color="#" />
-    
+      <link rel="stylesheet" type="text/css" href="./src/fonts.css"/>
+
     <title>코로나 라이브 | 실시간 확진자 현황</title>
     <meta name="title" content="코로나 라이브 | 실시간 확진자 현황" />
     <link rel="canonical" href="https://corona-live.com/" />
@@ -70,16 +71,10 @@
 
     <link
     rel="preload"
-    href="https://assets.corona-live.com/fonts/noto-sans-kr-v12-korean-regular.woff2"
-    as="font"
-    type="font/woff2"
+    href="src/fonts.css"
+    as="style"
   />
-  <link
-    rel="preload"
-    href="https://assets.corona-live.com/fonts/noto-sans-kr-v12-korean-700.woff2"
-    as="font"
-    type="font/woff2"
-  />
+
 
    
     
@@ -100,7 +95,7 @@
   </head>
   <body>
     <div id="root"></div>
-
+    <div id="font-preload">_</div>
     <script type="module" src="/src/index.tsx"></script>
   </body>
 </html>
