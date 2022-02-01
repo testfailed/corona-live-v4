@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useReducer, useState } from "react";
+import React, { useEffect, useMemo, useReducer, useRef, useState } from "react";
 
 import { rem } from "polished";
 import { Presence } from "@radix-ui/react-presence";
@@ -273,15 +273,18 @@ const init = <Stat extends string, Option extends string>(
 const Chart = <Stat extends string, Option extends string>(
   props: Props<Stat, Option>
 ) => {
+  const contentRef = useRef<HTMLDivElement>(null);
   const { chartStatOptions, getChartData, forceUpdate } = props;
 
   const [
-    { chartData, optionsList, selectedOptions, selectedStat, mode },
+    { chartData, optionsList, selectedOptions, selectedStat, mode: _mode },
     dispatch,
   ] = useReducer(reducer, null, () => init<Stat, Option>(props) as any);
 
+  const [mode, setMode] = useState(_mode);
   const stats = Object.keys(chartStatOptions) as Stat[];
 
+  const [wrapperHeight, setWrapperHeight] = useState("auto");
   const [selectedX, setSelectedX] = useState<string>(null);
   const [isLoading, setIsLoading] = useDebounceState(false);
 
@@ -300,22 +303,27 @@ const Chart = <Stat extends string, Option extends string>(
     dispatch({ type: "UPDATE_SELECTED_OPTIONS" });
   }, [selectedStat]);
 
+  const updateChartData = async () => {
+    setIsLoading(true);
+    const chartData = await getChartData(
+      selectedStat as any,
+      selectedOptions,
+      _mode
+    );
+    if (chartData) {
+      dispatch({
+        type: "SET_CHART_DATA",
+        payload: { chartData: [].concat(chartData) },
+      });
+    }
+    setIsLoading(false);
+  };
+
   useUpdateEffect(() => {
     if (isLoading === false || forceUpdate) {
-      setIsLoading(true);
-      getChartData(selectedStat as any, selectedOptions, mode).then(
-        (chartData) => {
-          if (chartData) {
-            dispatch({
-              type: "SET_CHART_DATA",
-              payload: { chartData: [].concat(chartData) },
-            });
-            setIsLoading(false);
-          }
-        }
-      );
+      updateChartData();
     }
-  }, [selectedStat, selectedOptions, forceUpdate, mode]);
+  }, [selectedStat, selectedOptions, forceUpdate]);
 
   const onOptionChange = (optionName: string, value: Option) => {
     dispatch({ type: "CHANGE_OPTION", payload: { optionName, value } });
@@ -325,74 +333,105 @@ const Chart = <Stat extends string, Option extends string>(
     dispatch({ type: "CHANGE_STAT", payload: { value } });
   };
 
-  const toggleChartMode = () => {
+  const toggleChartMode = async () => {
     dispatch({ type: "TOGGLE_MODE" });
+    await updateChartData();
   };
 
-  return (
-    <Wrapper>
-      <Presence present={isLoading}>
-        <LoadingContainer data-state={isLoading ? "show" : "hide"}>
-          <Loader />
-        </LoadingContainer>
-      </Presence>
+  useEffect(() => {
+    if ((_mode === "EXPANDED" && chartData.length > 1) || _mode === "DEFAULT") {
+      setTimeout(() => {
+        const { height } = contentRef.current.getBoundingClientRect();
+        setWrapperHeight(rem(height));
+      }, 0);
+      setMode(_mode);
+    }
+  }, [_mode, chartData]);
 
-      <Heading>
-        <Row css={{ flex: 1 }}>
+  return (
+    <Wrapper
+      css={{
+        height: wrapperHeight,
+      }}
+    >
+      <Content ref={contentRef}>
+        <Presence present={isLoading}>
+          <LoadingContainer data-state={isLoading ? "show" : "hide"}>
+            <Loader />
+          </LoadingContainer>
+        </Presence>
+
+        <Heading>
+          <Row css={{ flex: 1 }}>
+            {mode === "DEFAULT" && (
+              <ChartStatTabs
+                value={selectedStat as any}
+                onChange={onStatChange}
+                statList={statList}
+              />
+            )}
+            {mode === "EXPANDED" && (
+              <Row css={{ paddingY: rem(8), paddingX: rem(8), flex: 1 }}>
+                <ChartOptionTabs
+                  values={selectedOptions}
+                  onChange={onOptionChange}
+                  optionList={optionsList}
+                />
+              </Row>
+            )}
+          </Row>
+          <ChartModeButton onClick={toggleChartMode}>
+            {mode === "EXPANDED" && (
+              <ShrinkIcon stroke={theme.colors.gray900} />
+            )}
+            {mode === "DEFAULT" && <ExpandIcon stroke={theme.colors.gray900} />}
+          </ChartModeButton>
+        </Heading>
+
+        <Container
+          key={mode}
+          css={{
+            animation: `${fadeIn} 700ms`,
+          }}
+        >
           {mode === "DEFAULT" && (
-            <ChartStatTabs
-              value={selectedStat as any}
-              onChange={onStatChange}
-              statList={statList}
-            />
-          )}
-          {mode === "EXPANDED" && (
-            <Row css={{ paddingY: rem(8), paddingX: rem(8), flex: 1 }}>
+            <>
+              <Space h={{ _: 12, md: 16 }} />
               <ChartOptionTabs
                 values={selectedOptions}
                 onChange={onOptionChange}
                 optionList={optionsList}
               />
-            </Row>
+              <ChartVisualizer
+                {...chartData[0]}
+                {...{ mode, selectedX, setSelectedX }}
+              />
+            </>
           )}
-        </Row>
-        <ChartModeButton onClick={toggleChartMode}>
-          {mode === "EXPANDED" && <ShrinkIcon stroke={theme.colors.gray900} />}
-          {mode === "DEFAULT" && <ExpandIcon stroke={theme.colors.gray900} />}
-        </ChartModeButton>
-      </Heading>
-
-      <Container>
-        {mode === "DEFAULT" && (
-          <>
-            <Space h={{ _: 12, md: 16 }} />
-            <ChartOptionTabs
-              values={selectedOptions}
-              onChange={onOptionChange}
-              optionList={optionsList}
-            />
-            <ChartVisualizer
-              {...chartData[0]}
-              {...{ mode, selectedX, setSelectedX }}
-            />
-          </>
-        )}
-        {mode === "EXPANDED" &&
-          chartData.map((chartData, index) => (
-            <ChartVisualizer
-              key={index}
-              {...chartData}
-              {...{
-                mode,
-                selectedX,
-                setSelectedX,
-              }}
-            />
-          ))}
-      </Container>
+          {mode === "EXPANDED" &&
+            chartData.map((chartData, index) => (
+              <ChartVisualizer
+                key={index}
+                {...chartData}
+                {...{
+                  mode,
+                  selectedX,
+                  setSelectedX,
+                }}
+              />
+            ))}
+        </Container>
+      </Content>
     </Wrapper>
   );
 };
+
+const Wrapper = styled("div", {
+  position: "relative",
+  transition: "300ms",
+});
+
+const Content = styled("div", {});
 
 const Heading = styled(Section, {
   rowCenteredY: true,
@@ -414,10 +453,6 @@ const ChartModeButton = styled("div", {
 });
 
 const Box = styled("div", {});
-
-const Wrapper = styled("div", {
-  position: "relative",
-});
 
 const Container = styled("div", {
   columnCenteredX: true,

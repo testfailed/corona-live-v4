@@ -59,7 +59,6 @@ const useCachedChartData = (slug: string) => {
       isCompressed?: boolean;
       isSingle?: boolean;
     }) => {
-      console.log(range);
       let rangeSlug = getChartRangeSlug(range);
       const rangeLength = getChartRangeLength(range);
 
@@ -68,7 +67,6 @@ const useCachedChartData = (slug: string) => {
       }
 
       let cachedData = cachedRef.current;
-      console.log(cachedData);
 
       const cacheData = async () => {
         const data = await fetcher(
@@ -97,20 +95,13 @@ const useCachedChartData = (slug: string) => {
       const requireLargerDataset = () => {
         return stat.every((k) => {
           const cachedDataLength = Object.keys(cachedData[k]).length;
-          console.log({ rangeLength, cachedDataLength });
           return rangeLength > cachedDataLength;
         });
       };
 
-      console.log({
-        isNotCached: isNotCached(),
-        shouldInvalidateCache: shouldInvalidateCache(),
-      });
-
       if (isNotCached() || shouldInvalidateCache()) {
         await cacheData();
       } else {
-        console.log({ requireLargerDataset: requireLargerDataset() });
         if (requireLargerDataset()) {
           await cacheData();
         } else {
