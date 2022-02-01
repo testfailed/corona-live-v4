@@ -1,38 +1,25 @@
-import React, { useMemo } from "react";
+import React from "react";
 
-import useApi from "@hooks/useApi";
-
-import UpdatesModal from "@components/updates/Updates_Modal";
-import UpdatesContent from "@components/updates/Updates_Content";
-import DomesticApi from "@apis/domestic-api";
 import {
   transformDomesticUpdates,
   transformDomesticUpdatesCategories,
 } from "@utils/domestic-util";
+import DomesticApi from "@apis/domestic-api";
 
-const Content: React.FC = () => {
-  const { data } = useApi(DomesticApi.updates, {
-    revalidateIfStale: false,
-    suspense: false,
-  });
-
-  const updates = useMemo(
-    () => transformDomesticUpdates(data?.updates ?? []),
-    [data]
-  );
-
-  const categories = useMemo(
-    () => transformDomesticUpdatesCategories(updates),
-    [updates]
-  );
-
-  return <UpdatesContent updates={updates} categories={categories} />;
-};
+import Api from "@components/Api";
+import UpdatesModal from "@components/updates/Updates_Modal";
+import UpdatesContent from "@components/updates/Updates_Content";
 
 const DomesticLiveUpdatesModalTrigger: React.FC = ({ children }) => {
   return (
     <UpdatesModal triggerNode={children}>
-      <Content />
+      <Api api={DomesticApi.updates}>
+        {({ data }) => {
+          const updates = transformDomesticUpdates(data?.updates ?? []);
+          const categories = transformDomesticUpdatesCategories(updates);
+          return data ? <UpdatesContent {...{ updates, categories }} /> : <></>;
+        }}
+      </Api>
     </UpdatesModal>
   );
 };
