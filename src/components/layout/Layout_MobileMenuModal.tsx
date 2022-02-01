@@ -24,18 +24,14 @@ const LayoutMobileMenuModalTrigger: React.FC<Props> = ({ children }) => {
       triggerNode={children}
       title="메뉴"
       showCloseButton
-      transition={{ open: fadeIn }}
       className={css({
-        width: "100%",
-        height: "100%",
+        width: "85%",
         padding: rem(16),
-        borderRadius: `${rem(0)}!important`,
 
         "@md": {
           height: "100%",
           maxWidth: rem(360),
           maxHeight: "85vh",
-          borderRadius: `${rem(8)}!important`,
         },
       })}
       asChild

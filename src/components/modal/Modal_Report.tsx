@@ -105,7 +105,7 @@ const ReportModalTrigger: React.FC<Props> = ({
       confirmText={<LoadingText isLoading={isLoading} text="제보하기" />}
       onConfrim={onSumbit}
       className={css({
-        width: "90%",
+        width: "85%",
         padding: rem(16),
 
         "@md": {
