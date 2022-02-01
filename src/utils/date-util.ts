@@ -1,3 +1,6 @@
+import { darkTheme } from "@styles/themes/dark-theme";
+import dayjs from "dayjs";
+
 const SECOND = 1000;
 const MINUTE = SECOND * 60;
 const HOUR = MINUTE * 60;
@@ -43,4 +46,17 @@ export const isInTimeRange = (timeA, timeB) => {
     date.getMinutes()
   )}:${addZero(date.getSeconds())}`;
   return timeA < now && timeB > now;
+};
+
+export const generateDatesBetweenTwoDates = (from: string, to: string) => {
+  let dates = [];
+
+  let currentDate = dayjs(from);
+  let stopDate = dayjs(to);
+  while (currentDate < stopDate) {
+    dates.push(currentDate.toISOString().slice(0, 10));
+    currentDate = dayjs(currentDate).add(1, "day");
+  }
+
+  return dates;
 };

@@ -10,7 +10,7 @@ import {
   parseCompressedChartData,
 } from "@utils/chart-util";
 
-import type { ChartMode, ChartRangeOption } from "@_types/chart-type";
+import type { ChartMode, ChartRangeOptionValue } from "@_types/chart-type";
 
 interface State {
   data: any;
@@ -49,15 +49,15 @@ const useCachedChartData = (slug: string) => {
 
   const getCachedChartData = useCallback(
     async ({
-      type,
+      stat,
       range,
-      isCompressed,
-      mode,
+      isCompressed = false,
+      isSingle = true,
     }: {
-      type?: string;
-      range: ChartRangeOption;
+      stat?: string;
+      range: ChartRangeOptionValue;
       isCompressed?: boolean;
-      mode?: ChartMode;
+      isSingle?: boolean;
     }) => {
       let rangeSlug = getChartRangeSlug(range);
       const rangeLength = getChartRangeLength(range);
@@ -66,54 +66,68 @@ const useCachedChartData = (slug: string) => {
         rangeSlug = "all";
       }
 
+      let keys: Array<string> = [];
+      let cachedData = cachedRef.current;
+
       const cacheData = async () => {
         const data = await fetcher(
-          `${slug}/ts/${type}/${rangeSlug}${isCompressed ? "/compressed" : ""}`
+          `${slug}/ts/${stat}/${rangeSlug}${isCompressed ? "/compressed" : ""}`
         ).then((d) => (isCompressed ? parseCompressedChartData(d) : d));
 
-        if (mode === "EXPANDED" || !type) {
-          cachedRef.current = { ...cachedRef.current, ...data };
+        if (isSingle) {
+          cachedData[stat] = data;
         } else {
-          cachedRef.current[type] = data;
+          cachedData = { ...cachedData, ...data };
+          keys = Object.keys(data);
         }
       };
 
-      const cached = cachedRef.current;
+      const isNotCached = () => {
+        if (isSingle) {
+          return !cachedData[stat];
+        } else {
+          return keys.some((k) => !cachedData[k]);
+        }
+      };
+      const shouldInvalidateCache = () => {
+        return (
+          isInTimeRange("09:30:00", "11:00:00") &&
+          stat.includes("confirmed") === true
+        );
+      };
 
-      // await fetcher("domestic/ts/all/90");
-      // const test = await fetcher("domestic/ts/all/90/compressed");
-      // const test = await fetcher("domestic/ts/confirmed/all/compressed");
-      // parseCompressedChartData(test as any);
+      const requireLargerDataset = () => {
+        let cachedDataLength;
+        if (Object.keys(cachedData[stat])[0].match(/\d\d\d\d-\d\d-\d\d/)) {
+          cachedDataLength = Object.keys(cachedData[stat]).length;
+        } else {
+          const firstKey = Object.keys(cachedData[stat])[0];
+          cachedDataLength = Object.keys(cachedData[stat][firstKey]).length;
+        }
+        return cachedDataLength < rangeLength;
+      };
 
-      if (
-        !cached[type] ||
-        (isInTimeRange("09:30:00", "11:00:00") &&
-          type.includes("confirmed") === true)
-      ) {
+      if (isNotCached() || shouldInvalidateCache) {
         await cacheData();
       } else {
-        let cachedDataLength;
-        if (Object.keys(cached[type])[0].match(/\d\d\d\d-\d\d-\d\d/)) {
-          cachedDataLength = Object.keys(cached[type]).length;
-        } else {
-          let firstKey = Object.keys(cached[type])[0];
-          cachedDataLength = Object.keys(cached[type][firstKey]).length;
-        }
-
-        if (cachedDataLength < rangeLength) {
+        if (requireLargerDataset()) {
           await cacheData();
         } else {
-          // console.log(`${type} is cached`);
+          console.log(`${stat} is cached`);
         }
       }
 
-      return cached[type];
+      cachedRef.current = cacheData;
+
+      return isSingle
+        ? cachedData[stat]
+        : keys.reduce((o, k) => ({ ...o, [k]: cachedData[k] }), {});
     },
     []
   );
 
   return useMemo(
-    () => ({ getCachedChartData, cached: cachedRef }),
+    () => ({ getCachedChartData, cached: cachedRef.current }),
     [getCachedChartData, cachedRef]
   );
 };

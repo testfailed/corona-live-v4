@@ -17,8 +17,9 @@ import {
 } from "@utils/chart-util";
 import {
   ChartDefaultOption,
-  ChartRangeOption,
-  ChartTypeOption,
+  ChartDefaultOptionKey,
+  ChartRangeOptionValue,
+  ChartTypeOptionValue,
 } from "@_types/chart-type";
 import {
   ChartData,
@@ -27,9 +28,12 @@ import {
 import { useParams } from "react-router-dom";
 
 type CityStat = "confirmed";
-type CityOption = ChartDefaultOption | "compare";
 
-const chartStatOptions = createChartStatOptions<CityStat, CityOption>()({
+interface CityOption extends ChartDefaultOption {}
+
+type CityOptionKey = keyof CityOption;
+
+const chartStatOptions = createChartStatOptions<CityStat, CityOptionKey>()({
   confirmed: {
     label: "확진자",
     options: {
@@ -38,14 +42,6 @@ const chartStatOptions = createChartStatOptions<CityStat, CityOption>()({
       compare: null,
     },
   },
-  // deceased: {
-  //   label: "사망자",
-  //   options: {
-  //     type: chartTypeOptions({ omit: ["accumulated", "live"] }),
-  //     range: chartRangeOptions(),
-  //     compare: null,
-  //   },
-  // },
 });
 
 const CityChart: React.FC = () => {
@@ -56,35 +52,31 @@ const CityChart: React.FC = () => {
 
   const getChartData = async (
     stat: CityStat,
-    option: Record<CityOption, string>
+    option: CityOption
   ): Promise<ChartVisualizerData> => {
     let dataSet: ChartData[] = [];
 
-    const type = option?.type as ChartTypeOption;
-    const range = option?.range as ChartRangeOption;
+    const xAxis = getDefaultChartXAxis(option);
+    const yAxis = getDefaultChartYAxis(option, { right: { id: stat } });
 
-    const xAxis = getDefaultChartXAxis({ type, range });
-    const yAxis = getDefaultChartYAxis(
-      { type, range },
-      { right: { id: stat } }
-    );
-
-    const data = await getCachedChartData(stat, range);
+    const data = await getCachedChartData({ stat, range: option.range });
     dataSet = [
       {
         data,
-        config: getDefaultChartConfig({ type, range }),
+        config: getDefaultChartConfig(option),
       },
     ];
 
     return {
       dataSet: dataSet.map(({ data, config }) => ({
         config,
-        data: transformChartData(
-          data,
-          type,
-          stat === "confirmed" && range === "oneWeek" ? "oneWeekExtra" : range
-        ),
+        data: transformChartData(data, {
+          type: option.type,
+          range:
+            stat === "confirmed" && option.range === "oneWeek"
+              ? "oneWeekExtra"
+              : option.range,
+        }),
       })),
       xAxis,
       yAxis,

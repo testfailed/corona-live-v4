@@ -8,23 +8,24 @@ import {
   ChartCondition,
   ChartStatOptions,
   ChartDefaultOption,
-  ChartRangeOption,
-  ChartTypeOption,
+  ChartRangeOptionValue,
+  ChartTypeOptionValue,
   OptionValue,
+  ChartDefaultOptionKey,
 } from "@_types/chart-type";
 import dayjs, { Dayjs } from "dayjs";
-import { getDaysInMonth } from "./date-util";
+import { generateDatesBetweenTwoDates, getDaysInMonth } from "./date-util";
 import { koreanNumberFormat, numberWithCommas } from "./number-util";
 import { formatObjectValues } from "./object-util";
 
 export const chartTypeOptions = (config?: {
-  omit?: Array<ChartTypeOption>;
-  pick?: Array<ChartTypeOption>;
-  disable?: Array<ChartTypeOption>;
-}): Partial<Record<ChartTypeOption, OptionValue>> => {
+  omit?: Array<ChartTypeOptionValue>;
+  pick?: Array<ChartTypeOptionValue>;
+  disable?: Array<ChartTypeOptionValue>;
+}): Partial<Record<ChartTypeOptionValue, OptionValue>> => {
   const { omit = [], disable = [], pick } = config ?? {};
 
-  const options: Partial<Record<ChartTypeOption, OptionValue>> = {
+  const options: Partial<Record<ChartTypeOptionValue, OptionValue>> = {
     daily: {
       label: "일별",
     },
@@ -55,13 +56,13 @@ export const chartTypeOptions = (config?: {
 };
 
 export const chartRangeOptions = (config?: {
-  omit?: Array<ChartRangeOption>;
-  pick?: Array<ChartRangeOption>;
-  disable?: Array<ChartRangeOption>;
-}): Partial<Record<ChartRangeOption, OptionValue>> => {
+  omit?: Array<ChartRangeOptionValue>;
+  pick?: Array<ChartRangeOptionValue>;
+  disable?: Array<ChartRangeOptionValue>;
+}): Partial<Record<ChartRangeOptionValue, OptionValue>> => {
   const { omit = [], disable = [], pick } = config ?? {};
 
-  const options: Partial<Record<ChartRangeOption, OptionValue>> = {
+  const options: Partial<Record<ChartRangeOptionValue, OptionValue>> = {
     oneWeek: {
       label: "1주",
     },
@@ -89,8 +90,8 @@ export const chartRangeOptions = (config?: {
 };
 
 export const getInvalidRangeOptionsByType = (
-  type: ChartTypeOption
-): Array<ChartRangeOption> => {
+  type: ChartTypeOptionValue
+): Array<ChartRangeOptionValue> => {
   switch (type) {
     case "accumulated":
       return ["oneWeek", "oneMonth", "threeMonths"];
@@ -119,8 +120,10 @@ export const createChartStatOptions = <
       const { options } = config[stat];
       const overrideOptionsIf = config[stat]?.overrideOptionsIf;
 
-      const rangeOptions = Object.keys(options.range) as ChartRangeOption[];
-      const typeOptions = Object.keys(options.type) as ChartTypeOption[];
+      const rangeOptions = Object.keys(
+        options.range
+      ) as ChartRangeOptionValue[];
+      const typeOptions = Object.keys(options.type) as ChartTypeOptionValue[];
 
       obj[stat] = {
         ...config[stat],
@@ -142,7 +145,7 @@ export const createChartStatOptions = <
                         ),
                       }),
                     },
-                  } as ChartCondition<{}, ChartDefaultOption>;
+                  } as ChartCondition<{}, ChartDefaultOptionKey>;
                 })
             : []),
         ],
@@ -153,7 +156,7 @@ export const createChartStatOptions = <
   return create;
 };
 
-const rangeTypeLabel: Record<ChartTypeOption, string> = {
+const rangeTypeLabel: Record<ChartTypeOptionValue, string> = {
   weekly: "일평균",
   monthly: "일평균",
   accumulated: "누적",
@@ -163,8 +166,8 @@ const rangeTypeLabel: Record<ChartTypeOption, string> = {
 
 export const getDefaultChartConfig = (
   options: {
-    type?: ChartTypeOption;
-    range?: ChartRangeOption;
+    type?: ChartTypeOptionValue;
+    range?: ChartRangeOptionValue;
   },
   config?: {
     chartType?: "line" | "bar";
@@ -220,8 +223,8 @@ export const getDefaultChartConfig = (
 
 export const getDefaultChartXAxis = (
   config: {
-    type?: ChartTypeOption;
-    range?: ChartRangeOption;
+    type?: ChartTypeOptionValue;
+    range?: ChartRangeOptionValue;
   },
   override?: Partial<ChartVisualizerData["xAxis"]>
 ): ChartVisualizerData["xAxis"] => {
@@ -286,8 +289,8 @@ export const getDefaultChartXAxis = (
 
 export const getDefaultChartYAxis = (
   options: {
-    type: ChartTypeOption;
-    range: ChartRangeOption;
+    type: ChartTypeOptionValue;
+    range: ChartRangeOptionValue;
   },
   override?: ChartVisualizerData["yAxis"]
 ): ChartVisualizerData["yAxis"] => {
@@ -307,7 +310,7 @@ export const getDefaultChartYAxis = (
   };
 };
 
-export const getChartRangeSlug = (value: ChartRangeOption) => {
+export const getChartRangeSlug = (value: ChartRangeOptionValue) => {
   switch (value) {
     case "oneWeek":
       return 7;
@@ -320,7 +323,7 @@ export const getChartRangeSlug = (value: ChartRangeOption) => {
   }
 };
 
-export const getChartRangeLength = (value: ChartRangeOption) => {
+export const getChartRangeLength = (value: ChartRangeOptionValue) => {
   switch (value) {
     case "oneWeek":
       return 7;
@@ -339,9 +342,15 @@ export const getChartRangeLength = (value: ChartRangeOption) => {
 
 export const transformChartData = (
   _chartData: ChartData["data"],
-  type: ChartTypeOption,
-  range: ChartRangeOption,
-  fractionDigits?: number
+  {
+    type,
+    range,
+    fractionDigits,
+  }: {
+    type: ChartTypeOptionValue;
+    range: ChartRangeOptionValue;
+    fractionDigits?: number;
+  }
 ) => {
   let chartData = _chartData;
 
@@ -422,4 +431,46 @@ export const transformChartData = (
     default:
       return chartData;
   }
+};
+
+interface CompressedChartData {
+  from: string;
+  to: string;
+  data: Array<string | number>;
+  stats?: Array<string>;
+  type: "CHART_SINGLE" | "CHART_MULTI";
+}
+
+export const parseCompressedChartData = ({
+  data,
+  from,
+  to,
+  type,
+  stats,
+}: CompressedChartData) => {
+  console.time("Parse Compressed Chart Data");
+
+  const dates = generateDatesBetweenTwoDates(from, to);
+
+  let result = {};
+
+  if (type === "CHART_MULTI") {
+    stats.forEach((stat) => (result[stat] = {}));
+  }
+
+  for (let dateIndex = 0; dateIndex < dates.length; dateIndex++) {
+    const date = dates[dateIndex];
+    if (type === "CHART_SINGLE") {
+      result[date] = data[dateIndex];
+    } else {
+      const dataSet = data[dateIndex].toString().split(",");
+      for (let statIndex = 0; statIndex < stats.length; statIndex++) {
+        let stat = stats[statIndex];
+        result[stat][date] = Number(dataSet[statIndex]);
+      }
+    }
+  }
+
+  console.timeEnd("Parse Compressed Chart Data");
+  return result;
 };

@@ -7,23 +7,27 @@ import { styled, theme } from "@styles/stitches.config";
 import { fadeIn, fadeOut } from "@styles/animations/fade-animation";
 import { formatObjectValues, removeNullFromObject } from "@utils/object-util";
 
-import ChartStatTabs from "./Chart_StatTabs";
-import { TabProps } from "@components/Tabs";
-import ChartOptionTabs from "./Chart_OptionTabs";
-import ChartVisualizer, { ChartVisualizerData } from "./Chart_Visualizer";
+import useChartSize from "@hooks/useChartSize";
 import useUpdateEffect from "@hooks/useUpdatedEffect";
 import useDebounceState from "@hooks/useDebounceState";
-import Section from "@components/Section";
-import Loader from "@components/Loader";
-import Space from "@components/Space";
+
+import ChartStatTabs from "./Chart_StatTabs";
+import ChartVisualizer from "./Chart_Visualizer";
+import ChartOptionTabs from "./Chart_OptionTabs";
+
 import Row from "@components/Row";
+import Space from "@components/Space";
+import Loader from "@components/Loader";
+import Section from "@components/Section";
 import Skeleton from "@components/Skeleton";
+import { TabProps } from "@components/Tabs";
+import ShrinkIcon from "@components/icon/Icon_Shrink";
+import ExpandIcon from "@components/icon/Icon_Expand";
 
 import type { ChartMode } from "@_types/chart-type";
 import type { ChartStatOptions } from "@_types/chart-type";
-import ShrinkIcon from "@components/icon/Icon_Shrink";
-import ExpandIcon from "@components/icon/Icon_Expand";
-import useChartSize from "@hooks/useChartSize";
+import type { ChartVisualizerData } from "./Chart_Visualizer";
+import { chartRangeOptions, chartTypeOptions } from "@utils/chart-util";
 
 const getInitialSelectedOptions = <Stat extends string, Option extends string>(
   chartStatOptions: ChartStatOptions<Stat, Option>
@@ -50,11 +54,11 @@ interface Props<Stat extends string, Option extends string> {
     selectedStat: Stat,
     selectedOptions: Record<Option, string>,
     mode: ChartMode
-  ) => Promise<ChartVisualizerData>;
+  ) => Promise<Array<ChartVisualizerData>>;
   forceUpdate?: any;
 }
 
-const ChartNew = <Stat extends string, Option extends string>(
+const Chart = <Stat extends string, Option extends string>(
   props: Props<Stat, Option>
 ) => {
   const { chartStatOptions, getChartData, forceUpdate } = props;
@@ -78,7 +82,28 @@ const ChartNew = <Stat extends string, Option extends string>(
   }, [chartStatOptions]);
 
   const getOptionsList = (selectedOptions) => {
-    const { options } = chartStatOptions[selectedStat];
+    const transformOptionsList = (options) => {
+      return formatObjectValues(
+        removeNullFromObject(options),
+        (optionValuesObj) => {
+          return Object.keys(optionValuesObj).map((optionValue) => ({
+            value: optionValue,
+            text: optionValuesObj[optionValue].label,
+            disabled: !!optionValuesObj[optionValue].disabled,
+          })) as Array<TabProps>;
+        }
+      ) as Record<Option, Array<TabProps>>;
+    };
+
+    if (mode === "EXPANDED") {
+      return transformOptionsList({
+        type: chartTypeOptions({ omit: ["accumulated", "live", "monthly"] }),
+        range: chartRangeOptions({ omit: ["all"] }),
+      });
+    }
+
+    const { options: _options } = chartStatOptions[selectedStat];
+    const options = _options;
     const overrideOptionsIf = chartStatOptions[selectedStat]?.overrideOptionsIf;
 
     const overriddenOptions = {
@@ -92,16 +117,7 @@ const ChartNew = <Stat extends string, Option extends string>(
       })?.options ?? {}),
     };
 
-    return formatObjectValues(
-      removeNullFromObject(overriddenOptions),
-      (optionValuesObj) => {
-        return Object.keys(optionValuesObj).map((optionValue) => ({
-          value: optionValue,
-          text: optionValuesObj[optionValue].label,
-          disabled: !!optionValuesObj[optionValue].disabled,
-        })) as Array<TabProps>;
-      }
-    ) as Record<Option, Array<TabProps>>;
+    return transformOptionsList(overriddenOptions);
   };
 
   const getSelectedOptions = (prevSelectedOptions) => {
@@ -163,6 +179,19 @@ const ChartNew = <Stat extends string, Option extends string>(
   const [optionsList, setOptionsList] = useState(() =>
     getOptionsList(selectedOptions)
   );
+
+  useUpdateEffect(() => {
+    if (mode === "EXPANDED") {
+      const newSelectedOption = {
+        type: "daily",
+        range: "oneMonth",
+      };
+      setSelectedOptions(newSelectedOption as any);
+      setOptionsList(getOptionsList(newSelectedOption));
+    } else {
+      setOptionsList(getOptionsList(selectedOptions));
+    }
+  }, [mode]);
 
   useEffect(() => {
     setOptionsList(getOptionsList(selectedOptions));
@@ -398,4 +427,4 @@ export const ChartSkeleton = ({ tabs }: { tabs: number }) => {
   );
 };
 
-export default ChartNew;
+export default Chart;

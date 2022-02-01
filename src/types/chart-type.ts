@@ -1,6 +1,26 @@
 export type ChartConditionType = "equal" | "not-equal";
 
-export type ChartDefaultOption = "range" | "type";
+export type ChartTypeOptionValue =
+  | "live"
+  | "daily"
+  | "weekly"
+  | "monthly"
+  | "accumulated";
+
+export type ChartRangeOptionValue =
+  | "oneWeek"
+  | "oneWeekExtra"
+  | "twoWeeks"
+  | "oneMonth"
+  | "threeMonths"
+  | "all";
+
+export interface ChartDefaultOption {
+  range: ChartRangeOptionValue;
+  type: ChartTypeOptionValue;
+}
+
+export type ChartDefaultOptionKey = keyof ChartDefaultOption;
 
 export interface OptionValue {
   label: string;
@@ -35,25 +55,11 @@ export type ChartCondition<
     options: ChartOverrideOptions<Config, Option>;
   };
 
-export type ChartTypeOption =
-  | "live"
-  | "daily"
-  | "weekly"
-  | "monthly"
-  | "accumulated";
-export type ChartRangeOption =
-  | "oneWeek"
-  | "oneWeekExtra"
-  | "twoWeeks"
-  | "oneMonth"
-  | "threeMonths"
-  | "all";
-
 export type ChartStatOptions<
   Stat extends string = string,
   Option extends string = string,
   Config extends {} = {},
-  ComposedOption extends string = Option | ChartDefaultOption
+  ComposedOption extends string = Option | ChartDefaultOptionKey
 > = Record<
   Stat,
   Config & {

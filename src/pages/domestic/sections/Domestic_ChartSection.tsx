@@ -23,17 +23,11 @@ import Section from "@components/Section";
 import Chart from "@components/chart/Chart";
 import { ChartSkeleton } from "@components/chart/Chart";
 
-import type {
-  ChartDefaultOption,
-  ChartMode,
-  ChartRangeOption,
-  ChartTypeOption,
-} from "@_types/chart-type";
+import type { ChartDefaultOption, ChartMode } from "@_types/chart-type";
 import type {
   ChartData,
   ChartVisualizerData,
 } from "@components/chart/Chart_Visualizer";
-import { formatObjectValues } from "@utils/object-util";
 
 type DomesticStat =
   | "confirmed"
@@ -42,7 +36,17 @@ type DomesticStat =
   | "confirmed-severe-symptoms"
   | "tested-positive-rates";
 
-type DomesticOption = ChartDefaultOption | "compare";
+type ChartCompareOptionValue =
+  | "yesterday"
+  | "weekAgo"
+  | "monthAgo"
+  | "twoWeeksAgo";
+
+interface DomesticOption extends ChartDefaultOption {
+  compare: ChartCompareOptionValue;
+}
+
+type DomesticOptionKey = keyof DomesticOption;
 
 interface State {
   shoulUpdate: number;
@@ -58,18 +62,18 @@ export const useDomesticChartForceUpdateStore = create<State>((set) => ({
 
 const DomesticChartSection: React.FC = () => {
   const { getCachedChartData } = useCachedChartData("domestic");
-  const { data: liveData } = useApi(DomesticApi.live);
+  const { data: domesticLiveData } = useApi(DomesticApi.live);
   const { forceUpdate, shoulUpdate } = useDomesticChartForceUpdateStore(
     ({ forceUpdate, shoulUpdate }) => ({ forceUpdate, shoulUpdate })
   );
 
   useUpdateEffect(() => {
     forceUpdate();
-  }, [liveData]);
+  }, [domesticLiveData]);
 
   const chartStatOptions = useMemo(
     () =>
-      createChartStatOptions<DomesticStat, DomesticOption>()({
+      createChartStatOptions<DomesticStat, DomesticOptionKey>()({
         confirmed: {
           label: "확진자",
           options: {
@@ -141,27 +145,53 @@ const DomesticChartSection: React.FC = () => {
 
   const getChartData = async (
     stat: DomesticStat,
-    option: Record<DomesticOption, string>,
+    option: DomesticOption,
     mode: ChartMode
-  ): Promise<ChartVisualizerData> => {
+  ): Promise<Array<ChartVisualizerData>> => {
     let dataSet: ChartData[] = [];
 
-    const type = option?.type as ChartTypeOption;
-    const range = option?.range as ChartRangeOption;
-    const compare = option?.compare;
-
-    let xAxis, yAxis;
-
     if (mode === "EXPANDED") {
+      const data = await getCachedChartData({
+        stat: "all",
+        range: "threeMonths",
+        isCompressed: true,
+        isSingle: false,
+      });
+
+      const xAxis = getDefaultChartXAxis(option);
+      const yAxis = getDefaultChartYAxis(option, { right: { id: stat } });
+
+      return Object.keys(data).map((key) => ({
+        dataSet: [
+          {
+            data: transformChartData(data[key], {
+              type: option.type,
+              range: option.range,
+              fractionDigits: stat === "tested-positive-rates" ? 2 : 0,
+            }),
+            config: getDefaultChartConfig(
+              option,
+              stat === "tested-positive-rates"
+                ? {
+                    tooltipUnit: "%",
+                    tooltipLabel: "7일 평균",
+                  }
+                : {}
+            ),
+          },
+        ],
+        xAxis,
+        yAxis,
+      }));
     } else {
-      xAxis = getDefaultChartXAxis({ type, range });
-      yAxis = getDefaultChartYAxis({ type, range }, { right: { id: stat } });
+      const xAxis = getDefaultChartXAxis(option);
+      const yAxis = getDefaultChartYAxis(option, { right: { id: stat } });
 
-      if (stat === "confirmed" && type === "live") {
-        const today = liveData.hourlyLive["today"];
-        const compared = liveData.hourlyLive[compare];
+      if (stat === "confirmed" && option.type === "live") {
+        const today = domesticLiveData.hourlyLive["today"];
+        const compared = domesticLiveData.hourlyLive[option.compare];
 
-        const liveLabel: Record<string, string> = {
+        const liveLabel: Record<ChartCompareOptionValue, string> = {
           yesterday: "어제",
           weekAgo: "1주전",
           twoWeeksAgo: "2주전",
@@ -171,72 +201,38 @@ const DomesticChartSection: React.FC = () => {
         dataSet = [
           {
             data: compared,
-            config: getDefaultChartConfig(
-              {
-                type,
-                range,
-              },
-              {
-                color: theme.colors.gray400,
-                tooltipLabel: liveLabel[compare],
-                chartType: "line",
-                showPoints: true,
-              }
-            ),
+            config: getDefaultChartConfig(option, {
+              color: theme.colors.gray400,
+              tooltipLabel: liveLabel[option.compare],
+              chartType: "line",
+              showPoints: true,
+            }),
           },
           {
             data: today,
-            config: getDefaultChartConfig(
-              {
-                type,
-                range,
-              },
-              {
-                color: theme.colors.blue500,
-                tooltipLabel: "오늘",
-                chartType: "line",
-                showPoints: true,
-              }
-            ),
-          },
-        ];
-      } else if (
-        stat === "confirmed" &&
-        range === "oneWeek" &&
-        type === "daily"
-      ) {
-        const data = await getCachedChartData(
-          "confirmed-domestic-overseas",
-          range
-        );
-
-        dataSet = [
-          {
-            data: formatObjectValues(
-              data.domestic,
-              (value, key) => value + data.overseas[key]
-            ),
-            config: getDefaultChartConfig(
-              {
-                type,
-                range,
-              },
-              {
-                color: theme.colors.blue500,
-                tooltipLabel: "국내",
-                chartType: "bar",
-                isStack: true,
-              }
-            ),
+            config: getDefaultChartConfig(option, {
+              color: theme.colors.blue500,
+              tooltipLabel: "오늘",
+              chartType: "line",
+              showPoints: true,
+            }),
           },
         ];
       } else {
-        const data = await getCachedChartData(stat, range);
+        const data = await getCachedChartData({
+          stat,
+          range: option.range,
+          isCompressed: option.range === "all",
+        });
         dataSet = [
           {
-            data,
+            data: transformChartData(data, {
+              type: option.type,
+              range: option.range,
+              fractionDigits: stat === "tested-positive-rates" ? 2 : 0,
+            }),
             config: getDefaultChartConfig(
-              { type, range },
+              option,
               stat === "tested-positive-rates"
                 ? {
                     tooltipUnit: "%",
@@ -248,21 +244,13 @@ const DomesticChartSection: React.FC = () => {
         ];
       }
 
-      return {
-        dataSet: dataSet.map(({ data, config }) => ({
-          config,
-          data: transformChartData(
-            data,
-            type,
-            stat === "confirmed" && range === "oneWeek"
-              ? "oneWeekExtra"
-              : range,
-            stat === "tested-positive-rates" ? 2 : 0
-          ),
-        })),
-        xAxis,
-        yAxis,
-      };
+      return [
+        {
+          dataSet,
+          xAxis,
+          yAxis,
+        },
+      ];
     }
   };
 
