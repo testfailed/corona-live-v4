@@ -56,6 +56,7 @@ interface Props<Stat extends string, Option extends string> {
     mode: ChartMode
   ) => Promise<Array<ChartVisualizerData>>;
   forceUpdate?: any;
+  enableExpandMode?: boolean;
 }
 
 interface Store<Stat extends string, Option extends string> {
@@ -274,7 +275,12 @@ const Chart = <Stat extends string, Option extends string>(
   props: Props<Stat, Option>
 ) => {
   const contentRef = useRef<HTMLDivElement>(null);
-  const { chartStatOptions, getChartData, forceUpdate } = props;
+  const {
+    chartStatOptions,
+    getChartData,
+    forceUpdate,
+    enableExpandMode = false,
+  } = props;
 
   const [
     { chartData, optionsList, selectedOptions, selectedStat, mode: _mode },
@@ -380,12 +386,16 @@ const Chart = <Stat extends string, Option extends string>(
               </Row>
             )}
           </Row>
-          <ChartModeButton onClick={toggleChartMode}>
-            {mode === "EXPANDED" && (
-              <ShrinkIcon stroke={theme.colors.gray900} />
-            )}
-            {mode === "DEFAULT" && <ExpandIcon stroke={theme.colors.gray900} />}
-          </ChartModeButton>
+          {enableExpandMode && (
+            <ChartModeButton onClick={toggleChartMode}>
+              {mode === "EXPANDED" && (
+                <ShrinkIcon stroke={theme.colors.gray900} />
+              )}
+              {mode === "DEFAULT" && (
+                <ExpandIcon stroke={theme.colors.gray900} />
+              )}
+            </ChartModeButton>
+          )}
         </Heading>
 
         <Container

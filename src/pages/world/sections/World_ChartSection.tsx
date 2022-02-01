@@ -18,8 +18,9 @@ import {
 } from "@utils/chart-util";
 import {
   ChartDefaultOption,
-  ChartRangeOption,
-  ChartTypeOption,
+  ChartDefaultOptionKey,
+  ChartRangeOptionValue,
+  ChartTypeOptionValue,
 } from "@_types/chart-type";
 import {
   ChartData,
@@ -32,7 +33,7 @@ export type WorldChartPrimaryOptions = "deceased" | "confirmed";
 
 export type WorldStat = "confirmed" | "deceased";
 
-type WorldOption = ChartDefaultOption | "compare";
+type WorldOption = ChartDefaultOptionKey | "compare";
 
 const chartStatOptions = createChartStatOptions<WorldStat, WorldOption>()({
   confirmed: {
@@ -79,8 +80,8 @@ const WorldChartSection: React.FC = () => {
   ): Promise<ChartVisualizerData> => {
     let dataSet: ChartData[] = [];
 
-    const type = option?.type as ChartTypeOption;
-    const range = option?.range as ChartRangeOption;
+    const type = option?.type as ChartTypeOptionValue;
+    const range = option?.range as ChartRangeOptionValue;
     const compare = option?.compare;
 
     const xAxis = getDefaultChartXAxis({ type, range });
@@ -133,7 +134,7 @@ const WorldChartSection: React.FC = () => {
         },
       ];
     } else {
-      const data = await getCachedChartData(stat, range);
+      const data = await getCachedChartData({ stat: [stat], range });
       dataSet = [
         {
           data,
@@ -145,11 +146,13 @@ const WorldChartSection: React.FC = () => {
     return {
       dataSet: dataSet.map(({ data, config }) => ({
         config,
-        data: transformChartData(
-          data,
+        data: transformChartData(data, {
           type,
-          stat === "confirmed" && range === "oneWeek" ? "oneWeekExtra" : range
-        ),
+          range:
+            stat === "confirmed" && range === "oneWeek"
+              ? "oneWeekExtra"
+              : range,
+        }),
       })),
       xAxis,
       yAxis,

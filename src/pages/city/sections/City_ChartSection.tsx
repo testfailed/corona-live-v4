@@ -15,12 +15,7 @@ import {
   getDefaultChartYAxis,
   transformChartData,
 } from "@utils/chart-util";
-import {
-  ChartDefaultOption,
-  ChartDefaultOptionKey,
-  ChartRangeOptionValue,
-  ChartTypeOptionValue,
-} from "@_types/chart-type";
+import { ChartDefaultOption } from "@_types/chart-type";
 import {
   ChartData,
   ChartVisualizerData,
@@ -59,7 +54,10 @@ const CityChart: React.FC = () => {
     const xAxis = getDefaultChartXAxis(option);
     const yAxis = getDefaultChartYAxis(option, { right: { id: stat } });
 
-    const data = await getCachedChartData({ stat, range: option.range });
+    const data = await getCachedChartData({
+      stat: [stat],
+      range: option.range,
+    });
     dataSet = [
       {
         data,

@@ -1,11 +1,12 @@
 import React from "react";
 
+import { theme } from "@styles/stitches.config";
 import useCachedChartData from "@hooks/useCachedChartData";
 
 import Section from "@components/Section";
-
-import { ChartSkeleton } from "@components/chart/Chart";
 import Chart from "@components/chart/Chart";
+import { ChartSkeleton } from "@components/chart/Chart";
+
 import {
   chartRangeOptions,
   chartTypeOptions,
@@ -15,20 +16,20 @@ import {
   getDefaultChartYAxis,
   transformChartData,
 } from "@utils/chart-util";
-import {
-  ChartDefaultOption,
-  ChartRangeOption,
-  ChartTypeOption,
+
+import type {
+  ChartDefaultOptionKey,
+  ChartRangeOptionValue,
+  ChartTypeOptionValue,
 } from "@_types/chart-type";
-import {
+import type {
   ChartData,
   ChartVisualizerData,
 } from "@components/chart/Chart_Visualizer";
-import { theme } from "@styles/stitches.config";
 
 export type VaccineStat = "az" | "pfizer" | "jansen" | "moderna" | "all";
 
-type VaccineOption = ChartDefaultOption;
+type VaccineOption = ChartDefaultOptionKey;
 
 const chartStatOptions = createChartStatOptions<VaccineStat, VaccineOption>()({
   all: {
@@ -90,11 +91,11 @@ const VaccineChart: React.FC = () => {
   const getChartData = async (
     stat: VaccineStat,
     option: Record<VaccineOption, string>
-  ): Promise<ChartVisualizerData> => {
+  ): Promise<Array<ChartVisualizerData>> => {
     let dataSet: ChartData[] = [];
 
-    const type = option?.type as ChartTypeOption;
-    const range = option?.range as ChartRangeOption;
+    const type = option?.type as ChartTypeOptionValue;
+    const range = option?.range as ChartRangeOptionValue;
 
     const xAxis = getDefaultChartXAxis({ type, range });
     const yAxis = getDefaultChartYAxis(
@@ -103,7 +104,10 @@ const VaccineChart: React.FC = () => {
     );
 
     if (stat === "all") {
-      const data = await getCachedChartData("first-and-second", range);
+      const data = await getCachedChartData({
+        stat: ["first-and-second"],
+        range,
+      });
 
       dataSet = [
         {
@@ -155,18 +159,20 @@ const VaccineChart: React.FC = () => {
         },
       ];
     } else {
-      const data = await getCachedChartData(stat, range);
+      const data = await getCachedChartData({ stat: [stat], range });
       dataSet = [{ data, config: getDefaultChartConfig({ type, range }) }];
     }
 
-    return {
-      dataSet: dataSet.map(({ data, config }) => ({
-        config,
-        data: transformChartData(data, type, range),
-      })),
-      xAxis,
-      yAxis,
-    };
+    return [
+      {
+        dataSet: dataSet.map(({ data, config }) => ({
+          config,
+          data: transformChartData(data, { type, range }),
+        })),
+        xAxis,
+        yAxis,
+      },
+    ];
   };
 
   return (
