@@ -1,4 +1,3 @@
-import { darkTheme } from "@styles/themes/dark-theme";
 import React, {
   createContext,
   useEffect,
@@ -6,6 +5,8 @@ import React, {
   useContext,
   useCallback,
 } from "react";
+
+import { darkTheme } from "@styles/themes/dark-theme";
 
 const COLOR_MODE_KEY = "color-mode";
 

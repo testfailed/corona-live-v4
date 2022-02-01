@@ -1,5 +1,6 @@
 import useApi from "@hooks/useApi";
-import { SWRConfiguration, SWRResponse } from "swr";
+
+import type { SWRConfiguration, SWRResponse } from "swr";
 
 const Api = <T,>({
   api,

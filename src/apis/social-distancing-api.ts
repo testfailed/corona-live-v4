@@ -1,4 +1,4 @@
-import { SocialDistancing } from "@_types/social-distancing-type";
+import type { SocialDistancing } from "@_types/social-distancing-type";
 
 const SocialDistancingApi = {
   init: {

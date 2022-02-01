@@ -6,8 +6,9 @@ import {
   DEFAULT_ICON_SIZE,
 } from "@constants/icon-constants";
 
-import type { IconProps } from "@_types/icon-type";
 import Child from "@components/Child";
+
+import type { IconProps } from "@_types/icon-type";
 
 const Icon: React.FC<IconProps> = ({
   children,

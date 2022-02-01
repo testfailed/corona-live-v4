@@ -10,15 +10,15 @@ import { Tab, TabProps, Tabs } from "@components/Tabs";
 interface Props<T extends string> {
   values: Record<T, string>;
   onChange: (optionName: string, value: T) => void;
-  optionList: Record<T, Array<TabProps>>;
+  subOptions: Record<T, Array<TabProps>>;
 }
 
-const ChartOptionTabs = <T extends string>(props: Props<T>) => {
-  const { values, onChange, optionList } = props;
+const ChartSubOptions = <T extends string>(props: Props<T>) => {
+  const { values, onChange, subOptions } = props;
   return (
     <Row css={{ width: "100%", justifyContent: "space-between" }}>
-      {(Object.keys(optionList) as T[]).map((subOptionName) => {
-        const subOption = optionList[subOptionName];
+      {(Object.keys(subOptions) as T[]).map((subOptionName) => {
+        const subOption = subOptions[subOptionName];
         return (
           <Tabs
             {...{
@@ -90,4 +90,4 @@ const tabIndicatorCss = css({
   border: `${rem(1)} solid $chartOptionBorder`,
 });
 
-export default ChartOptionTabs;
+export default ChartSubOptions;

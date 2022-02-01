@@ -1,4 +1,4 @@
-import { WorldLive, WorldUpdates } from "@_types/world-type";
+import type { WorldLive, WorldUpdates } from "@_types/world-type";
 
 const WorldApi = {
   live: {

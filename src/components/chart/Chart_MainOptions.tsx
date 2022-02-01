@@ -8,11 +8,11 @@ import { Tab, TabProps, Tabs } from "@components/Tabs";
 interface Props<T> {
   value: T;
   onChange: (value: T) => void;
-  statList: Array<TabProps>;
+  mainOptions: Array<TabProps>;
 }
 
-const ChartStatTabs = <T extends string>(props: Props<T>) => {
-  const { value, onChange, statList } = props;
+const ChartMainOptions = <T extends string>(props: Props<T>) => {
+  const { value, onChange, mainOptions } = props;
   return (
     <Tabs
       {...{
@@ -28,7 +28,7 @@ const ChartStatTabs = <T extends string>(props: Props<T>) => {
       tabIndicatorType="underline"
       tabIndicatorLengthType="text"
     >
-      {statList.map(({ text, value }) => (
+      {mainOptions.map(({ text, value }) => (
         <Tab key={value} value={value} text={text} />
       ))}
     </Tabs>
@@ -83,4 +83,4 @@ const tabIndicatorCss = css({
   },
 });
 
-export default ChartStatTabs;
+export default ChartMainOptions;

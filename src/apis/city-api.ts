@@ -1,4 +1,4 @@
-import { CityLive, CityStat } from "@_types/city-type";
+import type { CityLive, CityStat } from "@_types/city-type";
 
 const CityApi = {
   live: (cityId) => ({

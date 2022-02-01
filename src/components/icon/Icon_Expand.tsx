@@ -13,7 +13,7 @@ const ExpandIcon: React.FC<IconProps> = React.memo((props) => (
       x="0"
       y="0"
       viewBox="0 0 64 64"
-      enable-Background="new 0 0 64 64"
+      enableBackground="new 0 0 64 64"
     >
       <line
         fill="none"

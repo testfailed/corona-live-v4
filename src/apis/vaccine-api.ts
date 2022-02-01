@@ -1,4 +1,4 @@
-import { VaccineInfo, VaccineStat } from "@_types/vaccine-type";
+import type { VaccineInfo, VaccineStat } from "@_types/vaccine-type";
 
 const VaccinApi = {
   stat: {
