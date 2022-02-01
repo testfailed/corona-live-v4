@@ -4,7 +4,11 @@ import EnvironmentPlugin from "vite-plugin-environment";
 import tsconfigPaths from "vite-tsconfig-paths";
 
 export default defineConfig({
-  plugins: [react(), tsconfigPaths(), EnvironmentPlugin(["API_URL"])],
+  plugins: [
+    react(),
+    tsconfigPaths(),
+    EnvironmentPlugin(["API_URL", "SENTRY_DSN"]),
+  ],
   resolve: {
     alias: {},
   },

@@ -1,6 +1,8 @@
 import React, { lazy, Suspense, useEffect } from "react";
 
 import axios from "axios";
+import * as Sentry from "@sentry/react";
+import { BrowserTracing } from "@sentry/tracing";
 import { Switch, Redirect, Route, useLocation } from "react-router-dom";
 
 import {
@@ -69,6 +71,12 @@ const globalStyles = globalCss({
   body: { color: "$gray900" },
 });
 
+Sentry.init({
+  dsn: process.env.SENTRY_DSN,
+  integrations: [new BrowserTracing()],
+  tracesSampleRate: 1.0,
+});
+
 const App: React.FC = () => {
   globalStyles();
   const location = useLocation();
@@ -106,7 +114,7 @@ const App: React.FC = () => {
 
       <NotificationModal />
       <AnnouncementModal />
-      {/* <ConfirmedCasesModal /> */}
+      <ConfirmedCasesModal />
       <SamsungDarkModeAlertModal />
 
       <MutationHandler />
