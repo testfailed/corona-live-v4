@@ -13,12 +13,12 @@ const ExpandIcon: React.FC<IconProps> = React.memo((props) => (
       x="0"
       y="0"
       viewBox="0 0 64 64"
-      enable-background="new 0 0 64 64"
+      enable-Background="new 0 0 64 64"
     >
       <line
         fill="none"
-        stroke-width="6"
-        stroke-miterlimit="10"
+        strokeWidth="6"
+        strokeMiterlimit="10"
         x1="64"
         y1="21"
         x2="0"
@@ -26,8 +26,8 @@ const ExpandIcon: React.FC<IconProps> = React.memo((props) => (
       />
       <line
         fill="none"
-        stroke-width="6"
-        stroke-miterlimit="10"
+        strokeWidth="6"
+        strokeMiterlimit="10"
         x1="0"
         y1="43"
         x2="64"
@@ -35,16 +35,16 @@ const ExpandIcon: React.FC<IconProps> = React.memo((props) => (
       />
       <polyline
         fill="none"
-        stroke-width="6"
-        stroke-linejoin="bevel"
-        stroke-miterlimit="10"
+        strokeWidth="6"
+        strokeLinejoin="bevel"
+        strokeMiterlimit="10"
         points="39,8 32,1 25,8 
 	"
       />
       <line
         fill="none"
-        stroke-width="6"
-        stroke-miterlimit="10"
+        strokeWidth="6"
+        strokeMiterlimit="10"
         x1="32"
         y1="1"
         x2="32"
@@ -52,16 +52,16 @@ const ExpandIcon: React.FC<IconProps> = React.memo((props) => (
       />
       <polyline
         fill="none"
-        stroke-width="6"
-        stroke-linejoin="bevel"
-        stroke-miterlimit="10"
+        strokeWidth="6"
+        strokeLinejoin="bevel"
+        strokeMiterlimit="10"
         points="25,56 32,63 
 	39,56 "
       />
       <line
         fill="none"
-        stroke-width="6"
-        stroke-miterlimit="10"
+        strokeWidth="6"
+        strokeMiterlimit="10"
         x1="32"
         y1="63"
         x2="32"

@@ -13,12 +13,12 @@ const ShrinkIcon: React.FC<IconProps> = React.memo((props) => (
       x="0"
       y="0"
       viewBox="0 0 64 64"
-      enable-background="new 0 0 64 64"
+      enableBackground="new 0 0 64 64"
     >
       <line
         fill="none"
-        stroke-width="6"
-        stroke-miterlimit="10"
+        strokeWidth="6"
+        strokeMiterlimit="10"
         x1="64"
         y1="5"
         x2="0"
@@ -26,8 +26,8 @@ const ShrinkIcon: React.FC<IconProps> = React.memo((props) => (
       />
       <line
         fill="none"
-        stroke-width="6"
-        stroke-miterlimit="10"
+        strokeWidth="6"
+        strokeMiterlimit="10"
         x1="64"
         y1="59"
         x2="0"
@@ -35,16 +35,16 @@ const ShrinkIcon: React.FC<IconProps> = React.memo((props) => (
       />
       <polyline
         fill="none"
-        stroke-width="6"
-        stroke-linejoin="bevel"
-        stroke-miterlimit="10"
+        strokeWidth="6"
+        strokeLinejoin="bevel"
+        strokeMiterlimit="10"
         points="25,19 32,26 
 	39,19 "
       />
       <line
         fill="none"
-        stroke-width="6"
-        stroke-miterlimit="10"
+        strokeWidth="6"
+        strokeMiterlimit="10"
         x1="32"
         y1="26"
         x2="32"
@@ -52,16 +52,16 @@ const ShrinkIcon: React.FC<IconProps> = React.memo((props) => (
       />
       <polyline
         fill="none"
-        stroke-width="6"
-        stroke-linejoin="bevel"
-        stroke-miterlimit="10"
+        strokeWidth="6"
+        strokeLinejoin="bevel"
+        strokeMiterlimit="10"
         points="39,45 32,38 
 	25,45 "
       />
       <line
         fill="none"
-        stroke-width="6"
-        stroke-miterlimit="10"
+        strokeWidth="6"
+        strokeMiterlimit="10"
         x1="32"
         y1="38"
         x2="32"
