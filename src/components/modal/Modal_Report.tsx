@@ -168,7 +168,7 @@ const InputWrapper = styled("div", {
 
 const Input = styled("input", {
   body1: true,
-  height: rem(40),
+  height: rem(46),
   border: "none",
   borderBottom: `${rem(1)} solid $sectionBorder`,
   background: "transparent",
@@ -188,7 +188,7 @@ const Input = styled("input", {
   },
 
   "@md": {
-    height: rem(42),
+    height: rem(48),
     body1: true,
   },
 });
