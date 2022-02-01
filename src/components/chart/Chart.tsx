@@ -4,7 +4,12 @@ import { rem } from "polished";
 import { Presence } from "@radix-ui/react-presence";
 
 import { styled, theme } from "@styles/stitches.config";
-import { fadeIn, fadeOut } from "@styles/animations/fade-animation";
+import {
+  fadeIn,
+  fadeInUp,
+  fadeOut,
+  fadeScaleIn,
+} from "@styles/animations/fade-animation";
 import { chartRangeOptions, chartTypeOptions } from "@utils/chart-util";
 import { formatObjectValues, removeNullFromObject } from "@utils/object-util";
 
@@ -22,7 +27,6 @@ import Loader from "@components/Loader";
 import Section from "@components/Section";
 import Skeleton from "@components/Skeleton";
 import { TabProps } from "@components/Tabs";
-import ShrinkIcon from "@components/icon/Icon_Shrink";
 import ExpandIcon from "@components/icon/Icon_Expand";
 
 import type { ChartMode } from "@_types/chart-type";
@@ -412,22 +416,16 @@ const Chart = <MainOption extends string, SubOption extends string>(
           </Row>
           {enableExpandMode && (
             <ChartModeButton onClick={toggleChartMode}>
-              {mode === "EXPANDED" && (
-                <ShrinkIcon stroke={theme.colors.gray900} />
-              )}
-              {mode === "DEFAULT" && (
-                <ExpandIcon stroke={theme.colors.gray900} />
-              )}
+              {/* <ShrinkIcon stroke={theme.colors.gray900} /> */}
+
+              <ExpandIcon
+                stroke={theme.colors.gray900}
+                expanded={_mode === "EXPANDED"}
+              />
             </ChartModeButton>
           )}
         </Heading>
-
-        <Container
-          key={mode}
-          css={{
-            animation: `${fadeIn} 700ms`,
-          }}
-        >
+        <Container>
           {mode === "DEFAULT" && (
             <>
               <Space h={{ _: 12, md: 16 }} />
@@ -436,24 +434,35 @@ const Chart = <MainOption extends string, SubOption extends string>(
                 onChange={onOptionChange}
                 subOptions={subOptions}
               />
-              <ChartVisualizer
-                {...chartData[0]}
-                {...{ mode, selectedX, setSelectedX }}
-              />
             </>
           )}
-          {mode === "EXPANDED" &&
-            chartData.map((chartData, index) => (
-              <ChartVisualizer
-                key={index}
-                {...chartData}
-                {...{
-                  mode,
-                  selectedX,
-                  setSelectedX,
-                }}
-              />
-            ))}
+          <div
+            key={mode}
+            style={{
+              animation: `${fadeIn} 500ms ease 0s`,
+            }}
+          >
+            {mode === "DEFAULT" && (
+              <>
+                <ChartVisualizer
+                  {...chartData[0]}
+                  {...{ mode, selectedX, setSelectedX }}
+                />
+              </>
+            )}
+            {mode === "EXPANDED" &&
+              chartData.map((chartData, index) => (
+                <ChartVisualizer
+                  key={index}
+                  {...chartData}
+                  {...{
+                    mode,
+                    selectedX,
+                    setSelectedX,
+                  }}
+                />
+              ))}
+          </div>
         </Container>
       </Content>
     </Wrapper>
@@ -462,7 +471,7 @@ const Chart = <MainOption extends string, SubOption extends string>(
 
 const Wrapper = styled("div", {
   position: "relative",
-  transition: "300ms",
+  transition: "300ms ease 0s",
 });
 
 const Content = styled("div", {});
