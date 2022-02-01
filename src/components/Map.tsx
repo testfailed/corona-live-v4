@@ -88,7 +88,7 @@ const Map: React.FC<Props> = ({ data }) => {
           enter
             .append("path")
             .attr("d", path)
-            .attr("stroke-width", 1)
+            .attr("strokeWidth", 1)
             .attr("stroke-opacity", 0.5)
             .attr("fill", (d) => {
               const cityId = d.properties.code;
@@ -188,7 +188,7 @@ export const MapSkeleton: React.FC = () => {
         enter
           .append("path")
           .attr("d", path)
-          .attr("stroke-width", 1)
+          .attr("strokeWidth", 1)
           .attr("stroke-opacity", 1)
           .attr("stroke", theme.colors.mapStroke.computedValue)
           .attr("fill", theme.colors.gray100)

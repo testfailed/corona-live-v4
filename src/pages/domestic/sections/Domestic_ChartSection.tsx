@@ -152,8 +152,15 @@ const DomesticChartSection: React.FC = () => {
 
     if (mode === "EXPANDED") {
       const data = await getCachedChartData({
-        stat: "all",
-        range: "threeMonths",
+        stat: [
+          "confirmed",
+          "deceased",
+          "confirmed-severe-symptoms",
+          "tested-positive-rates",
+          "tested",
+        ] as Array<DomesticStat>,
+        apiName: "all",
+        range: "oneMonth",
         isCompressed: true,
         isSingle: false,
       });
@@ -220,7 +227,7 @@ const DomesticChartSection: React.FC = () => {
         ];
       } else {
         const data = await getCachedChartData({
-          stat,
+          stat: [stat],
           range: option.range,
           isCompressed: option.range === "all",
         });

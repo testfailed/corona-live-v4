@@ -514,7 +514,7 @@ const ChartVisualizer: React.FC<Props> = ({
                   .append("path")
                   .attr("class", `area-${i}`)
                   .attr("stroke", lineColor)
-                  .attr("stroke-width", lineThickness)
+                  .attr("strokeWidth", lineThickness)
                   .attr("clip-path", `url(#maskClipPath)`)
                   .attr("d", (a) => {
                     return (
@@ -648,7 +648,7 @@ const ChartVisualizer: React.FC<Props> = ({
                 .attr("fill", pointColor)
                 .attr("r", showPoints ? pointRadius : 4)
                 .attr("stroke", theme.colors[`${color}A050`])
-                .attr("stroke-width", showPoints ? pointRadius * 3 : 10)
+                .attr("strokeWidth", showPoints ? pointRadius * 3 : 10)
                 .attr("opacity", (x) => (x === selectedX ? 1 : 0))
 
                 .attr("cx", (x) => xScale(xParser(x)))

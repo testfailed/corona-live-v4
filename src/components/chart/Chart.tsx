@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useState } from "react";
+import React, { useEffect, useMemo, useReducer, useState } from "react";
 
 import { rem } from "polished";
 import { Presence } from "@radix-ui/react-presence";
@@ -58,70 +58,143 @@ interface Props<Stat extends string, Option extends string> {
   forceUpdate?: any;
 }
 
-const Chart = <Stat extends string, Option extends string>(
-  props: Props<Stat, Option>
-) => {
-  const { chartStatOptions, getChartData, forceUpdate } = props;
-  const stats = Object.keys(chartStatOptions) as Stat[];
+interface Store<Stat extends string, Option extends string> {
+  chartData: Array<ChartVisualizerData>;
+  mode: ChartMode;
+  isLoading: boolean;
+  selectedStat: Stat;
+  selectedOptions: Record<Option, string>;
+  optionsList: any;
+  props: Props<Stat, Option>;
+}
 
-  const [chartData, setChartData] = useState<Array<ChartVisualizerData>>([]);
-  const [mode, setMode] = useState<ChartMode>("DEFAULT");
-  const [selectedX, setSelectedX] = useState<string>(null);
-  const [isLoading, setIsLoading] = useDebounceState(false);
-
-  const [selectedStat, setSelectedStat] = useState<Stat>(stats[0]);
-  const [selectedOptions, setSelectedOptions] = useState<
-    Record<Option, string>
-  >(() => getInitialSelectedOptions(chartStatOptions));
-
-  const statList = useMemo(() => {
-    return stats.map((stat) => ({
-      value: stat,
-      text: chartStatOptions[stat].label,
-    })) as Array<TabProps>;
-  }, [chartStatOptions]);
-
-  const getOptionsList = (selectedOptions) => {
-    const transformOptionsList = (options) => {
-      return formatObjectValues(
-        removeNullFromObject(options),
-        (optionValuesObj) => {
-          return Object.keys(optionValuesObj).map((optionValue) => ({
-            value: optionValue,
-            text: optionValuesObj[optionValue].label,
-            disabled: !!optionValuesObj[optionValue].disabled,
-          })) as Array<TabProps>;
-        }
-      ) as Record<Option, Array<TabProps>>;
-    };
-
-    if (mode === "EXPANDED") {
-      return transformOptionsList({
-        type: chartTypeOptions({ omit: ["accumulated", "live", "monthly"] }),
-        range: chartRangeOptions({ omit: ["all"] }),
-      });
+type Action<Stat extends string, Option extends string> =
+  | {
+      type: "SET_CHART_DATA";
+      payload: { chartData: Array<ChartVisualizerData> };
     }
+  | { type: "FETCH_CHART_DATA" }
+  | { type: "TOGGLE_MODE" }
+  | { type: "UPDATE_OPTIONS_LIST" }
+  | { type: "UPDATE_SELECTED_OPTIONS" }
+  | { type: "CHANGE_OPTION"; payload: { optionName: string; value: Option } }
+  | { type: "CHANGE_STAT"; payload: { value: Stat } };
 
-    const { options: _options } = chartStatOptions[selectedStat];
-    const options = _options;
-    const overrideOptionsIf = chartStatOptions[selectedStat]?.overrideOptionsIf;
+const getOptionsList = <Stat extends string, Option extends string>(
+  state: Store<Stat, Option>,
+  selectedOptions,
+  mode?: ChartMode
+) => {
+  const { props, selectedStat } = state;
+  const { chartStatOptions } = props;
 
-    const overriddenOptions = {
-      ...options,
-      ...(overrideOptionsIf.find(({ options, equal = true, ...conditions }) => {
-        return Object.keys(conditions).every((optionName) => {
-          return (
-            (conditions[optionName] === selectedOptions[optionName]) === equal
-          );
-        });
-      })?.options ?? {}),
-    };
-
-    return transformOptionsList(overriddenOptions);
+  const transformOptionsList = (options) => {
+    return formatObjectValues(
+      removeNullFromObject(options),
+      (optionValuesObj) => {
+        return Object.keys(optionValuesObj).map((optionValue) => ({
+          value: optionValue,
+          text: optionValuesObj[optionValue].label,
+          disabled: !!optionValuesObj[optionValue].disabled,
+        })) as Array<TabProps>;
+      }
+    ) as Record<Option, Array<TabProps>>;
   };
 
-  const getSelectedOptions = (prevSelectedOptions) => {
-    const newOptionsList = getOptionsList(prevSelectedOptions);
+  if ((mode ?? state?.mode) === "EXPANDED") {
+    return transformOptionsList({
+      type: chartTypeOptions({ omit: ["accumulated", "live", "monthly"] }),
+      range: chartRangeOptions({ omit: ["all"] }),
+    });
+  }
+
+  const { options: _options } = chartStatOptions[selectedStat];
+  const options = _options;
+  const overrideOptionsIf = chartStatOptions[selectedStat]?.overrideOptionsIf;
+
+  const overriddenOptions = {
+    ...options,
+    ...(overrideOptionsIf.find(({ options, equal = true, ...conditions }) => {
+      return Object.keys(conditions).every((optionName) => {
+        return (
+          (conditions[optionName] === selectedOptions[optionName]) === equal
+        );
+      });
+    })?.options ?? {}),
+  };
+
+  return transformOptionsList(overriddenOptions);
+};
+
+const reducer = <Stat extends string, Option extends string>(
+  state: Store<Stat, Option>,
+  action: Action<Stat, Option>
+): Store<Stat, Option> => {
+  switch (action.type) {
+    case "SET_CHART_DATA":
+      return {
+        ...state,
+        chartData: action.payload.chartData,
+        isLoading: false,
+      };
+
+    case "FETCH_CHART_DATA":
+      return { ...state, isLoading: true };
+
+    case "TOGGLE_MODE":
+      const newMode = state.mode === "DEFAULT" ? "EXPANDED" : "DEFAULT";
+
+      const newSelectedOption = {
+        type: "daily",
+        range: "oneMonth",
+      };
+
+      return {
+        ...state,
+        mode: newMode,
+        optionsList: getOptionsList(
+          state,
+          newMode === "EXPANDED" ? newSelectedOption : state.selectedOptions,
+          newMode
+        ),
+        selectedOptions:
+          newMode === "EXPANDED"
+            ? (newSelectedOption as any)
+            : state.selectedOptions,
+      };
+
+    case "UPDATE_OPTIONS_LIST":
+      return {
+        ...state,
+        optionsList: getOptionsList(state, state.selectedOptions),
+      };
+
+    case "UPDATE_SELECTED_OPTIONS":
+      return {
+        ...state,
+        selectedOptions: getSelectedOptions(state.selectedOptions),
+      };
+
+    case "CHANGE_OPTION":
+      return {
+        ...state,
+        selectedOptions: getSelectedOptions({
+          ...state.selectedOptions,
+          [action.payload.optionName]: action.payload.value,
+        }),
+      };
+
+    case "CHANGE_STAT":
+      return { ...state, selectedStat: action.payload.value as any };
+
+    default:
+      throw new Error();
+  }
+
+  function getSelectedOptions(prevSelectedOptions) {
+    const { selectedStat, props } = state;
+    const { chartStatOptions } = props;
+    const newOptionsList = getOptionsList(state, prevSelectedOptions);
 
     return formatObjectValues(newOptionsList, (_, optionName) => {
       const options = newOptionsList[optionName];
@@ -174,58 +247,86 @@ const Chart = <Stat extends string, Option extends string>(
         );
       }
     }) as Record<Option, string>;
+  }
+};
+
+const init = <Stat extends string, Option extends string>(
+  props: Props<Stat, Option>
+): Store<Stat, Option> => {
+  const { chartStatOptions } = props;
+  const stats = Object.keys(chartStatOptions) as Stat[];
+  const selectedOptions = getInitialSelectedOptions(chartStatOptions);
+
+  const state: Store<Stat, Option> = {
+    chartData: [],
+    mode: "DEFAULT",
+    isLoading: false,
+    selectedStat: stats[0],
+    selectedOptions,
+    props,
+    optionsList: [],
   };
 
-  const [optionsList, setOptionsList] = useState(() =>
-    getOptionsList(selectedOptions)
-  );
+  return { ...state, optionsList: getOptionsList(state, selectedOptions) };
+};
 
-  useUpdateEffect(() => {
-    if (mode === "EXPANDED") {
-      const newSelectedOption = {
-        type: "daily",
-        range: "oneMonth",
-      };
-      setSelectedOptions(newSelectedOption as any);
-      setOptionsList(getOptionsList(newSelectedOption));
-    } else {
-      setOptionsList(getOptionsList(selectedOptions));
-    }
-  }, [mode]);
+const Chart = <Stat extends string, Option extends string>(
+  props: Props<Stat, Option>
+) => {
+  const { chartStatOptions, getChartData, forceUpdate } = props;
+
+  const [
+    { chartData, optionsList, selectedOptions, selectedStat, mode },
+    dispatch,
+  ] = useReducer(reducer, null, () => init<Stat, Option>(props) as any);
+
+  const stats = Object.keys(chartStatOptions) as Stat[];
+
+  const [selectedX, setSelectedX] = useState<string>(null);
+  const [isLoading, setIsLoading] = useDebounceState(false);
+
+  const statList = useMemo(() => {
+    return stats.map((stat) => ({
+      value: stat,
+      text: chartStatOptions[stat].label,
+    })) as Array<TabProps>;
+  }, [chartStatOptions]);
 
   useEffect(() => {
-    setOptionsList(getOptionsList(selectedOptions));
+    dispatch({ type: "UPDATE_OPTIONS_LIST" });
   }, [selectedStat, selectedOptions]);
 
   useEffect(() => {
-    setSelectedOptions((prevSelectedOptions) =>
-      getSelectedOptions(prevSelectedOptions)
-    );
+    dispatch({ type: "UPDATE_SELECTED_OPTIONS" });
   }, [selectedStat]);
 
   useUpdateEffect(() => {
-    if (!isLoading || !!forceUpdate) {
+    if (isLoading === false || forceUpdate) {
       setIsLoading(true);
-      getChartData(selectedStat, selectedOptions, mode).then((chartData) => {
-        if (chartData) {
-          setChartData([].concat(chartData));
-          setIsLoading(false);
+      getChartData(selectedStat as any, selectedOptions, mode).then(
+        (chartData) => {
+          if (chartData) {
+            dispatch({
+              type: "SET_CHART_DATA",
+              payload: { chartData: [].concat(chartData) },
+            });
+            setIsLoading(false);
+          }
         }
-      });
+      );
     }
-  }, [selectedStat, selectedOptions, forceUpdate]);
+  }, [selectedStat, selectedOptions, forceUpdate, mode]);
 
   const onOptionChange = (optionName: string, value: Option) => {
-    setSelectedOptions((prevSelectedOptions) =>
-      getSelectedOptions({
-        ...prevSelectedOptions,
-        [optionName]: value,
-      })
-    );
+    dispatch({ type: "CHANGE_OPTION", payload: { optionName, value } });
+  };
+
+  const onStatChange = (value: Stat) => {
+    dispatch({ type: "CHANGE_STAT", payload: { value } });
   };
 
   const toggleChartMode = () => {
-    setMode((prev) => (prev === "DEFAULT" ? "EXPANDED" : "DEFAULT"));
+    dispatch({ type: "TOGGLE_MODE" });
   };
 
   return (
@@ -240,8 +341,8 @@ const Chart = <Stat extends string, Option extends string>(
         <Row css={{ flex: 1 }}>
           {mode === "DEFAULT" && (
             <ChartStatTabs
-              value={selectedStat}
-              onChange={setSelectedStat}
+              value={selectedStat as any}
+              onChange={onStatChange}
               statList={statList}
             />
           )}

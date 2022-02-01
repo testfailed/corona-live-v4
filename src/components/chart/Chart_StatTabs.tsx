@@ -7,7 +7,7 @@ import { Tab, TabProps, Tabs } from "@components/Tabs";
 
 interface Props<T> {
   value: T;
-  onChange: React.Dispatch<React.SetStateAction<T>>;
+  onChange: (value: T) => void;
   statList: Array<TabProps>;
 }
 
