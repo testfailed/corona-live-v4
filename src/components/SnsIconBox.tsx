@@ -57,11 +57,11 @@ export const LinkIconBox: React.FC = () => {
       <IconBox css={{ background: "$gray300" }}>
         {copied ? (
           <IconContainer key={"copied"}>
-            <CheckIcon size={18} fill={theme.colors.gray600} />
+            <CheckIcon size={18} />
           </IconContainer>
         ) : (
           <IconContainer key={"not-copied"}>
-            <LinkIcon size={14} fill={theme.colors.gray600} />
+            <LinkIcon size={14} />
           </IconContainer>
         )}
       </IconBox>
@@ -81,11 +81,11 @@ export const EmailIconBox: React.FC = () => {
       <IconBox css={{ background: "$gray300" }}>
         {copied ? (
           <IconContainer key={"copied"}>
-            <CheckIcon size={18} fill={theme.colors.gray600} />
+            <CheckIcon size={18} />
           </IconContainer>
         ) : (
           <IconContainer key={"not-copied"}>
-            <EmailIcon size={18} fill={theme.colors.gray800} />
+            <EmailIcon size={18} />
           </IconContainer>
         )}
       </IconBox>
@@ -104,6 +104,6 @@ export const InstagramIconBox: React.FC = () => (
     href={INSTA_SNS_URL}
     target="_blank"
   >
-    <InstagramIcon size={14} fill={theme.colors.pink500} />
+    <InstagramIcon size={14} />
   </IconBox>
 );

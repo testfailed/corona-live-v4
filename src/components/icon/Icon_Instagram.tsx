@@ -6,7 +6,7 @@ import type { IconProps } from "@_types/icon-type";
 import { theme } from "@styles/stitches.config";
 
 const InstagramIcon: React.FC<IconProps> = React.memo((props) => (
-  <Icon {...props}>
+  <Icon {...props} fill={theme.colors.pink500.computedValue}>
     <svg
       height="511pt"
       viewBox="0 0 511 511.9"
