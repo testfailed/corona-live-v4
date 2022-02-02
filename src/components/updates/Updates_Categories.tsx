@@ -1,7 +1,11 @@
 import React, { useMemo } from "react";
 
-import { styled, theme } from "@styles/stitches.config";
 import { rem } from "polished";
+
+import { styled } from "@styles/stitches.config";
+import { createEmptyArray } from "@utils/array-util";
+
+import Skeleton from "@components/Skeleton";
 
 export interface UpdatesCategory {
   text: string;
@@ -38,6 +42,16 @@ const UpdatesCategories: React.FC<Props> = ({
             <CategoryCount>{category.count}</CategoryCount>
           )}
         </Category>
+      ))}
+    </Wrapper>
+  );
+};
+
+export const UpdatesCategoriesSkeleton: React.FC = () => {
+  return (
+    <Wrapper>
+      {createEmptyArray(10).map(() => (
+        <Skeleton w={62} h={30} marginBottom={8} marginRight={6} />
       ))}
     </Wrapper>
   );

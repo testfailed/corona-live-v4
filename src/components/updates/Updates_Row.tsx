@@ -31,10 +31,13 @@ const UpdatesRow: React.FC<Props> = ({ type, date, update, fadeInUp }) => {
 
 export const UpdateRowSkeleton: React.FC<{ type?: "preview" }> = ({ type }) => {
   return (
-    <Wrapper preview={type === "preview"}>
+    <Wrapper
+      preview={type === "preview"}
+      css={{ height: type === "preview" ? "auto" : rem(50) }}
+    >
       <Skeleton w={64} h={18} />
       <Skeleton w={150} h={18} />
-      <Skeleton w={24} h={24} />
+      {type === "preview" && <Skeleton w={24} h={24} />}
     </Wrapper>
   );
 };

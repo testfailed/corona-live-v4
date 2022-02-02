@@ -40,7 +40,7 @@ const WorldLiveSection: React.FC = () => {
         currentValue={data.live.today}
         comparedValues={comparedValues}
         updates={updates}
-        updatesModalTrigger={WorldLiveUpdatesModalTrigger}
+        updatesModalTrigger={<WorldLiveUpdatesModalTrigger />}
       />
     </Section>
   );

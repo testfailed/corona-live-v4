@@ -3,9 +3,14 @@ import React, { useMemo, useState } from "react";
 import { styled } from "@styles/stitches.config";
 
 import UpdatesCategories, {
+  UpdatesCategoriesSkeleton,
   UpdatesCategory,
 } from "@components/updates/Updates_Categories";
-import UpdatesRow, { UpdateRow } from "@components/updates/Updates_Row";
+import UpdatesRow, {
+  UpdateRow,
+  UpdateRowSkeleton,
+} from "@components/updates/Updates_Row";
+import { createEmptyArray } from "@utils/array-util";
 
 interface Props {
   updates: Array<UpdateRow>;
@@ -40,6 +45,21 @@ const UpdatesContent: React.FC<Props> = ({ updates, categories }) => {
           ))}
         </Container>
       )}
+    </Wrapper>
+  );
+};
+
+export const UpdatesContentSkeleton: React.FC<{
+  hasCategories?: boolean;
+}> = (props) => {
+  return (
+    <Wrapper>
+      {props.hasCategories && <UpdatesCategoriesSkeleton />}
+      <Container>
+        {createEmptyArray(20).map(() => (
+          <UpdateRowSkeleton />
+        ))}
+      </Container>
     </Wrapper>
   );
 };

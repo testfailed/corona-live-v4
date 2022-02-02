@@ -6,6 +6,7 @@ import { css } from "@styles/stitches.config";
 
 import { Modal, ModalContent, ModalTrigger } from "@components/Modal";
 import { fadeIn } from "@styles/animations/fade-animation";
+import { styled } from "@stitches/react";
 
 const UpdatesModal: React.FC<{
   title?: string;
@@ -18,6 +19,7 @@ const UpdatesModal: React.FC<{
         showCloseButton
         className={css({
           column: true,
+          flex: 1,
 
           width: "100%",
           height: "100%",
@@ -31,11 +33,22 @@ const UpdatesModal: React.FC<{
           },
         })}
       >
-        {children}
+        <Wrapper>{children}</Wrapper>
       </ModalContent>
       <ModalTrigger>{triggerNode}</ModalTrigger>
     </Modal>
   );
 };
+
+const Wrapper = styled("div", {
+  column: true,
+  position: "relative",
+  overflowY: "hidden",
+  flex: 1,
+
+  "& > div": {
+    height: "100%",
+  },
+});
 
 export default UpdatesModal;
