@@ -3,7 +3,7 @@ import { useCallback, useEffect, useMemo, useRef } from "react";
 import axios from "axios";
 import create from "zustand";
 
-import { isInTimeRange } from "@utils/date-util";
+import { dayjs, isInTimeRange } from "@utils/date-util";
 import {
   getChartRangeLength,
   getChartRangeSlug,
@@ -26,7 +26,7 @@ const useStore = create<State>((set) => ({
 
 const fetcher = (url: string): any =>
   axios
-    .get(`${url}.json?timestamp=${new Date().getTime()}`)
+    .get(`${url}.json?timestamp=${dayjs().unix()}`)
     .then(async ({ data }) => {
       return data;
     });
@@ -85,12 +85,6 @@ const useCachedChartData = (slug: string) => {
       const isNotCached = () => {
         return stat.some((k) => !cachedData[k]);
       };
-      const shouldInvalidateCache = () => {
-        return (
-          isInTimeRange("09:30:00", "11:00:00") &&
-          stat.includes("confirmed") === true
-        );
-      };
 
       const requireLargerDataset = () => {
         return stat.every((k) => {
@@ -99,7 +93,7 @@ const useCachedChartData = (slug: string) => {
         });
       };
 
-      if (isNotCached() || shouldInvalidateCache()) {
+      if (isNotCached()) {
         await cacheData();
       } else {
         if (requireLargerDataset()) {

@@ -3,20 +3,26 @@ import {
   ChartData,
   ChartVisualizerData,
 } from "@components/chart/Chart_Visualizer";
+
 import { theme } from "@styles/stitches.config";
+
+import { formatObjectValues } from "./object-util";
+import { koreanNumberFormat, numberWithCommas } from "./number-util";
 import {
+  dayjs,
+  generateDatesBetweenTwoDates,
+  getDaysInMonth,
+} from "./date-util";
+
+import {
+  OptionValue,
   ChartCondition,
   ChartStatOptions,
-  ChartDefaultOption,
   ChartRangeOptionValue,
   ChartTypeOptionValue,
-  OptionValue,
   ChartDefaultOptionKey,
 } from "@_types/chart-type";
-import dayjs, { Dayjs } from "dayjs";
-import { generateDatesBetweenTwoDates, getDaysInMonth } from "./date-util";
-import { koreanNumberFormat, numberWithCommas } from "./number-util";
-import { formatObjectValues } from "./object-util";
+import type { Dayjs } from "dayjs";
 
 export const chartTypeOptions = (config?: {
   omit?: Array<ChartTypeOptionValue>;
@@ -248,7 +254,6 @@ export const getDefaultChartXAxis = (
           return `${_value.month() + 1}월`;
         default:
           return dayjs(value).format("MM.DD");
-        // return dayjs(value).subtract(1, "day").format("MM/DD");
       }
     },
     tooltipFormat: (value) => {
@@ -271,7 +276,6 @@ export const getDefaultChartXAxis = (
           return `${_value.year()}년 ${_value.month() + 1}월`;
 
         case "daily":
-          // const day = "일월화수목금토"[dayjs(value).subtract(1, "day").day()];
           const day = "일월화수목금토"[dayjs(value).day()];
 
           return `${dayjs(value)
@@ -280,7 +284,6 @@ export const getDefaultChartXAxis = (
 
         default:
           return dayjs(value).format("YYYY.MM.DD");
-        // return dayjs(value).subtract(1, "day").format("YYYY-MM-DD");
       }
     },
     scaleType: type === "live" ? "linear" : "date",
@@ -381,7 +384,7 @@ export const transformChartData = (
 
       return formatObjectValues(
         timeperiods.reduce((obj, date) => {
-          const day = new Date(date).getDay();
+          const day = dayjs(date).day();
           if (day === 0) currentDate = date;
 
           if (currentDate !== undefined) {

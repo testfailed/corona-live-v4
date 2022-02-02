@@ -1,24 +1,27 @@
-import { darkTheme } from "@styles/themes/dark-theme";
-import dayjs from "dayjs";
+import _dayjs, { Dayjs } from "dayjs";
 
 const SECOND = 1000;
 const MINUTE = SECOND * 60;
 const HOUR = MINUTE * 60;
 const DAY = HOUR * 24;
 
-export const getDateDistance = (date: string) => {
-  const now = new Date();
-  const past = new Date(date);
-  const diffTime = Math.abs(now.getTime() - past.getTime());
+export const dayjs = (date?: string | number | Date | Dayjs): Dayjs => {
+  return _dayjs.tz(date ?? _dayjs());
+};
 
-  if (diffTime < MINUTE) {
-    return `${Math.floor(diffTime / SECOND)}초 전`;
-  } else if (diffTime < HOUR) {
-    return `${Math.floor(diffTime / MINUTE)}분 전`;
-  } else if (diffTime < DAY) {
-    return `${Math.floor(diffTime / HOUR)}시간 전`;
+export const getDateDistance = (date: string) => {
+  const now = dayjs();
+  const past = dayjs(date);
+  const diff = now.diff(past, "millisecond");
+
+  if (diff < MINUTE) {
+    return `${Math.floor(diff / SECOND)}초 전`;
+  } else if (diff < HOUR) {
+    return `${Math.floor(diff / MINUTE)}분 전`;
+  } else if (diff < DAY) {
+    return `${Math.floor(diff / HOUR)}시간 전`;
   } else {
-    return `${Math.floor(diffTime / DAY)}일 전`;
+    return `${Math.floor(diff / DAY)}일 전`;
   }
 };
 
@@ -29,7 +32,8 @@ export const getDaysInMonth = (year: number, month: number, day?: number) => {
   if (cacheId in getDaysInMonthCache) {
     return getDaysInMonthCache[cacheId];
   } else {
-    const daysInMonth = new Date(year, month, day ?? 0).getDate();
+    const daysInMonth = dayjs(`${year}-${month}-${day ?? 0}`).daysInMonth();
+    console.log({ daysInMonth });
     getDaysInMonthCache[cacheId] = daysInMonth;
 
     return daysInMonth;
@@ -40,12 +44,13 @@ export const addZero = (value: number) => {
   return `${value > 9 ? "" : "0"}${value}`;
 };
 
-export const isInTimeRange = (timeA, timeB) => {
-  let date = new Date();
-  let now = `${addZero(date.getHours())}:${addZero(
-    date.getMinutes()
-  )}:${addZero(date.getSeconds())}`;
+export const isInTimeRange = (timeA: string, timeB: string): boolean => {
+  const now = dayjs().format("HH:mm:ss");
   return timeA < now && timeB > now;
+};
+
+export const isNotInTimeRange = (timeA: string, timeB: string): boolean => {
+  return !isInTimeRange(timeA, timeB);
 };
 
 export const generateDatesBetweenTwoDates = (from: string, to: string) => {
@@ -53,8 +58,9 @@ export const generateDatesBetweenTwoDates = (from: string, to: string) => {
 
   let currentDate = dayjs(from);
   let stopDate = dayjs(to);
-  while (currentDate < stopDate) {
-    dates.push(currentDate.toISOString().slice(0, 10));
+
+  while (currentDate <= stopDate) {
+    dates.push(currentDate.format("YYYY-MM-DD"));
     currentDate = dayjs(currentDate).add(1, "day");
   }
 

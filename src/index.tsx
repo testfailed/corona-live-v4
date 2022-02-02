@@ -3,8 +3,15 @@ import "./index.css";
 import "@ungap/global-this";
 
 import React from "react";
+import dayjs from "dayjs";
+import utc from "dayjs/plugin/utc";
+import timezone from "dayjs/plugin/timezone";
 import { hydrate, render } from "react-dom";
 import { BrowserRouter as Router } from "react-router-dom";
+
+dayjs.extend(utc);
+dayjs.extend(timezone);
+dayjs.tz.setDefault("Asia/Seoul");
 
 import reportWebVitals from "./reportWebVitals";
 import { ThemeProvider } from "./contexts/ThemeContext";

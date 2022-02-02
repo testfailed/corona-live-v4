@@ -3,12 +3,12 @@ import React, { useEffect, useMemo, useRef, useState } from "react";
 import { rem } from "polished";
 
 import useApi from "@hooks/useApi";
-import { HOUR } from "@constants/constants";
+import { dayjs, isInTimeRange, isNotInTimeRange } from "@utils/date-util";
+import DomesticApi from "@apis/domestic-api";
 import { numberWithCommas } from "@utils/number-util";
 import { css, styled } from "@styles/stitches.config";
 
 import { Modal } from "@components/Modal";
-import DomesticApi from "@apis/domestic-api";
 import { InstagramIconBox, TwitterIconBox } from "@components/SnsIconBox";
 
 const ConfirmedCasesModal: React.FC = () => {
@@ -16,37 +16,33 @@ const ConfirmedCasesModal: React.FC = () => {
   const { data } = useApi(DomesticApi.live, { suspense: false });
 
   const skipInterval = useRef(false);
+  const intervalId = useRef<ReturnType<typeof setInterval>>();
 
   const title = useMemo(() => {
-    const date = new Date();
-    const currentDate = new Date(date.getTime() - 12 * HOUR);
-    const month = currentDate.getMonth() + 1;
-    const day = currentDate.getDate();
-
-    return `${month}월 ${day}일`;
+    const date = dayjs().subtract(12, "hour");
+    return date.format("M월 D일");
   }, []);
 
   useEffect(() => {
-    let intervalId;
     const intervalFunc = () => {
-      const currentHours = new Date().getHours();
-      if (currentHours >= 23 || currentHours < 9) {
+      console.log(1);
+      if (isInTimeRange("09:00:00", "23:00:00")) {
+        if (openModal === true) setOpenModal(false);
+      } else {
         if (openModal === false) {
           if (skipInterval.current === false) {
             setOpenModal(true);
             skipInterval.current = true;
           }
         }
-      } else {
-        if (openModal === true) setOpenModal(false);
       }
     };
 
     intervalFunc();
-    intervalId = setInterval(intervalFunc, 5000);
+    intervalId.current = setInterval(intervalFunc, 5000);
 
     return () => {
-      clearInterval(intervalId);
+      clearInterval(intervalId.current);
     };
   }, []);
 

@@ -10,6 +10,7 @@ import { Modal } from "@components/Modal";
 import LoadingText from "@components/LoadingText";
 import DropdownInput from "@components/DropdownInput";
 import { useLocalStorage } from "@hooks/useLocalStorage";
+import { dayjs } from "@utils/date-util";
 
 interface Form {
   message: string;
@@ -65,9 +66,9 @@ const ReportModalTrigger: React.FC<Props> = ({
   };
 
   const onSumbit = async (closeModal) => {
-    const now = new Date().getTime();
+    const now = dayjs();
 
-    if (now - submittedReportAt < MINUTE * 1)
+    if (now.diff(dayjs(submittedReportAt), "minute") < 5)
       return alert("제보는 5분 내에 한 번만 하실 수 있습니다");
 
     if (reportType === "report") {
@@ -91,9 +92,10 @@ const ReportModalTrigger: React.FC<Props> = ({
       },
       body: JSON.stringify({ email, content: `${cases}명 ${website}`, title }),
     });
+
     setIsLoading(false);
     setForm(initialState);
-    setSubmittedReportAt(now);
+    setSubmittedReportAt(now.unix());
     closeModal();
   };
 
