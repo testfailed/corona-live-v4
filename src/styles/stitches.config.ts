@@ -82,6 +82,9 @@ export const { styled, css, theme, createTheme, globalCss, config, keyframes } =
         donationButtonBorder: "#DCDCDC",
 
         chartOptionBorder: "transparent",
+
+        switchBackground: "rgba($gray900rgb,0.1)",
+        switchThumbBackground: "white",
       },
       shadows: {
         elevation1: `rgb(0 0 0 / 4%) 0rem ${rem(2)} ${rem(10)} 0rem`,

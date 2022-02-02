@@ -66,7 +66,7 @@ const LayoutMenu: React.FC = () => {
             <NightIcon />
             <MenuText>다크모드</MenuText>
           </Row>
-          <Switch small onClick={toggleTheme} checked={colorMode == "dark"} />
+          <Switch onClick={toggleTheme} checked={colorMode == "dark"} />
         </MenuThemeContainer>
 
         <ReportModalTrigger>

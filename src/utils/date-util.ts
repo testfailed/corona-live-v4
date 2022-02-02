@@ -33,7 +33,6 @@ export const getDaysInMonth = (year: number, month: number, day?: number) => {
     return getDaysInMonthCache[cacheId];
   } else {
     const daysInMonth = dayjs(`${year}-${month}-${day ?? 0}`).daysInMonth();
-    console.log({ daysInMonth });
     getDaysInMonthCache[cacheId] = daysInMonth;
 
     return daysInMonth;

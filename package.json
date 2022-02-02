@@ -5,6 +5,7 @@
   "dependencies": {
     "@radix-ui/react-dialog": "^0.1.5",
     "@radix-ui/react-presence": "^0.1.1",
+    "@radix-ui/react-switch": "^0.1.4",
     "@sentry/react": "^6.17.3",
     "@sentry/tracing": "^6.17.3",
     "@stitches/react": "^1.2.5",

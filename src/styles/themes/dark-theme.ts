@@ -79,6 +79,9 @@ export const darkTheme = createTheme("dark-theme", {
     chartOptionBorder: "#646464",
 
     donationButtonBorder: "#555555",
+
+    switchBackground: "rgba($gray900rgb,0.1)",
+    switchThumbBackground: "#C8C9CD",
   },
   shadows: {
     elevation1: `rgb(0 0 0 / 4%) 0rem ${rem(2)} ${rem(10)} 0rem`,

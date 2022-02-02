@@ -25,7 +25,6 @@ const ConfirmedCasesModal: React.FC = () => {
 
   useEffect(() => {
     const intervalFunc = () => {
-      console.log(1);
       if (isInTimeRange("09:00:00", "23:00:00")) {
         if (openModal === true) setOpenModal(false);
       } else {
