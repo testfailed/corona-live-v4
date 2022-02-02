@@ -21,7 +21,7 @@ const Layout: React.FC<Props> = ({ children, hideMobileHeader }) => {
       <Column>
         {hideMobileHeader !== true && <LayoutMobileHeader />}
         <Content>{children}</Content>
-        {/* <LayoutFooter /> */}
+        <LayoutFooter />
         <Space h={{ _: 0, md: 20 }} />
       </Column>
 

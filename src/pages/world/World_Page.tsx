@@ -2,6 +2,8 @@ import React from "react";
 
 import useApi from "@hooks/useApi";
 import WorldApi from "@apis/world-api";
+import { WEB_URL } from "@constants/constants";
+import { WORLD_PATH } from "@constants/route-constants";
 
 import Seo from "@components/Seo";
 import FadeIn from "@components/FadeIn";
@@ -12,9 +14,6 @@ import WorldStatSection from "./sections/World_StatSection";
 import WorldLiveSection from "./sections/World_LiveSection";
 import WorldChartSection from "./sections/World_ChartSection";
 import WorldCountrySection from "./sections/World_CountrySection";
-import { WORLD_PATH } from "@constants/route-constants";
-import { WEB_URL } from "@constants/constants";
-import LayoutFooter from "@components/layout/Layout_Footer";
 
 const WorldPage: React.FC = () => {
   const { data } = useApi(WorldApi.live);
@@ -33,7 +32,6 @@ const WorldPage: React.FC = () => {
           <WorldLiveSection />
           <WorldChartSection />
           <WorldCountrySection />
-          <LayoutFooter />
         </Column>
       </FadeIn>
     </>

@@ -19,7 +19,6 @@ import CityStatSection from "./sections/City_StatSection";
 import CityChartSection from "./sections/City_ChartSection";
 import CityTableSection from "./sections/City_TableSection";
 import CityTitleSection from "./sections/City_TitleSection";
-import LayoutFooter from "@components/layout/Layout_Footer";
 
 const CityPage: React.FC = () => {
   useScrollTop();
@@ -48,7 +47,6 @@ const CityPage: React.FC = () => {
           <CityLiveSection />
           <CityChartSection />
           <CityTableSection />
-          <LayoutFooter />
         </Column>
       </FadeIn>
     </>

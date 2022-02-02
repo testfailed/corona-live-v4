@@ -13,7 +13,6 @@ import DomesticChartSection from "./sections/Domestic_ChartSection";
 import Seo from "@components/Seo";
 import FadeIn from "@components/FadeIn";
 import Column from "@components/Column";
-import LayoutFooter from "@components/layout/Layout_Footer";
 
 const DomesticPage: React.FC = () => {
   const { data: live } = useApi(DomesticApi.live);
@@ -38,7 +37,6 @@ const DomesticPage: React.FC = () => {
           <DomesticLiveSection />
           <DomesticChartSection />
           <DomesticCitySection />
-          <LayoutFooter />
         </Column>
       </FadeIn>
     </>

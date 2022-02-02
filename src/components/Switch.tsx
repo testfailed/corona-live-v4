@@ -6,17 +6,24 @@ import * as RadixSwitch from "@radix-ui/react-switch";
 import { styled, theme } from "@styles/stitches.config";
 
 type Props = {
-  onClick: () => void;
+  onClick: (checked: boolean) => void;
   checked: boolean;
 };
 
-const Switch: React.FC<Props> = ({ onClick, checked, small }) => {
+const Switch: React.FC<Props> = ({ onClick, checked }) => {
   const [isTransitionEnabled, setIsTransitionEnabled] = useState(false);
 
   return (
-    <Wrapper small={small}>
-      <StyledSwitch defaultChecked checked={checked} onCheckedChange={onClick}>
-        <StyledThumb />
+    <Wrapper>
+      <StyledSwitch
+        defaultChecked
+        checked={checked}
+        onCheckedChange={(checked) => {
+          if (!isTransitionEnabled) setIsTransitionEnabled(true);
+          onClick(checked);
+        }}
+      >
+        <StyledThumb transitionEnabled={isTransitionEnabled} />
       </StyledSwitch>
     </Wrapper>
   );
@@ -47,11 +54,18 @@ const StyledThumb = styled(RadixSwitch.Thumb, {
     theme.colors.gray900rgb
   }, 0.2), 0rem 0rem 0rem ${rem(1)} rgba(${theme.colors.gray900rgb}, 0.15)`,
 
-  transition: "transform 300ms ease 0s",
   transform: "translateX(2px)",
   willChange: "transform",
 
   '&[data-state="checked"]': { transform: "translateX(20px)" },
+
+  variants: {
+    transitionEnabled: {
+      true: {
+        transition: "transform 300ms ease 0s",
+      },
+    },
+  },
 });
 
 export default Switch;
