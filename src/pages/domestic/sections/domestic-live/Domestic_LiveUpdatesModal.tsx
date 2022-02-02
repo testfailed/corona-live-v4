@@ -6,18 +6,43 @@ import {
 } from "@utils/domestic-util";
 import DomesticApi from "@apis/domestic-api";
 
+import UpdatesContent, {
+  UpdatesContentSkeleton,
+} from "@components/updates/Updates_Content";
 import Api from "@components/Api";
+import FadeIn from "@components/FadeIn";
 import UpdatesModal from "@components/updates/Updates_Modal";
-import UpdatesContent from "@components/updates/Updates_Content";
 
-const DomesticLiveUpdatesModalTrigger: React.FC = ({ children }) => {
+const DomesticLiveUpdatesModalTrigger: React.FC<{ cityId?: string }> = ({
+  children,
+  cityId,
+}) => {
   return (
     <UpdatesModal triggerNode={children}>
       <Api api={DomesticApi.updates}>
         {({ data }) => {
-          const updates = transformDomesticUpdates(data?.updates ?? []);
-          const categories = transformDomesticUpdatesCategories(updates);
-          return data ? <UpdatesContent {...{ updates, categories }} /> : <></>;
+          const rawUpdates = transformDomesticUpdates(data?.updates ?? []);
+
+          const updates =
+            cityId === undefined
+              ? rawUpdates
+              : rawUpdates.filter(
+                  ({ category }) => Number(category) === Number(cityId)
+                );
+
+          const categories =
+            cityId === undefined
+              ? transformDomesticUpdatesCategories(updates)
+              : undefined;
+
+          return (
+            <FadeIn
+              show={data?.updates !== undefined}
+              fallback={<UpdatesContentSkeleton hasCategories />}
+            >
+              <UpdatesContent {...{ updates, categories }} />
+            </FadeIn>
+          );
         }}
       </Api>
     </UpdatesModal>

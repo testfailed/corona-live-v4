@@ -90,9 +90,9 @@ export const Modal: React.FC<ModalProps> = ({
       {asChild ? (
         <ModalContent {...childrenProps}>{children}</ModalContent>
       ) : (
-        React.Children.map(children, (child) =>
-          React.cloneElement(<Child>{child}</Child>, childrenProps)
-        )
+        React.Children.map(children, (child) => (
+          <Child {...props}>{child}</Child>
+        ))
       )}
 
       <Hidden>

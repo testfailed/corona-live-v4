@@ -52,7 +52,9 @@ const CityLive: React.FC = () => {
         currentValue={data.live.today}
         comparedValues={comparedValues}
         updates={updates}
-        updatesModalTrigger={DomesticLiveUpdatesModalTrigger}
+        updatesModalTrigger={
+          <DomesticLiveUpdatesModalTrigger cityId={params.cityId} />
+        }
       />
     </Section>
   );

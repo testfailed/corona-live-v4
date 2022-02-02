@@ -1,12 +1,14 @@
 import React, { useEffect, useRef, useState } from "react";
 
 import { rem } from "polished";
-
 import { CSSProperties } from "@stitches/react";
-import { css, styled, theme } from "@styles/stitches.config";
-import { CssComponent } from "@stitches/react/types/styled-component";
+
 import useMounted from "@hooks/useMounted";
+import { css, styled } from "@styles/stitches.config";
+
 import Child from "./Child";
+
+import type { CssComponent } from "@stitches/react/types/styled-component";
 
 interface TabsProps<T extends any> {
   value: T;

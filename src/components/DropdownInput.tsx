@@ -1,8 +1,9 @@
 import React, { useState } from "react";
 
-import { styled, theme } from "@styles/stitches.config";
-import Child from "./Child";
 import { rem } from "polished";
+
+import Child from "./Child";
+import { styled } from "@styles/stitches.config";
 
 type Props = {
   onChange: (value: string) => void;

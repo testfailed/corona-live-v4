@@ -47,7 +47,7 @@ const DomesticLive: React.FC = () => {
         currentValue={data.live.today}
         comparedValues={comparedValues}
         updates={updates}
-        updatesModalTrigger={DomesticUpdatesModalTrigger}
+        updatesModalTrigger={<DomesticUpdatesModalTrigger />}
       />
     </Section>
   );

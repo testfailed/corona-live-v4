@@ -29,9 +29,7 @@ const LayoutMobileMenuModalTrigger: React.FC<Props> = ({ children }) => {
         padding: rem(16),
 
         "@md": {
-          height: "100%",
           maxWidth: rem(360),
-          maxHeight: "85vh",
         },
       })}
       asChild

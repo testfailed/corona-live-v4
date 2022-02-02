@@ -1,13 +1,14 @@
 import React from "react";
 
 import { rem } from "polished";
+import { CSS } from "@stitches/react";
 
 import { parseResponsiveCss } from "@utils/css-util";
 import { config, styled, keyframes } from "@styles/stitches.config";
 
 type ScreenType = keyof typeof config.media;
 
-interface Props {
+interface Props extends CSS {
   w?: number | string | Partial<Record<ScreenType, number | string>>;
   h?: number | string | Partial<Record<ScreenType, number | string>>;
 }

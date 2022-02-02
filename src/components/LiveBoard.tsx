@@ -48,9 +48,6 @@ const LiveBoard: React.FC<Props> = ({
     };
   }, []);
 
-  const UpdatesModalTrigger = (updatesModalTrigger ??
-    React.Fragment) as React.FC;
-
   const chunckedComparedValues = useMemo(
     () => chunkArray(comparedValues, 2),
     [comparedValues]
@@ -79,21 +76,23 @@ const LiveBoard: React.FC<Props> = ({
       </StatsContainer>
 
       {updates?.length > 0 ? (
-        <UpdatesModalTrigger>
-          <UpdatesContainer>
-            {updates.map(
-              (update, index) =>
-                activeUpdateId === index && (
-                  <UpdatesRow
-                    key={update.date}
-                    fadeInUp
-                    type="preview"
-                    {...update}
-                  />
-                )
-            )}
-          </UpdatesContainer>
-        </UpdatesModalTrigger>
+        React.cloneElement(updatesModalTrigger as JSX.Element, {
+          children: (
+            <UpdatesContainer>
+              {updates.map(
+                (update, index) =>
+                  activeUpdateId === index && (
+                    <UpdatesRow
+                      key={update.date}
+                      fadeInUp
+                      type="preview"
+                      {...update}
+                    />
+                  )
+              )}
+            </UpdatesContainer>
+          ),
+        })
       ) : (
         <>
           <UpdatesContainer>
