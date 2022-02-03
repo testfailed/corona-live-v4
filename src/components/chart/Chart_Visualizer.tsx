@@ -647,8 +647,8 @@ const ChartVisualizer: React.FC<Props> = ({
                 .attr("class", `points-${i}-box-shadow`)
                 .attr("fill", pointColor)
                 .attr("r", showPoints ? pointRadius : 4)
-                .attr("stroke", theme.colors[`${color}A050`])
-                .attr("strokeWidth", showPoints ? pointRadius * 3 : 10)
+                .attr("stroke", theme.colors[`${color}A050`].computedValue)
+                .attr("stroke-width", showPoints ? pointRadius * 3 : 10)
                 .attr("opacity", (x) => (x === selectedX ? 1 : 0))
 
                 .attr("cx", (x) => xScale(xParser(x)))

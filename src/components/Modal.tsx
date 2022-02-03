@@ -23,7 +23,6 @@ import Button from "./Button";
 import Child from "./Child";
 import CloseIcon from "./icon/Icon_Close";
 
-type ModalTransition = "";
 interface ModalProps extends ModalContentProps {
   open?: DialogProps["open"];
   onOpenChange?: DialogProps["onOpenChange"];
@@ -200,6 +199,7 @@ const Overlay = styled(DialogOverlay, {
   height: "100%",
   backgroundColor: "rgba(0, 0, 0, 0.68)",
   zIndex: 10000,
+  cursor: "pointer",
 
   '&[data-state="open"]': {
     animation: `${fadeIn} 400ms cubic-bezier(0.16, 1, 0.3, 1)`,

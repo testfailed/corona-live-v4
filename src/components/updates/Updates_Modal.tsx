@@ -13,8 +13,9 @@ const UpdatesModal: React.FC<{
   triggerNode?: React.ReactNode;
 }> = ({ children, title, triggerNode }) => {
   return (
-    <Modal asChild={false} modalId="updates" transition={{ open: fadeIn }}>
+    <Modal asChild={false} modalId="updates">
       <ModalContent
+        transition={{ open: fadeIn }}
         title={title ?? "실시간 확진 현황"}
         showCloseButton
         className={css({

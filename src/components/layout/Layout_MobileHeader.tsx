@@ -75,11 +75,10 @@ const LayoutMobileHeader: React.FC = (props) => {
         onChange={push}
         tabIndicatorLengthType="text"
         delay
-        // animation={false}
       >
         <Tab text="국내" value={DOMESTIC_PATH} />
-        <Tab text="백신" value={VACCINE_PATH} />
         <Tab text="세계" value={WORLD_PATH} />
+        <Tab text="백신" value={VACCINE_PATH} />
       </Tabs>
     </Wrapper>
   );
@@ -138,7 +137,7 @@ const Header = styled(Section, {
   rowCenteredY: true,
   justifyContent: "space-between",
   paddingY: rem(6),
-  paddingX: rem(12),
+  paddingX: rem(16),
 
   boxShadow: "none!important",
 

@@ -155,7 +155,7 @@ const CurrentValueContainer = styled("div", {
   columnCenteredX: true,
 });
 const CurrentValueLabel = styled("div", {
-  caption1: true,
+  body3: true,
 
   color: "$gray900",
   opacity: 0.8,
@@ -169,9 +169,19 @@ const CurrentValueLabel = styled("div", {
 const CurrentValue = styled("div", {
   heading1: true,
   color: "$gray900",
+  lineHeight: rem(36),
 
   "& span": {
+    display: "none",
     fontWeight: 400,
+  },
+
+  "@md": {
+    lineHeight: rem(38),
+
+    "& span": {
+      display: "initial",
+    },
   },
 });
 

@@ -82,6 +82,10 @@ const useCachedChartData = (slug: string) => {
         }
       };
 
+      const shouldInvalidateCache = () => {
+        return isInTimeRange("09:30:00", "11:00:00");
+      };
+
       const isNotCached = () => {
         return stat.some((k) => !cachedData[k]);
       };
@@ -93,7 +97,7 @@ const useCachedChartData = (slug: string) => {
         });
       };
 
-      if (isNotCached()) {
+      if (isNotCached() || shouldInvalidateCache()) {
         await cacheData();
       } else {
         if (requireLargerDataset()) {

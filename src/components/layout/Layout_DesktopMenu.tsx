@@ -88,6 +88,7 @@ const tabCss = css({
   rowCenteredY: true,
   padding: rem(16),
   borderLeft: `${rem(4)} solid transparent`,
+  height: rem(52),
 });
 
 const tabTextCss = css({
@@ -137,12 +138,13 @@ const MenuContainer = styled("div", {
   rowCenteredY: true,
   padding: rem(16),
   borderLeft: `${rem(4)} solid transparent`,
+  flex: 1,
+  height: rem(52),
 });
 
 const MenuThemeContainer = styled(MenuContainer, {
   alignItems: "center",
   justifyContent: "space-between",
-  flex: 1,
 });
 
 const MenuText = styled("div", {
