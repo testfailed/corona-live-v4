@@ -604,6 +604,8 @@ const ChartVisualizer: React.FC<Props> = ({
       return;
     }
 
+    console.log();
+
     const updateTooltip = () => {
       const { width: containerWidth, height: containerHeight } =
         chartTooltipContainer.node().getBoundingClientRect();
@@ -614,6 +616,12 @@ const ChartVisualizer: React.FC<Props> = ({
         translateX = width - margin.right - containerWidth + 10;
       }
 
+      console.log({
+        translateX,
+        content: translateX + containerWidth,
+        max: width - margin.right + 10,
+      });
+
       chartTooltipContainer.style("opacity", 1).style("left", rem(translateX));
 
       tooltipLine
@@ -622,7 +630,14 @@ const ChartVisualizer: React.FC<Props> = ({
         .style("top", rem(containerHeight))
         .style("height", rem(height - 18));
     };
-    updateTooltip();
+
+    if (
+      dataSet
+        .map(({ data }) => data[selectedX])
+        .every((value) => value !== undefined)
+    ) {
+      updateTooltip();
+    }
 
     dataSet.forEach(({ data, config }, i) => {
       const yScale = yScales[config.yAxisPosition];
@@ -731,7 +746,7 @@ const ChartVisualizer: React.FC<Props> = ({
       if (type === "line") drawPoints();
       if (type === "bar") drawBars();
     });
-  }, [svgRef, selectedX, yScales]);
+  }, [svgRef, selectedX, yScales, dataSet]);
 
   const xValue = xParser ? xScale(xParser(selectedX)) : 0;
   const xLabelValue = xAxis?.tooltipFormat(
@@ -766,7 +781,7 @@ const ChartVisualizer: React.FC<Props> = ({
                   >
                     <span>{config.tooltipLabel}</span>
                     <div>
-                      {config.tooltipFormat(data[selectedX])}
+                      {config.tooltipFormat(data[selectedX] ?? 1111111111111)}
                       {config?.tooltipUnit && (
                         <span>{config?.tooltipUnit}</span>
                       )}
