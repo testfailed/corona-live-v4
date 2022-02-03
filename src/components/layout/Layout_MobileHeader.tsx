@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 
 import { rem } from "polished";
 import { useHistory, useLocation } from "react-router-dom";
@@ -13,55 +13,46 @@ import { css, styled, theme } from "@styles/stitches.config";
 import LayoutMobileMenuTrigger from "./Layout_MobileMenuModal";
 
 import Button from "@components/Button";
-import Section from "@components/Section";
 import { Tabs, Tab } from "@components/Tabs";
-import Underline from "@components/Underline";
+import { useTheme } from "@contexts/ThemeContext";
 import MenuIcon from "@components/icon/Icon_Menu";
+import ThemeIcon from "@components/icon/Icon_Theme";
+import Section, { SubSection } from "@components/Section";
 import CoronaLiveIcon from "@components/icon/Icon_CoronaLive";
 import SendMessageIcon from "@components/icon/Icon_SendMessage";
-import { ChevronLeftIcon } from "@components/icon/Icon_Chevron";
 import ReportModalTrigger from "@components/modal/Modal_Report";
 
-const LayoutMobileHeader: React.FC = (props) => {
-  const title = null;
-  const { goBack, push } = useHistory();
+const LayoutMobileHeader: React.FC = () => {
+  const [renderThemeButton] = useState(Math.random() > 0.5);
+
   const location = useLocation();
+  const { push } = useHistory();
+  const { toggleTheme } = useTheme();
+
   const { pathname } = location;
 
   return (
     <Wrapper>
       <Header>
-        {title ? (
-          <>
-            <Button icon onClick={goBack}>
-              <ChevronLeftIcon size={18} />
-            </Button>
-
-            <Underline>{title}</Underline>
-
-            <ReportModalTrigger>
-              <Button icon>
-                <SendMessageIcon size={18} />
-              </Button>
-            </ReportModalTrigger>
-          </>
+        {renderThemeButton ? (
+          <Button icon onClick={toggleTheme}>
+            <ThemeIcon size={18} />
+          </Button>
         ) : (
-          <>
-            <ReportModalTrigger>
-              <Button icon>
-                <SendMessageIcon size={18} />
-              </Button>
-            </ReportModalTrigger>
-
-            <CoronaLiveIcon />
-
-            <LayoutMobileMenuTrigger>
-              <Button icon>
-                <MenuIcon size={18} />
-              </Button>
-            </LayoutMobileMenuTrigger>
-          </>
+          <ReportModalTrigger>
+            <Button icon>
+              <SendMessageIcon size={18} />
+            </Button>
+          </ReportModalTrigger>
         )}
+
+        <CoronaLiveIcon />
+
+        <LayoutMobileMenuTrigger>
+          <Button icon>
+            <MenuIcon size={18} />
+          </Button>
+        </LayoutMobileMenuTrigger>
       </Header>
       <Tabs
         {...{
@@ -133,20 +124,17 @@ const Wrapper = styled(Section, {
   },
 });
 
-const Header = styled(Section, {
+const Header = styled(SubSection, {
   rowCenteredY: true,
   justifyContent: "space-between",
-  paddingY: rem(6),
+  paddingTop: rem(10),
+  paddingBottom: rem(6),
   paddingX: rem(16),
 
   boxShadow: "none!important",
 
   "@md": {
     boxShadow: `${theme.shadows.subSectionBoxShadow}!important`,
-  },
-
-  defaultVariants: {
-    sub: true,
   },
 });
 

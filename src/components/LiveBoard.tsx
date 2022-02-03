@@ -6,7 +6,7 @@ import { styled } from "@styles/stitches.config";
 import { numberWithCommas } from "@utils/number-util";
 import { chunkArray, createEmptyArray } from "@utils/array-util";
 
-import Section from "./Section";
+import Section, { SubSection } from "./Section";
 import DeltaTag from "./DeltaTag";
 import UpdatesRow, {
   UpdateRow,
@@ -141,14 +141,10 @@ const Wrapper = styled("div", {
   overflow: "hidden",
 });
 
-const StatsContainer = styled(Section, {
+const StatsContainer = styled(SubSection, {
   rowCenteredY: true,
   paddingY: rem(12),
   justifyContent: "space-evenly",
-
-  defaultVariants: {
-    sub: true,
-  },
 });
 
 const CurrentValueContainer = styled("div", {
