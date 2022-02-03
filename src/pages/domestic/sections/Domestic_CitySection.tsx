@@ -18,7 +18,6 @@ const Domestic_CitySection: React.FC = () => {
 
   return (
     <Section>
-      {/* <Wrapper> */}
       <TabsContainer>
         <Tabs
           value={viewType}
@@ -29,10 +28,8 @@ const Domestic_CitySection: React.FC = () => {
           <Tab value="list" text="리스트" icon={<TableIcon size={20} />} />
         </Tabs>
       </TabsContainer>
-      {/* <Space h={16} /> */}
       {viewType === "map" && <DomesticCityMap />}
       {viewType === "list" && <DomesticCityTable />}
-      {/* </Wrapper> */}
     </Section>
   );
 };

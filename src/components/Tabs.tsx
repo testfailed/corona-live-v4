@@ -22,6 +22,7 @@ interface TabsProps<T extends any> {
   activeTabIndicatorCss?: CssComponent;
   tabIndicatorType?: "underline" | "contained";
   tabIndicatorLengthType?: "tab" | "text";
+  tabIndicatorTransform?: string;
   children: React.ReactChild[];
   scrollable?: boolean;
   delay?: boolean;
@@ -72,7 +73,7 @@ const containedTabCss = {
   }),
 };
 
-const TRANSITION_DURATION = 250; // ms
+const TRANSITION_DURATION = 300; // ms
 
 export const Tabs = <T extends any>({
   value,
@@ -87,6 +88,7 @@ export const Tabs = <T extends any>({
   onChange,
   scrollable,
   children: childrenProps,
+  tabIndicatorTransform,
   delay = false,
   animation = true,
 }: TabsProps<T>) => {
@@ -143,14 +145,15 @@ export const Tabs = <T extends any>({
       const posProperty = isHorizontal ? "left" : "top";
       const posValue = activeTab?.[posProperty] - (tabs?.[posProperty] ?? 0);
 
-      const style = {
+      const style: CSSProperties = {
         [lengthProperty]: lengthValue,
         [thicknessProperty]: thicknessValue,
-        [posProperty]: posValue,
+        transform: `translate3d(${posProperty === "left" ? rem(posValue) : 0},${
+          posProperty === "top" ? rem(posValue) : 0
+        },0) ${tabIndicatorTransform ?? ""}`,
         ...(indicatorStyleInitialised.current && animation === true
           ? {
-              transition: `${TRANSITION_DURATION}ms cubic-bezier(0.4, 0, 0.2, 1)`,
-              transitionProperty: "left, top, width, height",
+              transition: `${TRANSITION_DURATION}ms ease 0s`,
             }
           : {}),
       };
@@ -207,6 +210,7 @@ export const Tabs = <T extends any>({
       </TabsContainer>
       {mounted && (
         <TabIndicator
+          orientation={orientation}
           style={indicatorStyle as any}
           className={(tabIndicatorCss ?? defaultTabCss.tabIndicatorCss) as any}
         />
@@ -247,8 +251,20 @@ const TabsContainer = styled("div", {
 
 const TabIndicator = styled("span", {
   position: "absolute",
-  bottom: 0,
-  background: "$gray700",
+
+  willChange: "transform, width, height",
+  transitionProperty: "transform, width, height",
+
+  variants: {
+    orientation: {
+      horizontal: {
+        bottom: 0,
+      },
+      vertical: {
+        top: 0,
+      },
+    },
+  },
 });
 
 export interface TabProps<T = any> {
@@ -343,6 +359,8 @@ const TabWrapper = styled("div", {
   "& svg + div": {
     marginLeft: rem(8),
   },
+
+  transition: "opacity 300ms",
 
   variants: {
     active: {

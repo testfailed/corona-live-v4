@@ -32,6 +32,7 @@ const ChartSubOptions = <T extends string>(props: Props<T>) => {
             value={values[subOptionName]}
             onChange={(value) => onChange(subOptionName, value as T)}
             tabIndicatorType="contained"
+            tabIndicatorTransform="scale(0.9,0.8)"
           >
             {subOption.map((tab) => (
               <Tab key={tab.value} {...tab} />
@@ -67,6 +68,8 @@ const tabTextCss = css({
   textAlign: "centre",
   opacity: 0.8,
 
+  transition: "opacity 300ms",
+
   "@md": {
     body1: true,
   },
@@ -75,6 +78,7 @@ const tabTextCss = css({
 const activeTabTextCss = css({
   body3: true,
   fontWeight: 700,
+  opacity: 1,
   color: "$gray900",
 
   "@md": {
@@ -85,7 +89,7 @@ const activeTabTextCss = css({
 const tabIndicatorCss = css({
   boxShadow: "$subSectionBoxShadow",
   background: "$shadowBackground2",
-  transform: "scale(0.9,0.8)",
+
   borderRadius: rem(8),
   border: `${rem(1)} solid $chartOptionBorder`,
 });

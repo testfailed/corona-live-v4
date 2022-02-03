@@ -52,7 +52,6 @@ const LayoutMenu: React.FC = () => {
           orientation="vertical"
           tabIndicatorType="contained"
           delay
-          // animation={false}
         >
           <Tab value={DOMESTIC_PATH} text="국내" icon={<DomesticIcon />} />
           <Tab value={WORLD_PATH} text="세계" icon={<WorldIcon />} />

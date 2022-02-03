@@ -17,20 +17,12 @@ import { DomesticCityStatsType } from "@_types/domestic-type";
 
 type StatType = Exclude<DomesticCityStatsType, "distanceLevel"> | "live";
 
-const statTypes: Array<StatType> = [
-  "live",
-  "confirmed",
-  "deceased",
-  // "per100k",
-  // "recovered",
-];
+const statTypes: Array<StatType> = ["live", "confirmed", "deceased"];
 
 const statTypeToLable: Partial<Record<StatType, string>> = {
   live: "오늘 확진자",
   confirmed: "총 확진자",
   deceased: "총 사망자",
-  // per100k: "10만명당 확진자",
-  // recovered: "완치자",
 };
 
 const DomesticMap: React.FC = () => {
@@ -74,8 +66,8 @@ const DomesticMap: React.FC = () => {
           color: "$gray700",
           textAlign: "centre",
         })}
+        tabIndicatorTransform="scale(0.9,0.8)"
         tabIndicatorCss={css({
-          transform: "scale(0.9,0.8)",
           borderRadius: rem(8),
           boxShadow: "$subSectionBoxShadow",
           background: "$shadowBackground2",
