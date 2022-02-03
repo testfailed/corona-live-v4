@@ -26,7 +26,7 @@ const useStore = create<State>((set) => ({
 
 const fetcher = (url: string): any =>
   axios
-    .get(`${url}.json?timestamp=${dayjs().unix()}`)
+    .get(`${url}.json?timestamp=${dayjs().valueOf()}`)
     .then(async ({ data }) => {
       return data;
     });
@@ -103,7 +103,7 @@ const useCachedChartData = (slug: string) => {
         if (requireLargerDataset()) {
           await cacheData();
         } else {
-          console.log(`${stat} is cached`);
+          // console.log(`${stat} is cached`);
         }
       }
 

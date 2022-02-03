@@ -68,8 +68,8 @@ const ReportModalTrigger: React.FC<Props> = ({
   const onSumbit = async (closeModal) => {
     const now = dayjs();
 
-    if (now.diff(dayjs(submittedReportAt), "minute") < 5)
-      return alert("제보는 5분 내에 한 번만 하실 수 있습니다");
+    if (now.diff(dayjs(submittedReportAt), "minute") < 3)
+      return alert("제보는 3분 내에 한 번만 하실 수 있습니다");
 
     if (reportType === "report") {
       if (title.trim().length == 0) return alert("지역을 적어주세요");
@@ -95,7 +95,7 @@ const ReportModalTrigger: React.FC<Props> = ({
 
     setIsLoading(false);
     setForm(initialState);
-    setSubmittedReportAt(now.unix());
+    setSubmittedReportAt(now.valueOf());
     closeModal();
   };
 

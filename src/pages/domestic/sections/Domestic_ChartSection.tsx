@@ -229,6 +229,7 @@ const DomesticChartSection: React.FC = () => {
         const data = await getCachedChartData({
           stat: [stat],
           range: option.range,
+          isCompressed: option.range === "all",
         });
         dataSet = [
           {
@@ -263,7 +264,7 @@ const DomesticChartSection: React.FC = () => {
   return (
     <Section>
       <Chart
-        // enableExpandMode
+        enableExpandMode
         {...{ chartStatOptions, getChartData, forceUpdate: shoulUpdate }}
       />
     </Section>

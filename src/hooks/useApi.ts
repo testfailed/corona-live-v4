@@ -4,7 +4,7 @@ import useSWR, { SWRConfiguration, SWRResponse } from "swr";
 
 const fetcher = (url: string) =>
   axios
-    .get(`${url}.json?timestamp=${dayjs().unix()}`)
+    .get(`${url}.json?timestamp=${dayjs().valueOf()}`)
     .then(async ({ data }) => {
       return data;
     });

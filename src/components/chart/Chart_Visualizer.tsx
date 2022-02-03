@@ -455,6 +455,8 @@ const ChartVisualizer: React.FC<Props> = ({
                 .attr("opacity", (x) => (selectedX === x ? 1 : 0.6))
                 .attr("x", barLeft)
                 .attr("y", (x) => barTop(x))
+                .attr("rx", barThickness / 2.2)
+                .attr("ry", barThickness / 2.2)
             )
             .transition(t)
             .attr("width", barThickness)
@@ -462,9 +464,7 @@ const ChartVisualizer: React.FC<Props> = ({
             .attr("fill", (x) => (selectedX === x ? activeBarColor : barColor))
             .attr("opacity", (x) => (selectedX === x ? 1 : 0.6))
             .attr("x", barLeft)
-            .attr("y", (x) => barTop(x))
-            .attr("rx", 4)
-            .attr("ry", 4);
+            .attr("y", (x) => barTop(x));
         };
 
         const drawLines = () => {
@@ -716,7 +716,8 @@ const ChartVisualizer: React.FC<Props> = ({
               .attr("opacity", (x) => (selectedX === x ? 1 : 0.6))
               .attr("x", barLeft)
               .attr("y", (x) => barTop(x))
-              .attr("rx", 20)
+              .attr("rx", barThickness / 2.2)
+              .attr("ry", barThickness / 2.2)
           )
           .attr("opacity", (x) => (selectedX === x ? 1 : 0.6))
           .transition(t)
@@ -724,9 +725,7 @@ const ChartVisualizer: React.FC<Props> = ({
           .attr("height", (x) => height - margin.bottom - yScale(data[x]))
           .attr("fill", (x) => (selectedX === x ? activeBarColor : barColor))
           .attr("x", barLeft)
-          .attr("y", (x) => barTop(x))
-          .attr("rx", 3)
-          .attr("ry", 3);
+          .attr("y", (x) => barTop(x));
       };
 
       if (type === "line") drawPoints();
