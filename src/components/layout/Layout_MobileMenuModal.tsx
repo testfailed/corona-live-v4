@@ -29,6 +29,7 @@ const LayoutMobileMenuModalTrigger: React.FC<Props> = ({ children }) => {
       className={css({
         width: "85%",
         padding: rem(16),
+        background: "$background",
 
         "@md": {
           maxWidth: rem(360),
@@ -36,8 +37,8 @@ const LayoutMobileMenuModalTrigger: React.FC<Props> = ({ children }) => {
       })}
       asChild
     >
-      <Section border>
-        <Wrapper>
+      <Wrapper>
+        <Section border>
           <MenuThemeContainer>
             <Row centeredY>
               <NightIcon />
@@ -52,9 +53,9 @@ const LayoutMobileMenuModalTrigger: React.FC<Props> = ({ children }) => {
               <MenuText>제보 / 피드백</MenuText>
             </MenuContainer>
           </ReportModalTrigger>
-        </Wrapper>
-      </Section>
-      <LayoutFooter />
+        </Section>
+      </Wrapper>
+      <LayoutFooter simplified />
     </Modal>
   );
 };
@@ -71,10 +72,13 @@ const MenuContainer = styled("div", {
   rowCenteredY: true,
   paddingY: rem(20),
   paddingX: rem(16),
-  // borderTop: `${rem(1)} solid rgba($gray900rgb,0.1)`,
   cursor: "pointer",
 
-  "&:first-of-type": {},
+  borderTop: `${rem(1)} solid rgba($gray900rgb,0.1)`,
+
+  "&:first-of-type": {
+    borderTop: "none",
+  },
 });
 
 const MenuThemeContainer = styled(MenuContainer, {

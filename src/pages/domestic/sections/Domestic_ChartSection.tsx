@@ -264,7 +264,7 @@ const DomesticChartSection: React.FC = () => {
   return (
     <Section>
       <Chart
-        enableExpandMode
+        // enableExpandMode
         {...{ chartStatOptions, getChartData, forceUpdate: shoulUpdate }}
       />
     </Section>

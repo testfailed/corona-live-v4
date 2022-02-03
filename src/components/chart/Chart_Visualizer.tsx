@@ -604,8 +604,6 @@ const ChartVisualizer: React.FC<Props> = ({
       return;
     }
 
-    console.log();
-
     const updateTooltip = () => {
       const { width: containerWidth, height: containerHeight } =
         chartTooltipContainer.node().getBoundingClientRect();
@@ -615,12 +613,6 @@ const ChartVisualizer: React.FC<Props> = ({
       } else if (translateX + containerWidth > width - margin.right + 10) {
         translateX = width - margin.right - containerWidth + 10;
       }
-
-      console.log({
-        translateX,
-        content: translateX + containerWidth,
-        max: width - margin.right + 10,
-      });
 
       chartTooltipContainer.style("opacity", 1).style("left", rem(translateX));
 

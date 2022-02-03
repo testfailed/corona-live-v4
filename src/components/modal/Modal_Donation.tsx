@@ -25,6 +25,7 @@ const DonationModalTrigger: React.FC = ({ children }) => {
         width: "85%",
         maxWidth: rem(300),
         padding: rem(16),
+        background: "$white",
 
         "@md": { width: rem(300) },
       })}

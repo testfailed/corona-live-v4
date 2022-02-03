@@ -109,6 +109,7 @@ const ReportModalTrigger: React.FC<Props> = ({
       className={css({
         width: "85%",
         padding: rem(16),
+        background: "$white",
 
         "@md": {
           width: rem(360),
@@ -162,6 +163,7 @@ const InputWrapper = styled("div", {
   column: true,
   overflow: "hidden",
   borderRadius: rem(8),
+  background: "$white",
 
   border: `${rem(1)} solid $sectionBorder`,
 

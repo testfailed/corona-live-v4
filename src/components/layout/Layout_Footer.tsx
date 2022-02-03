@@ -17,12 +17,13 @@ interface Props {
 
 const LayoutFooter: React.FC<Props> = ({ simplified }) => {
   return (
-    <Wrapper className="user-select">
-      {!simplified && <Space h={24} />}
+    <Wrapper className="user-select" css={simplified && { padding: 0 }}>
+      <Space h={simplified ? 12 : 24} />
 
       <SubText>서버비용 후원</SubText>
       <Text>
-        이용하시는데 불편함이 없도록 광고 없이 운영을 하고 있어요.<br></br>
+        이용하시는데 불편함이 없도록 광고 없이 운영을 하고 있어요.
+        {simplified ? " " : <br></br>}
         서버비용 충당후 후원금이 남을시 코로나19 관련 단체에 기부 할 예정이에요.
       </Text>
 
@@ -41,24 +42,30 @@ const LayoutFooter: React.FC<Props> = ({ simplified }) => {
         <EmailIconBox />
       </SnsContainer>
 
-      <Space h={32} />
+      {simplified ? (
+        <Space h={6} />
+      ) : (
+        <>
+          <Space h={32} />
+          <Text>
+            본사이트에서 제공하는 실시간 확진자수는 민간이 취합한 집계이므로
+            <br></br>
+            공식적인 근거 자료로 활용될수 없고, 해당 정보 사용/공유로 인해
+            <br></br>
+            발생된 문제의 책임은 전적으로 사용자에게 있어요.
+            <br />
+          </Text>
 
-      <Text>
-        본사이트에서 제공하는 실시간 확진자수는 민간이 취합한 집계이므로
-        공식적인 근거 자료로 활용될수 없고, 해당 정보 사용/공유로 인해 발생된
-        문제의 책임은 전적으로 사용자에게 있어요.
-        <br />
-      </Text>
-
-      <Space h={36} />
-
+          <Space h={36} />
+        </>
+      )}
       <InfoText>
         <div>
           MADE BY<b>CHINCHILLA</b>
         </div>
       </InfoText>
 
-      <Space h={32} />
+      {simplified ? <Space h={24} /> : <Space h={32} />}
     </Wrapper>
   );
 };

@@ -476,11 +476,8 @@ const Wrapper = styled("div", {
 
 const Content = styled("div", {});
 
-const Heading = styled(Section, {
+const Heading = styled(SubSection, {
   rowCenteredY: true,
-  defaultVariants: {
-    sub: true,
-  },
 });
 
 const ChartModeButton = styled("div", {
