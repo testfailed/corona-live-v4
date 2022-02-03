@@ -103,7 +103,12 @@ const WorldCountrySection: React.FC = () => {
 
   return (
     <Wrapper>
-      <Table columns={columns} rows={rows} deltaPosition="bottom" />
+      <Table
+        columns={columns}
+        rows={rows}
+        deltaPosition="bottom"
+        stickyColumnIndex={[0, 1]}
+      />
     </Wrapper>
   );
 };

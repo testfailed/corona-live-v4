@@ -1,4 +1,4 @@
-import React, { useMemo, useState } from "react";
+import React, { useMemo, useRef, useState } from "react";
 
 import { rem } from "polished";
 import { CSS } from "@stitches/react";
@@ -34,22 +34,22 @@ export type TableRow<T extends string> = Partial<
 interface Props<T extends string> {
   columns: Array<TableColumn<T>>;
   rows: Array<TableRow<T>>;
-  deltaPosition?: "right" | "bottom";
   statUnit?: string;
   css?: CSS;
+  stickyColumnIndex?: Array<number>;
 }
 
 type Order = "desc" | "asc";
 
 const Table = <T extends string>(props: Props<T>) => {
-  const { columns, rows, deltaPosition, statUnit, css } = props;
+  const { columns, rows, statUnit, css, stickyColumnIndex = [0] } = props;
 
   const initalSortBy = columns.find(
     (a) => a.defaultSortBy === true && a.sortable === true
   )?.id as T;
 
-  const [sortOrder, setSortOrder] = useState<Order>("desc");
   const [sortBy, setSortBy] = useState<T>(initalSortBy);
+  const [sortOrder, setSortOrder] = useState<Order>("desc");
 
   const sortedRows = useMemo(
     () =>
@@ -63,7 +63,9 @@ const Table = <T extends string>(props: Props<T>) => {
     [rows, sortOrder, sortBy]
   );
 
-  const { ref, inView } = useInView({
+  const tableRef = useRef<HTMLTableElement>(null);
+
+  const { ref: inViewRef } = useInView({
     threshold: 0,
     trackVisibility: true,
     delay: 100,
@@ -71,10 +73,10 @@ const Table = <T extends string>(props: Props<T>) => {
 
   return (
     <Wrapper>
-      <InViewCheck ref={ref} />
-      <Root css={css}>
-        <THead>
-          <Tr>
+      <InViewCheck ref={inViewRef} />
+      <StyledTable css={css} ref={tableRef}>
+        <thead>
+          <tr>
             {columns.map(({ id, name, width, sortable }, index) => {
               const onClick = () => {
                 if (sortable) {
@@ -89,17 +91,30 @@ const Table = <T extends string>(props: Props<T>) => {
                 }
               };
 
+              const stickyLeft = rem(
+                index > 0
+                  ? tableRef.current?.querySelector(
+                      `thead > tr > th:nth-child(${index})`
+                    )?.clientWidth +
+                      6 * (index + 1)
+                  : 6
+              );
+
+              const isSticky = stickyColumnIndex.includes(index);
+
               return (
-                <Th
+                <HeaderTh
                   key={index}
-                  css={{
-                    ...(width ? { minWidth: width } : {}),
-                    ...(sortable ? { cursor: "pointer" } : {}),
+                  style={{
+                    ...(width && { minWidth: width }),
+                    ...(sortable && { cursor: "pointer" }),
+                    ...(isSticky && { left: stickyLeft }),
                   }}
+                  sticky={isSticky}
                   onClick={onClick}
                 >
-                  <ThContainer>
-                    <ThName>{name}</ThName>
+                  <HeaderWrapper>
+                    <HeaderName>{name}</HeaderName>
                     {sortBy === id && (
                       <>
                         {sortOrder === "desc" && (
@@ -110,64 +125,85 @@ const Table = <T extends string>(props: Props<T>) => {
                         )}
                       </>
                     )}
-                  </ThContainer>
-                </Th>
+                  </HeaderWrapper>
+                </HeaderTh>
               );
             })}
-          </Tr>
-        </THead>
-        <TBody>
+          </tr>
+        </thead>
+        <tbody>
           {sortedRows.map((row, index) => (
-            <Tr key={index}>
+            <tr key={index}>
               {columns.map(({ id, width, deltaPosition }, index) => {
-                return (
-                  <Td
-                    key={index}
-                    css={{
-                      ...(width ? { minWidth: width } : {}),
-                    }}
-                    shadow={inView === false}
-                    centered={!row[id]?.image}
-                  >
-                    <Link to={row?.link?.text ?? ""}>
-                      <TdContainer
-                        ref={ref}
-                        css={{
-                          ...(index !== 0 && deltaPosition === "bottom"
-                            ? {
-                                justifyContent: "flex-end",
-                              }
-                            : {}),
-                        }}
-                      >
-                        {!!row[id]?.image && (
-                          <img src={row[id]?.image} alt={""}></img>
-                        )}
+                const children = (
+                  <Link to={row?.link?.text ?? ""}>
+                    <Cell
+                      ref={inViewRef}
+                      css={
+                        index !== 0 && deltaPosition === "bottom"
+                          ? {
+                              justifyContent: "flex-end",
+                            }
+                          : null
+                      }
+                    >
+                      {!!row[id]?.image && (
+                        <img src={row[id]?.image} alt={""}></img>
+                      )}
 
-                        {!!row[id]?.text && <Text>{row[id].text}</Text>}
-                        <StatContainer column={deltaPosition === "bottom"}>
-                          {row[id]?.stat !== undefined && (
-                            <>
-                              <Stat>{numberWithCommas(row[id].stat)}</Stat>
-                              {statUnit && <StatUnit>{statUnit}</StatUnit>}
-                            </>
-                          )}
-                          {!!row[id]?.delta && (
-                            <>
-                              <Space w={6} />
-                              <DeltaTag delta={Number(row[id].delta)} small />
-                            </>
-                          )}
-                        </StatContainer>
-                      </TdContainer>
-                    </Link>
-                  </Td>
+                      {!!row[id]?.text && <Text>{row[id].text}</Text>}
+                      <StatContainer column={deltaPosition === "bottom"}>
+                        {row[id]?.stat !== undefined && (
+                          <>
+                            <Stat>{numberWithCommas(row[id].stat)}</Stat>
+                            {statUnit && <StatUnit>{statUnit}</StatUnit>}
+                          </>
+                        )}
+                        {!!row[id]?.delta && (
+                          <>
+                            <Space w={6} />
+                            <DeltaTag delta={Number(row[id].delta)} small />
+                          </>
+                        )}
+                      </StatContainer>
+                    </Cell>
+                  </Link>
+                );
+
+                const stickyLeft = rem(
+                  index > 0
+                    ? tableRef.current?.querySelector(
+                        `thead > tr > th:nth-child(${index})`
+                      )?.clientWidth +
+                        6 * (index + 1)
+                    : 6
+                );
+
+                const isSticky = stickyColumnIndex.includes(index);
+
+                const style = width ? { minWidth: width } : {};
+
+                return isSticky ? (
+                  <th
+                    key={index}
+                    style={{
+                      ...style,
+                      left: stickyLeft,
+                      zIndex: stickyColumnIndex.length - index,
+                    }}
+                  >
+                    {children}
+                  </th>
+                ) : (
+                  <td key={index} style={style}>
+                    {children}
+                  </td>
                 );
               })}
-            </Tr>
+            </tr>
           ))}
-        </TBody>
-      </Root>
+        </tbody>
+      </StyledTable>
     </Wrapper>
   );
 };
@@ -176,37 +212,141 @@ const Wrapper = styled("div", {
   overflowX: "auto",
   position: "relative",
   paddingBottom: rem(16),
-
   paddingX: rem(12),
+  width: "100%",
+  height: "100%",
 
   "@md": {
     paddingX: rem(20),
   },
 });
 
-const Root = styled("table", {
-  overflowY: "hidden",
-  borderSpacing: `${rem(6)} ${rem(2)}`,
-});
+const Cell = styled("div", {
+  rowCenteredY: true,
+  minHeight: rem(48),
+  maxHeight: rem(48),
+  paddingX: rem(8),
+  borderRadius: rem(8),
+  flexShrink: 0,
 
-const TBody = styled("tbody", {});
-
-const THead = styled("thead", {});
-
-const Th = styled("th", {
-  paddingBottom: rem(12),
-  paddingLeft: rem(2),
-
-  "&first-of-child": {
-    textAlign: "center",
+  "& img": {
+    width: rem(20),
+    borderRadius: rem(2),
+    marginRight: rem(6),
   },
 });
 
-const ThContainer = styled("div", {
-  rowCenteredY: true,
+const StyledTable = styled("table", {
+  overflowY: "auto",
+  borderSpacing: `${rem(6)} ${rem(2)}`,
+  tableLayout: "fixed",
+
+  "& tbody": {
+    "& tr": {
+      subtitle3: true,
+      position: "relative",
+
+      color: "$gray900",
+
+      [`&:nth-child(odd) ${Cell}`]: {
+        background: "$gray100",
+      },
+    },
+
+    "& td, & th": {
+      padding: rem(0),
+      borderRadius: rem(8),
+      position: "relative",
+      verticalAlign: "middle",
+      background: "$white",
+
+      "& a": {
+        color: "$gray900",
+        textDecoration: "none",
+      },
+    },
+
+    "& th": {
+      position: "sticky",
+      "&": {
+        position: "-webkit-sticky",
+      },
+      zIndex: 1,
+
+      "&:first-of-type": {
+        [`& ${Cell}`]: {
+          justifyContent: "center",
+        },
+      },
+
+      "&:before": {
+        content: "",
+        position: "absolute",
+        borderRadius: rem(8),
+        background: "$white",
+        width: "calc(200%)",
+        height: "100%",
+        right: 0,
+        top: 0,
+        bottom: 0,
+        zIndex: -1,
+      },
+
+      "&:after": {
+        content: "",
+        position: "absolute",
+        background: "inherit",
+        boxShadow: `${rem(4)} 0 ${rem(14)} ${rem(4)} #00000005`,
+        transition: "150ms",
+        width: rem(0.1),
+        height: "100%",
+        right: 2,
+        top: 0,
+        bottom: 0,
+        zIndex: -1,
+      },
+    },
+  },
 });
 
-const ThName = styled("div", {
+const HeaderTh = styled("th", {
+  position: "relative",
+
+  paddingBottom: rem(12),
+  paddingLeft: rem(2),
+
+  variants: {
+    sticky: {
+      true: {
+        position: "sticky",
+        "&": {
+          position: "-webkit-sticky",
+        },
+        zIndex: 1,
+
+        "&:before": {
+          content: "",
+          position: "absolute",
+          borderRadius: rem(8),
+          background: "$white",
+          width: "calc(200%)",
+          height: "100%",
+          right: 0,
+          top: 0,
+          bottom: 0,
+          zIndex: -1,
+        },
+      },
+    },
+  },
+});
+
+const HeaderWrapper = styled("div", {
+  rowCenteredY: true,
+  background: "$white",
+});
+
+const HeaderName = styled("div", {
   caption1: true,
   color: "$gray700",
   textAlign: "left",
@@ -247,25 +387,9 @@ const StatContainer = styled("div", {
   },
 });
 
-const TdContainer = styled("div", {
-  rowCenteredY: true,
-  minHeight: rem(48),
-  maxHeight: rem(48),
-  paddingX: rem(8),
-  borderRadius: rem(8),
-  flexShrink: 0,
-
-  "& img": {
-    width: rem(20),
-    borderRadius: rem(2),
-    marginRight: rem(6),
-  },
-});
-
-const Td = styled("td", {
+const TBodyTh = styled("th", {
   padding: rem(0),
   borderRadius: rem(8),
-  position: "relative",
   verticalAlign: "middle",
 
   "& a": {
@@ -273,69 +397,56 @@ const Td = styled("td", {
     textDecoration: "none",
   },
 
-  "&:first-of-type": {
-    position: "sticky",
-    left: 0,
-    zIndex: 5,
+  // position: "sticky",
+  // "&": {
+  //   position: "-webkit-sticky",
+  // },
+  // left: rem(6),
+  // zIndex: 5,
 
-    [`&:before`]: {
-      content: "",
-      position: "absolute",
-      borderRadius: rem(8),
-      background: "$white",
-      width: "calc(200%)",
-      height: "100%",
-      right: 0,
-      top: 0,
-      bottom: 0,
-      zIndex: -1,
-    },
+  // [`&:before`]: {
+  //   content: "",
+  //   position: "absolute",
+  //   borderRadius: rem(8),
+  //   background: "$white",
+  //   width: "calc(200%)",
+  //   height: "100%",
+  //   right: 0,
+  //   top: 0,
+  //   bottom: 0,
+  //   zIndex: -1,
+  // },
 
-    [`&:after`]: {
-      content: "",
-      position: "absolute",
-      background: "inherit",
-      boxShadow: `${rem(4)} 0 ${rem(14)} ${rem(4)} #00000005`,
-      transition: "150ms",
-      width: rem(0.1),
-      height: "100%",
-      right: 2,
-      top: 0,
-      bottom: 0,
-      zIndex: -1,
-    },
-  },
+  // [`&:after`]: {
+  //   content: "",
+  //   position: "absolute",
+  //   background: "inherit",
+  //   boxShadow: `${rem(4)} 0 ${rem(14)} ${rem(4)} #00000005`,
+  //   transition: "150ms",
+  //   width: rem(0.1),
+  //   height: "100%",
+  //   right: 2,
+  //   top: 0,
+  //   bottom: 0,
+  //   zIndex: -1,
+  // },
 
-  variants: {
-    shadow: {
-      true: {
-        "&:first-of-type": {
-          [`&:after`]: {
-            boxShadow: `${rem(4)} 0 ${rem(14)} ${rem(4)} #0000000005`,
-          },
-        },
-      },
-    },
-    centered: {
-      true: {
-        "&:first-of-type": {
-          [`& ${TdContainer}`]: {
-            justifyContent: "center",
-          },
-        },
-      },
-    },
-  },
-});
-
-const Tr = styled("tr", {
-  subtitle3: true,
-
-  color: "$gray900",
-  [`&:nth-child(odd) ${TdContainer}`]: {
-    background: "$gray100",
-  },
-  position: "relative",
+  // variants: {
+  //   shadow: {
+  //     true: {
+  //       [`&:after`]: {
+  //         boxShadow: `${rem(4)} 0 ${rem(14)} ${rem(4)} #0000000005`,
+  //       },
+  //     },
+  //   },
+  //   centered: {
+  //     true: {
+  //       [`& ${TdContainer}`]: {
+  //         justifyContent: "center",
+  //       },
+  //     },
+  //   },
+  // },
 });
 
 const InViewCheck = styled("div", {
