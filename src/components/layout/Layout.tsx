@@ -9,6 +9,7 @@ import Space from "@components/Space";
 import LayoutFooter from "./Layout_Footer";
 import LayoutDesktopMenu from "./Layout_DesktopMenu";
 import LayoutMobileHeader from "./Layout_MobileHeader";
+import Section from "@components/Section";
 
 interface Props {
   hideMobileHeader?: boolean;
@@ -21,7 +22,9 @@ const Layout: React.FC<Props> = ({ children, hideMobileHeader }) => {
       <Column>
         {hideMobileHeader !== true && <LayoutMobileHeader />}
         <Content>{children}</Content>
-        <LayoutFooter />
+        <Section css={{ margin: 0 }}>
+          <LayoutFooter />
+        </Section>
         <Space h={{ _: 0, md: 20 }} />
       </Column>
 

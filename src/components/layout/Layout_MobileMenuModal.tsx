@@ -12,6 +12,8 @@ import { Modal } from "@components/Modal";
 import NightIcon from "@components/icon/Icon_Night";
 import SendMessageIcon from "@components/icon/Icon_SendMessage";
 import ReportModalTrigger from "@components/modal/Modal_Report";
+import LayoutFooter from "./Layout_Footer";
+import Section, { SubSection } from "@components/Section";
 
 interface Props {}
 
@@ -34,22 +36,25 @@ const LayoutMobileMenuModalTrigger: React.FC<Props> = ({ children }) => {
       })}
       asChild
     >
-      <Wrapper>
-        <MenuThemeContainer>
-          <Row centeredY>
-            <NightIcon />
-            <MenuText>다크모드</MenuText>
-          </Row>
-          <Switch onClick={toggleTheme} checked={colorMode === "dark"} />
-        </MenuThemeContainer>
+      <Section border>
+        <Wrapper>
+          <MenuThemeContainer>
+            <Row centeredY>
+              <NightIcon />
+              <MenuText>다크모드</MenuText>
+            </Row>
+            <Switch onClick={toggleTheme} checked={colorMode === "dark"} />
+          </MenuThemeContainer>
 
-        <ReportModalTrigger>
-          <MenuContainer>
-            <SendMessageIcon />
-            <MenuText>제보 / 피드백</MenuText>
-          </MenuContainer>
-        </ReportModalTrigger>
-      </Wrapper>
+          <ReportModalTrigger>
+            <MenuContainer>
+              <SendMessageIcon />
+              <MenuText>제보 / 피드백</MenuText>
+            </MenuContainer>
+          </ReportModalTrigger>
+        </Wrapper>
+      </Section>
+      <LayoutFooter />
     </Modal>
   );
 };
@@ -66,7 +71,7 @@ const MenuContainer = styled("div", {
   rowCenteredY: true,
   paddingY: rem(20),
   paddingX: rem(16),
-  borderTop: `${rem(1)} solid rgba($gray900rgb,0.1)`,
+  // borderTop: `${rem(1)} solid rgba($gray900rgb,0.1)`,
   cursor: "pointer",
 
   "&:first-of-type": {},

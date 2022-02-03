@@ -24,7 +24,7 @@ import ChartSubOptions from "./Chart_SubOptions";
 import Row from "@components/Row";
 import Space from "@components/Space";
 import Loader from "@components/Loader";
-import Section from "@components/Section";
+import Section, { SubSection } from "@components/Section";
 import Skeleton from "@components/Skeleton";
 import { TabProps } from "@components/Tabs";
 import ExpandIcon from "@components/icon/Icon_Expand";
@@ -551,7 +551,7 @@ export const ChartSkeleton = ({ tabs }: { tabs: number }) => {
         },
       }}
     >
-      <Section sub>
+      <SubSection>
         <Box
           css={{
             overflow: "hidden",
@@ -577,7 +577,7 @@ export const ChartSkeleton = ({ tabs }: { tabs: number }) => {
             </Box>
           ))}
         </Box>
-      </Section>
+      </SubSection>
 
       <Container>
         <Space h={16} />

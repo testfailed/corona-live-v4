@@ -21,18 +21,11 @@ const Section = styled("section", {
   },
 
   variants: {
-    sub: {
+    border: {
       true: {
-        as: "div",
-        width: `calc(100% + ${rem(2)})`,
-        transform: `translate(${rem(-1)}, ${rem(-1)})`,
-        marginBottom: 0,
-        boxShadow: "$subSectionBoxShadow",
-
-        "@md": {
-          borderRadius: `${rem(12)} ${rem(12)} 0 0`,
-          border: `${rem(1)} solid $subSectionBorder`,
-        },
+        borderRadius: rem(12),
+        border: `${rem(1)} solid $sectionBorder`,
+        boxShadow: "$elevation1",
       },
     },
   },

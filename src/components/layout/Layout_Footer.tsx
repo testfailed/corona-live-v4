@@ -1,72 +1,65 @@
 import React from "react";
 
-import Section from "@components/Section";
 import { styled } from "@styles/stitches.config";
 import { rem } from "polished";
 import {
   EmailIconBox,
   InstagramIconBox,
-  LinkIconBox,
   TwitterIconBox,
 } from "@components/SnsIconBox";
 import Space from "@components/Space";
-import { EMAIL } from "@constants/constants";
 import DonationIcon from "@components/icon/Icon_Donation";
 import DonationModalTrigger from "@components/modal/Modal_Donation";
-import GithubIcon from "@components/icon/Icon_Github";
-import EmailIcon from "@components/icon/Icon_Email";
 
-const LayoutFooter: React.FC = (props) => {
-  // useKakaoButton();
+interface Props {
+  simplified?: boolean;
+}
+
+const LayoutFooter: React.FC<Props> = ({ simplified }) => {
   return (
-    <Section css={{ margin: 0 }}>
-      <Wrapper className="user-select">
-        <Space h={24} />
+    <Wrapper className="user-select">
+      {!simplified && <Space h={24} />}
 
-        <SubText>서버비용 후원</SubText>
-        <Text>
-          이용하시는데 불편함이 없도록 광고 없이 운영을 하고 있어요.<br></br>
-          서버비용 충당후 후원금이 남을시 코로나19 관련 단체에 기부 할
-          예정이에요.
-        </Text>
+      <SubText>서버비용 후원</SubText>
+      <Text>
+        이용하시는데 불편함이 없도록 광고 없이 운영을 하고 있어요.<br></br>
+        서버비용 충당후 후원금이 남을시 코로나19 관련 단체에 기부 할 예정이에요.
+      </Text>
 
-        <DonationModalTrigger>
-          <DonateButton>
-            <DonationIcon size={8} />
-            <span>후원하기</span>
-          </DonateButton>
-        </DonationModalTrigger>
+      <DonationModalTrigger>
+        <DonateButton>
+          <DonationIcon size={8} />
+          <span>후원하기</span>
+        </DonateButton>
+      </DonationModalTrigger>
 
-        <Space h={42} />
+      <Space h={42} />
 
-        <SnsContainer>
-          <TwitterIconBox type="profile" />
-          <InstagramIconBox />
-          <EmailIconBox />
-        </SnsContainer>
+      <SnsContainer>
+        <TwitterIconBox type="profile" />
+        <InstagramIconBox />
+        <EmailIconBox />
+      </SnsContainer>
 
-        <Space h={32} />
+      <Space h={32} />
 
-        <Text>
-          본사이트에서 제공하는 실시간 확진자수는 민간이 취합한 집계이므로
-          <br />
-          공식적인 근거 자료로 활용될수 없고, 해당 정보 사용/공유로 인해
-          <br />
-          발생된 문제의 책임은 전적으로 사용자에게 있어요.
-          <br />
-        </Text>
+      <Text>
+        본사이트에서 제공하는 실시간 확진자수는 민간이 취합한 집계이므로
+        공식적인 근거 자료로 활용될수 없고, 해당 정보 사용/공유로 인해 발생된
+        문제의 책임은 전적으로 사용자에게 있어요.
+        <br />
+      </Text>
 
-        <Space h={36} />
+      <Space h={36} />
 
-        <InfoText>
-          <div>
-            MADE BY<b>CHINCHILLA</b>
-          </div>
-        </InfoText>
+      <InfoText>
+        <div>
+          MADE BY<b>CHINCHILLA</b>
+        </div>
+      </InfoText>
 
-        <Space h={32} />
-      </Wrapper>
-    </Section>
+      <Space h={32} />
+    </Wrapper>
   );
 };
 
@@ -123,12 +116,6 @@ const InfoText = styled("div", {
       color: "$gray800",
     },
   },
-});
-
-const Email = styled("a", {
-  body3: true,
-
-  color: "$color",
 });
 
 const DonateButton = styled("button", {
