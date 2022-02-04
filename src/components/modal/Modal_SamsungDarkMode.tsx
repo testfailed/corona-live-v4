@@ -5,18 +5,25 @@ import { rem } from "polished";
 import { css, styled } from "@styles/stitches.config";
 
 import { Modal } from "@components/Modal";
+import { useLocalStorage } from "@hooks/useLocalStorage";
 
 const SamsungDarkModeAlertModal: React.FC = () => {
   const [openModal, setOpenModal] = useState(false);
 
+  const [isSamsungFirstVisit, setIsSamsungFirstVisit] = useLocalStorage(
+    "is-samsung-first-visit",
+    true
+  );
+
   useEffect(() => {
     if (
       navigator.userAgent.match(/SamsungBrowser/i) &&
-      window.matchMedia("(prefers-color-scheme: dark)")
+      window.matchMedia("(prefers-color-scheme: dark)") &&
+      isSamsungFirstVisit === true
     ) {
       setOpenModal(true);
     }
-  }, []);
+  }, [isSamsungFirstVisit]);
 
   return (
     <Modal
@@ -33,6 +40,7 @@ const SamsungDarkModeAlertModal: React.FC = () => {
       })}
       onConfrim={(close) => {
         setOpenModal(false);
+        setIsSamsungFirstVisit(false);
         close();
       }}
       confirmText="닫기"
