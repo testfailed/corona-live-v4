@@ -11,11 +11,13 @@ import { axisBottom, axisLeft, axisRight } from "d3-axis";
 
 import useChartSize from "@hooks/useChartSize";
 import { isArrayEqual } from "@utils/array-util";
-import { styled, theme } from "@styles/stitches.config";
+import { config, styled, theme } from "@styles/stitches.config";
 
 import Row from "@components/Row";
 
 import { ChartMode } from "@_types/chart-type";
+import Underline from "@components/Underline";
+import Space from "@components/Space";
 
 export type ChartType = "line" | "bar";
 export type YAxisPosition = "left" | "right";
@@ -48,6 +50,8 @@ export interface ChartConfig {
   tooltipLabel: string;
   tooltipFormat: (value: number) => string;
   tooltipUnit?: string;
+
+  statLabel?: string;
 
   zIndex?: number;
 }
@@ -410,6 +414,8 @@ const ChartVisualizer: React.FC<Props> = ({
             ).toFixed(2)
           );
 
+          const barRadius = barThickness / 2.2;
+
           const barHeight = (x) => {
             const value = height - margin.bottom - yScale(data[x]);
 
@@ -455,8 +461,8 @@ const ChartVisualizer: React.FC<Props> = ({
                 .attr("opacity", (x) => (selectedX === x ? 1 : 0.6))
                 .attr("x", barLeft)
                 .attr("y", (x) => barTop(x))
-                .attr("rx", barThickness / 2.2)
-                .attr("ry", barThickness / 2.2)
+                .attr("rx", barRadius)
+                .attr("ry", barRadius)
             )
             .transition(t)
             .attr("width", barThickness)
@@ -464,7 +470,9 @@ const ChartVisualizer: React.FC<Props> = ({
             .attr("fill", (x) => (selectedX === x ? activeBarColor : barColor))
             .attr("opacity", (x) => (selectedX === x ? 1 : 0.6))
             .attr("x", barLeft)
-            .attr("y", (x) => barTop(x));
+            .attr("y", (x) => barTop(x))
+            .attr("rx", barRadius)
+            .attr("ry", barRadius);
         };
 
         const drawLines = () => {
@@ -678,6 +686,8 @@ const ChartVisualizer: React.FC<Props> = ({
           ).toFixed(2)
         );
 
+        const barRadius = barThickness / 2.2;
+
         const barHeight = (x) => {
           const value = height - margin.bottom - yScale(data[x]);
 
@@ -723,8 +733,8 @@ const ChartVisualizer: React.FC<Props> = ({
               .attr("opacity", (x) => (selectedX === x ? 1 : 0.6))
               .attr("x", barLeft)
               .attr("y", (x) => barTop(x))
-              .attr("rx", barThickness / 2.2)
-              .attr("ry", barThickness / 2.2)
+              .attr("rx", barRadius)
+              .attr("ry", barRadius)
           )
           .attr("opacity", (x) => (selectedX === x ? 1 : 0.6))
           .transition(t)
@@ -732,7 +742,9 @@ const ChartVisualizer: React.FC<Props> = ({
           .attr("height", (x) => height - margin.bottom - yScale(data[x]))
           .attr("fill", (x) => (selectedX === x ? activeBarColor : barColor))
           .attr("x", barLeft)
-          .attr("y", (x) => barTop(x));
+          .attr("y", (x) => barTop(x))
+          .attr("rx", barRadius)
+          .attr("ry", barRadius);
       };
 
       if (type === "line") drawPoints();
@@ -747,48 +759,53 @@ const ChartVisualizer: React.FC<Props> = ({
       : xParser(selectedX)
   );
 
+  const isExpanded = mode === "EXPANDED";
+
   return (
     <div ref={containerRef}>
-      <Wrapper>
-        <TooltipContainer
+      <Wrapper expanded={isExpanded}>
+        {isExpanded && (
+          <TitleContainer>
+            <TitleText>{dataSet[0].config.statLabel}</TitleText>
+            <TitleSubText>{xLabelValue}</TitleSubText>
+          </TitleContainer>
+        )}
+        <Tooltip
+          expanded={isExpanded}
           className="chart-tooltip-container"
           css={{
             visibility: xValue === undefined ? "hidden" : "visible",
           }}
         >
-          <TooltipLabel>{xLabelValue}</TooltipLabel>
+          {!isExpanded && <TooltipXLabel>{xLabelValue}</TooltipXLabel>}
           <Row>
             {dataSet &&
-              dataSet.map(({ config, data }) =>
+              dataSet.map(({ config, data }, index) =>
                 config.tooltipLabel !== null ? (
-                  <ToolTipValue
-                    key={config.tooltipLabel}
-                    css={{
-                      "--tooltip-value-color":
-                        config.barColor ?? config.lineColor,
-                      "--tooltip-value-color-opacity": `${
-                        config.barColor ?? config.lineColor
-                      }50`,
-                    }}
-                  >
-                    <span>{config.tooltipLabel}</span>
-                    <div>
-                      {config.tooltipFormat(data[selectedX] ?? 1111111111111)}
-                      {config?.tooltipUnit && (
-                        <span>{config?.tooltipUnit}</span>
-                      )}
-                    </div>
-                  </ToolTipValue>
+                  <TooltipContainer key={index}>
+                    <TooltipLegend
+                      css={{
+                        background: config.barColor ?? config.lineColor,
+                      }}
+                    />
+                    {!isExpanded && (
+                      <TooltipLabel>{config.tooltipLabel}</TooltipLabel>
+                    )}
+                    <TooltipValue>
+                      {config.tooltipFormat(data[selectedX])}
+                      <span>{config?.tooltipUnit}</span>
+                    </TooltipValue>
+                  </TooltipContainer>
                 ) : (
                   <></>
                 )
               )}
           </Row>
-        </TooltipContainer>
+        </Tooltip>
 
         <TooltipLine className="chart-tooltip-line" />
 
-        <svg
+        <Svg
           ref={svgRef}
           viewBox={`0 0 ${width ?? 0} ${height ?? 0}`}
           preserveAspectRatio="xMidYMid meet"
@@ -807,7 +824,7 @@ const ChartVisualizer: React.FC<Props> = ({
               ></rect>
             </clipPath>
           </defs>
-        </svg>
+        </Svg>
       </Wrapper>
     </div>
   );
@@ -816,6 +833,29 @@ const ChartVisualizer: React.FC<Props> = ({
 const Wrapper = styled("div", {
   position: "relative",
   zIndex: 1,
+
+  variants: {
+    expanded: {
+      true: {
+        "&:before": {
+          content: "",
+          background: "$gray300",
+          left: 0,
+          right: 0,
+          bottom: 0,
+          position: "absolute",
+          width: "100%",
+          transform: "scaleX(2)",
+          height: rem(1),
+        },
+        paddingBottom: rem(6),
+      },
+    },
+  },
+});
+
+const Svg = styled("svg", {
+  zIndex: 2,
 
   "& text": {
     body3: true,
@@ -859,18 +899,46 @@ const Wrapper = styled("div", {
     },
   },
 
-  "& svg, g, path, rect": {
+  "& g, path, rect": {
     zIndex: 2,
   },
 });
 
-const TooltipContainer = styled("div", {
+const TitleContainer = styled("div", {
+  position: "absolute",
+  left: rem(10),
+
+  "@md": {},
+});
+
+const TitleText = styled("div", {
+  position: "relative",
+
+  heading3: true,
+  color: "$gray900",
+  borderRadius: rem(6),
+
+  "@md": {
+    heading2: true,
+  },
+});
+
+const TitleSubText = styled("div", {
+  body3: true,
+  color: "$gray700",
+
+  "@md": {
+    body1: true,
+  },
+});
+
+const Tooltip = styled("div", {
   height: rem(50),
   marginTop: rem(12),
   marginBottom: rem(2),
   background: "$shadowBackground1",
   width: "fit-content",
-  column: true,
+  columnCenteredY: true,
   position: "relative",
   borderRadius: rem(12),
   boxShadow: `${rem(-1)} ${rem(1)} ${rem(12)} ${rem(-2)} #0000001f`,
@@ -883,52 +951,66 @@ const TooltipContainer = styled("div", {
     marginTop: rem(16),
     border: `${rem(1)} solid $sectionBorder`,
   },
+
+  variants: {
+    expanded: {
+      true: {
+        height: "auto",
+        paddingY: rem(4),
+        borderRadius: rem(10),
+
+        "@md": {
+          height: "auto",
+          paddingY: rem(6),
+          borderRadius: rem(12),
+        },
+      },
+    },
+  },
 });
 
-const TooltipLabel = styled("div", {
+const TooltipXLabel = styled("div", {
   body3: true,
+  color: "$gray800",
 
   fontWeight: 500,
 });
 
-const ToolTipValue = styled("div", {
+const TooltipContainer = styled("div", {
   rowCenteredY: true,
   marginRight: rem(8),
-
-  "&:before": {
-    content: "",
-    background: "var(--tooltip-value-color)",
-    display: "flex",
-    marginRight: rem(6),
-    height: rem(8),
-    width: rem(8),
-    borderRadius: rem(3),
-  },
-
-  "& > span": {
-    body1: true,
-
-    rowCenteredY: true,
-    marginRight: rem(4),
-  },
-
-  "& > div": {
-    subtitle2: true,
-
-    "& > span": {
-      fontWeight: 400,
-    },
-  },
-
-  "@md": {
-    "& > div": {
-      subtitle1: true,
-    },
-  },
 
   "&:last-of-type": {
     marginRight: 0,
   },
+});
+
+const TooltipValue = styled("div", {
+  subtitle2: true,
+
+  "& > span": {
+    fontWeight: 400,
+  },
+
+  "@md": {
+    subtitle1: true,
+  },
+});
+
+const TooltipLabel = styled("div", {
+  body1: true,
+
+  rowCenteredY: true,
+  marginRight: rem(4),
+});
+
+const TooltipLegend = styled("div", {
+  background: "var(--tooltip-value-color)",
+  display: "flex",
+  marginRight: rem(6),
+  height: rem(8),
+  width: rem(8),
+  borderRadius: rem(3),
 });
 
 const TooltipLine = styled("div", {

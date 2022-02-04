@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 
 import { rem } from "polished";
 import { useHistory, useLocation } from "react-router-dom";
@@ -23,24 +23,29 @@ import SendMessageIcon from "@components/icon/Icon_SendMessage";
 import ReportModalTrigger from "@components/modal/Modal_Report";
 
 const LayoutMobileHeader: React.FC = () => {
-  const [renderThemeButton] = useState(Math.random() > 0.5);
+  const [renderThemeButton, setRenderThemeButton] = useState<boolean>(null);
 
   const location = useLocation();
   const { push } = useHistory();
   const { toggleTheme } = useTheme();
+
+  useEffect(() => {
+    setRenderThemeButton(Math.random() >= 0.5);
+  }, []);
 
   const { pathname } = location;
 
   return (
     <Wrapper>
       <Header>
-        {renderThemeButton ? (
-          <Button icon onClick={toggleTheme}>
+        {renderThemeButton === true && (
+          <Button icon onClick={toggleTheme} css={{ fadeIn: true }}>
             <ThemeIcon size={18} />
           </Button>
-        ) : (
+        )}
+        {renderThemeButton === false && (
           <ReportModalTrigger>
-            <Button icon>
+            <Button icon css={{ fadeIn: true }}>
               <SendMessageIcon size={18} />
             </Button>
           </ReportModalTrigger>

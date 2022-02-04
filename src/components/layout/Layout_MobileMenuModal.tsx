@@ -29,7 +29,7 @@ const LayoutMobileMenuModalTrigger: React.FC<Props> = ({ children }) => {
       className={css({
         width: "85%",
         padding: rem(16),
-        background: "$background",
+        background: "$background!important",
 
         "@md": {
           maxWidth: rem(360),

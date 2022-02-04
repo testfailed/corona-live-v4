@@ -1,7 +1,11 @@
 import { rem } from "polished";
 import { createStitches } from "@stitches/react";
 
-import { fadeInUp, fadeInUpCentered } from "./animations/fade-animation";
+import {
+  fadeIn,
+  fadeInUp,
+  fadeInUpCentered,
+} from "./animations/fade-animation";
 
 export const { styled, css, theme, createTheme, globalCss, config, keyframes } =
   createStitches({
@@ -196,6 +200,10 @@ export const { styled, css, theme, createTheme, globalCss, config, keyframes } =
       /**
        * animation
        */
+      fadeIn: () => ({
+        animation: `${fadeIn} 400ms`,
+      }),
+
       fadeInUp: () => ({
         animation: `${fadeInUp} 400ms`,
       }),

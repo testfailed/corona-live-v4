@@ -19,7 +19,7 @@ function useChartSize(config?: {
         window.innerWidth - padding * 2
       );
 
-      const height = mode === "EXPANDED" ? width / 3 : width / 2;
+      const height = mode === "EXPANDED" ? width / 2.7 : width / 2;
       setChartSize({
         width,
         height,

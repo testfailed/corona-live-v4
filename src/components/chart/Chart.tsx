@@ -4,12 +4,7 @@ import { rem } from "polished";
 import { Presence } from "@radix-ui/react-presence";
 
 import { styled, theme } from "@styles/stitches.config";
-import {
-  fadeIn,
-  fadeInUp,
-  fadeOut,
-  fadeScaleIn,
-} from "@styles/animations/fade-animation";
+import { fadeIn, fadeOut } from "@styles/animations/fade-animation";
 import { chartRangeOptions, chartTypeOptions } from "@utils/chart-util";
 import { formatObjectValues, removeNullFromObject } from "@utils/object-util";
 
@@ -24,7 +19,7 @@ import ChartSubOptions from "./Chart_SubOptions";
 import Row from "@components/Row";
 import Space from "@components/Space";
 import Loader from "@components/Loader";
-import Section, { SubSection } from "@components/Section";
+import { SubSection } from "@components/Section";
 import Skeleton from "@components/Skeleton";
 import { TabProps } from "@components/Tabs";
 import ExpandIcon from "@components/icon/Icon_Expand";
@@ -416,8 +411,6 @@ const Chart = <MainOption extends string, SubOption extends string>(
           </Row>
           {enableExpandMode && (
             <ChartModeButton onClick={toggleChartMode}>
-              {/* <ShrinkIcon stroke={theme.colors.gray900} /> */}
-
               <ExpandIcon
                 stroke={theme.colors.gray900}
                 expanded={_mode === "EXPANDED"}

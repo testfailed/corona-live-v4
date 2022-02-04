@@ -168,6 +168,13 @@ const DomesticChartSection: React.FC = () => {
       const xAxis = getDefaultChartXAxis(option);
       const yAxis = getDefaultChartYAxis(option, { right: { id: stat } });
 
+      const statLabel: Partial<Record<DomesticStat, string>> = {
+        confirmed: "확진자",
+        deceased: "사망자",
+        "confirmed-severe-symptoms": "위중증자",
+        tested: "검사자",
+      };
+
       return Object.keys(data).map((key) => ({
         dataSet: [
           {
@@ -178,12 +185,15 @@ const DomesticChartSection: React.FC = () => {
             }),
             config: getDefaultChartConfig(
               option,
-              stat === "tested-positive-rates"
+              key === "tested-positive-rates"
                 ? {
                     tooltipUnit: "%",
                     tooltipLabel: "7일 평균",
+                    statLabel: "7일 평균 확진율",
                   }
-                : {}
+                : {
+                    statLabel: statLabel[key],
+                  }
             ),
           },
         ],
@@ -264,7 +274,7 @@ const DomesticChartSection: React.FC = () => {
   return (
     <Section>
       <Chart
-        // enableExpandMode
+        enableExpandMode
         {...{ chartStatOptions, getChartData, forceUpdate: shoulUpdate }}
       />
     </Section>
