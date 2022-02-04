@@ -410,8 +410,9 @@ const Chart = <MainOption extends string, SubOption extends string>(
             )}
           </Row>
           {enableExpandMode && (
-            <ChartModeButton onClick={toggleChartMode}>
+            <ChartModeButton>
               <ExpandIcon
+                onClick={toggleChartMode}
                 stroke={theme.colors.gray900}
                 expanded={_mode === "EXPANDED"}
               />
@@ -474,14 +475,27 @@ const Heading = styled(SubSection, {
 });
 
 const ChartModeButton = styled("div", {
+  position: "relative",
   paddingRight: rem(24),
   paddingLeft: rem(20),
-  marginLeft: rem(12),
+  marginLeft: rem(2),
   cursor: "pointer",
   borderLeft: `${rem(1)} solid rgba($gray900rgb, 0.2)`,
 
   "& path": {
     stroke: "$gray900",
+  },
+
+  "&:before": {
+    content: "",
+    height: "100%",
+    position: "absolute",
+    right: "101%",
+    bottom: 0,
+    top: 0,
+    width: rem(36),
+    background: "linear-gradient(to left, white 25%, transparent)",
+    zIndex: 1,
   },
 });
 
