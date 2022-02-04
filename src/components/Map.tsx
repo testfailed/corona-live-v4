@@ -128,7 +128,7 @@ const Map: React.FC<Props> = ({ data }) => {
             >
               <CityName>{cityName}</CityName>
               <CityCases>{numberWithCommas(stat[0])}</CityCases>
-              {!!stat[1] && <DeltaTag delta={stat[1]} />}
+              {!!stat[1] && <DeltaTag small delta={stat[1]} />}
             </FloatingBox>
           );
         })}
@@ -232,8 +232,8 @@ const FloatingBox = styled("div", {
   alignItems: "center",
   background: "$mapLabelBackground",
   borderRadius: rem(12),
-  paddingX: rem(10),
   paddingY: rem(4),
+  paddingX: rem(6),
   boxShadow: `0 0 ${rem(6)} #00000025`,
   lineHeight: rem(18),
   transform: "translate3d(-50%, -50%, 0rem)",
