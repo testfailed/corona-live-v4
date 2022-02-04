@@ -79,6 +79,10 @@ export interface ChartVisualizerData {
   dataSet: ChartData[];
   yAxis: { left?: ChartYAxis; right?: ChartYAxis };
   xAxis: ChartXAxis;
+  dataSource?: {
+    text: string;
+    url?: string;
+  };
 }
 
 const TRANSITION_DURATION = 400;
@@ -153,6 +157,7 @@ const ChartVisualizer: React.FC<Props> = ({
   xAxis,
   yAxis,
   mode,
+  dataSource,
   selectedX: parentSelectedX,
   setSelectedX: parentSetSelectedX,
 }) => {
@@ -764,12 +769,41 @@ const ChartVisualizer: React.FC<Props> = ({
   return (
     <div ref={containerRef}>
       <Wrapper expanded={isExpanded}>
-        {isExpanded && (
+        {mode === "EXPANDED" && (
           <TitleContainer>
-            <TitleText>{dataSet[0].config.statLabel}</TitleText>
-            <TitleSubText>{xLabelValue}</TitleSubText>
+            <TitleText>
+              {dataSet[0].config.statLabel}
+              {/* <span>{xLabelValue}</span> */}
+            </TitleText>
+            {/* <TitleSubText>{xLabelValue}</TitleSubText> */}
+            {dataSource && (
+              <DataSource target="_blank" href={dataSource?.url}>
+                <label>출처</label>
+                {dataSource.url ? (
+                  <a target="_blank" href={dataSource.url}>
+                    {dataSource.text}
+                  </a>
+                ) : (
+                  <div>{dataSource.text}</div>
+                )}
+              </DataSource>
+            )}
           </TitleContainer>
         )}
+
+        {mode === "DEFAULT" && dataSource && (
+          <DataSource target="_blank" href={dataSource?.url} absolute={true}>
+            <label>출처</label>
+            {dataSource.url ? (
+              <a target="_blank" href={dataSource.url}>
+                {dataSource.text}
+              </a>
+            ) : (
+              <div>{dataSource.text}</div>
+            )}
+          </DataSource>
+        )}
+
         <Tooltip
           expanded={isExpanded}
           className="chart-tooltip-container"
@@ -918,6 +952,11 @@ const TitleText = styled("div", {
   color: "$gray900",
   borderRadius: rem(6),
 
+  "& span": {
+    fontWeight: 400,
+    marginLeft: rem(6),
+  },
+
   "@md": {
     heading2: true,
   },
@@ -945,6 +984,7 @@ const Tooltip = styled("div", {
   overflow: "hidden",
   paddingX: rem(12),
   paddingY: rem(6),
+  zIndex: 1,
 
   "@md": {
     height: rem(54),
@@ -1019,6 +1059,42 @@ const TooltipLine = styled("div", {
   borderLeft: `${rem(2)} dotted $gray500`,
   transform: `translate(${rem(-1)},0)`,
   zIndex: -1,
+});
+
+const DataSource = styled("a", {
+  zIndex: 0,
+  rowCenteredY: true,
+  body3: true,
+  textDecoration: "none",
+
+  "& label": {
+    color: "$gray700",
+  },
+  "& a, & div": {
+    marginLeft: rem(3),
+    textDecoration: "none",
+    color: "$gray700",
+  },
+
+  "@md": {
+    left: rem(8),
+
+    body2: true,
+  },
+
+  "&:before": {
+    content: "*",
+  },
+
+  variants: {
+    absolute: {
+      true: {
+        position: "absolute",
+        left: rem(6),
+        top: rem(16),
+      },
+    },
+  },
 });
 
 export default ChartVisualizer;

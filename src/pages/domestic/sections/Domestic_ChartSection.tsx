@@ -28,6 +28,7 @@ import type {
   ChartData,
   ChartVisualizerData,
 } from "@components/chart/Chart_Visualizer";
+import { KDCA_DATA_SOURCE } from "@constants/constants";
 
 type DomesticStat =
   | "confirmed"
@@ -199,6 +200,7 @@ const DomesticChartSection: React.FC = () => {
         ],
         xAxis,
         yAxis,
+        dataSource: KDCA_DATA_SOURCE,
       }));
     } else {
       const xAxis = getDefaultChartXAxis(option);
@@ -266,6 +268,7 @@ const DomesticChartSection: React.FC = () => {
           dataSet,
           xAxis,
           yAxis,
+          dataSource: option?.type === "live" ? null : KDCA_DATA_SOURCE,
         },
       ];
     }
