@@ -650,7 +650,7 @@ const ChartVisualizer: React.FC<Props> = ({
         tooltipDate
           .style("opacity", selectedX ? 1 : 0)
           .style("left", `${xScale(xParser(selectedX)) - w / 2}px`)
-          .style("top", `${height}px`);
+          .style("bottom", rem(0));
       };
 
       if (mode === "EXPANDED") {
@@ -1085,13 +1085,13 @@ const TooltipDate = styled("div", {
   zIndex: 2,
   border: `${rem(1)} solid $gray300`,
   height: rem(20),
-  transform: `translateY(${rem(12)})`,
+  transform: `translateY(${rem(-9)})`,
   letterSpacing: rem(-0.5),
   fontWeight: 700,
 
   "@md": {
     height: rem(22),
-    transform: `translateY(${rem(20)})`,
+    transform: `translateY(${rem(-8)})`,
   },
 });
 
