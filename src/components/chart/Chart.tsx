@@ -423,13 +423,14 @@ const Chart = <MainOption extends string, SubOption extends string>(
             )}
           </Row>
           {enableExpandMode && (
-            <ChartModeButton>
-              <ExpandIcon
-                onClick={toggleChartMode}
-                stroke={theme.colors.gray900}
-                expanded={_mode === "EXPANDED"}
-              />
-            </ChartModeButton>
+            <ChartModeButtonContainer leftFadeOut={_mode === "DEFAULT"}>
+              <ChartModeButton onClick={toggleChartMode}>
+                <ExpandIcon
+                  stroke={theme.colors.gray900}
+                  expanded={_mode === "EXPANDED"}
+                />
+              </ChartModeButton>
+            </ChartModeButtonContainer>
           )}
         </Heading>
         <Container>
@@ -458,15 +459,16 @@ const Chart = <MainOption extends string, SubOption extends string>(
               </>
             )}
             {mode === "EXPANDED" &&
-              chartData.map((chartData, index) => (
+              chartData.map((data, index) => (
                 <ChartVisualizer
                   key={index}
-                  {...chartData}
+                  {...data}
                   {...{
                     mode,
                     selectedX,
                     setSelectedX,
                   }}
+                  lastIndex={index === chartData.length - 1}
                 />
               ))}
           </div>
@@ -487,29 +489,39 @@ const Heading = styled(SubSection, {
   rowCenteredY: true,
 });
 
-const ChartModeButton = styled("div", {
+const ChartModeButtonContainer = styled("div", {
   position: "relative",
-  paddingRight: rem(24),
-  paddingLeft: rem(20),
+
   marginLeft: rem(2),
-  cursor: "pointer",
   borderLeft: `${rem(1)} solid rgba($gray900rgb, 0.2)`,
 
   "& path": {
     stroke: "$gray900",
   },
 
-  // "&:before": {
-  //   content: "",
-  //   height: "100%",
-  //   position: "absolute",
-  //   right: "101%",
-  //   bottom: 0,
-  //   top: 0,
-  //   width: rem(36),
-  //   background: "linear-gradient(to left, white 25%, transparent)",
-  //   zIndex: 1,
-  // },
+  variants: {
+    leftFadeOut: {
+      true: {
+        "&:before": {
+          content: "",
+          height: "100%",
+          position: "absolute",
+          right: "101%",
+          bottom: 0,
+          top: 0,
+          width: rem(36),
+          background: "linear-gradient(to left, $white 25%, transparent)",
+          zIndex: 1,
+        },
+      },
+    },
+  },
+});
+
+const ChartModeButton = styled("div", {
+  paddingRight: rem(24),
+  paddingLeft: rem(20),
+  cursor: "pointer",
 });
 
 const Box = styled("div", {});

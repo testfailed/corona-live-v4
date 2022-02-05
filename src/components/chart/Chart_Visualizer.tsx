@@ -150,6 +150,7 @@ interface Props extends ChartVisualizerData {
   mode: ChartMode;
   selectedX: string;
   setSelectedX: React.Dispatch<React.SetStateAction<string>>;
+  lastIndex?: boolean;
 }
 
 const ChartVisualizer: React.FC<Props> = ({
@@ -160,6 +161,7 @@ const ChartVisualizer: React.FC<Props> = ({
   dataSource,
   selectedX: parentSelectedX,
   setSelectedX: parentSetSelectedX,
+  lastIndex,
 }) => {
   const svgRef = useRef<SVGSVGElement>(null);
   const containerRef = useRef<HTMLDivElement>(null);
@@ -634,6 +636,26 @@ const ChartVisualizer: React.FC<Props> = ({
         .style("left", rem(xScale(xParser(selectedX))))
         .style("top", rem(containerHeight))
         .style("height", rem(height - 18));
+
+      const updateTooltipDate = () => {
+        const xValue = xAxis?.format(
+          xAxis.scaleType === "linear" &&
+            selectedX === xValues[xValues.length - 1]
+            ? "현재"
+            : xParser(selectedX)
+        );
+
+        tooltipDate.html(xValue);
+        const { width: w } = tooltipDate.node().getBoundingClientRect();
+        tooltipDate
+          .style("opacity", selectedX ? 1 : 0)
+          .style("left", `${xScale(xParser(selectedX)) - w / 2}px`)
+          .style("top", `${height}px`);
+      };
+
+      if (mode === "EXPANDED") {
+        updateTooltipDate();
+      }
     };
 
     if (
@@ -766,9 +788,11 @@ const ChartVisualizer: React.FC<Props> = ({
 
   const isExpanded = mode === "EXPANDED";
 
+  console.log(lastIndex);
+
   return (
     <div ref={containerRef}>
-      <Wrapper expanded={isExpanded}>
+      <Wrapper borderBottom={isExpanded && !lastIndex}>
         {mode === "EXPANDED" && xValue !== undefined && (
           <TitleContainer>
             <TitleText>{dataSet[0].config.statLabel}</TitleText>
@@ -835,6 +859,8 @@ const ChartVisualizer: React.FC<Props> = ({
 
         <TooltipLine className="chart-tooltip-line" />
 
+        <TooltipDate className="chart-tooltip-date" />
+
         <Svg
           ref={svgRef}
           viewBox={`0 0 ${width ?? 0} ${height ?? 0}`}
@@ -865,7 +891,7 @@ const Wrapper = styled("div", {
   zIndex: 1,
 
   variants: {
-    expanded: {
+    borderBottom: {
       true: {
         "&:before": {
           content: "",
@@ -962,11 +988,11 @@ const Tooltip = styled("div", {
   height: rem(50),
   marginTop: rem(12),
   marginBottom: rem(2),
-  background: "$shadowBackground1",
   width: "fit-content",
   columnCenteredY: true,
   position: "relative",
   borderRadius: rem(12),
+  background: "$shadowBackground1",
   boxShadow: `${rem(-1)} ${rem(1)} ${rem(12)} ${rem(-2)} #0000001f`,
   overflow: "hidden",
   paddingX: rem(12),
@@ -1046,6 +1072,29 @@ const TooltipLine = styled("div", {
   borderLeft: `${rem(2)} dotted $gray500`,
   transform: `translate(${rem(-1)},0)`,
   zIndex: -1,
+});
+
+const TooltipDate = styled("div", {
+  body3: true,
+  rowCenteredY: true,
+  position: "absolute",
+  background: "$shadowBackground1",
+  boxShadow: `${rem(-1)} ${rem(1)} ${rem(12)} ${rem(-2)} #0000001f`,
+  color: "$gray900",
+  borderRadius: rem(16),
+  paddingY: rem(1),
+  paddingX: rem(8),
+  zIndex: 2,
+  border: `${rem(1)} solid $gray300`,
+  height: rem(20),
+  transform: `translateY(${rem(12)})`,
+  letterSpacing: rem(-0.5),
+  fontWeight: 700,
+
+  "@md": {
+    height: rem(22),
+    transform: `translateY(${rem(20)})`,
+  },
 });
 
 const DataSource = styled("a", {
