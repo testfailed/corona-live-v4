@@ -176,7 +176,7 @@ const ChartVisualizer: React.FC<Props> = ({
   const setSelectedX = mode === "DEFAULT" ? _setSelectedX : parentSetSelectedX;
 
   const { xValues, xParser, xScale, yScales, margin } = useMemo(() => {
-    let margin = { left: 20, right: 30, top: 16, bottom: 20 };
+    let margin = { left: 20, right: 20, top: 16, bottom: 20 };
 
     if (!dataSet?.[0]) return { margin };
 
