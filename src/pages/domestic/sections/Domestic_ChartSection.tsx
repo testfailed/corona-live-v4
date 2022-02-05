@@ -141,8 +141,12 @@ const DomesticChartSection: React.FC = () => {
           },
         },
       }),
-    [forceUpdate]
+    [shoulUpdate]
   );
+
+  const chartMode: ChartMode = useMemo(() => {
+    return isInTimeRange("09:30:00", "15:00:00") ? "EXPANDED" : "DEFAULT";
+  }, [shoulUpdate]);
 
   const getChartData = async (
     stat: DomesticStat,
@@ -189,8 +193,7 @@ const DomesticChartSection: React.FC = () => {
               key === "tested-positive-rates"
                 ? {
                     tooltipUnit: "%",
-                    tooltipLabel: "7일 평균",
-                    statLabel: "7일 평균 확진율",
+                    statLabel: "확진율",
                   }
                 : {
                     statLabel: statLabel[key],
@@ -255,7 +258,7 @@ const DomesticChartSection: React.FC = () => {
               stat === "tested-positive-rates"
                 ? {
                     tooltipUnit: "%",
-                    tooltipLabel: "7일 평균",
+                    tooltipLabel: "",
                   }
                 : {}
             ),
@@ -278,6 +281,7 @@ const DomesticChartSection: React.FC = () => {
     <Section>
       <Chart
         enableExpandMode
+        defaultMode={chartMode}
         {...{ chartStatOptions, getChartData, forceUpdate: shoulUpdate }}
       />
     </Section>
