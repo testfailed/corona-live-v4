@@ -43,14 +43,15 @@ const LayoutFooter: React.FC<Props> = ({ simplified }) => {
       </SnsContainer>
 
       {simplified ? (
-        <Space h={6} />
+        <Space h={12} />
       ) : (
         <>
           <Space h={32} />
           <Text>
-            본사이트에서 제공하는 실시간 확진자수는 민간이 취합한 집계이므로
+            본사이트에서 제공하는 실시간 확진자수는 각 지자체에서 제공하는
+            <br></br> 제공하는 자료를 기반으로 민간이 취합한 집계이므로 공식적인
             <br></br>
-            공식적인 근거 자료로 활용될수 없고, 해당 정보 사용/공유로 인해
+            근거 자료로 활용될수 없고, 해당 정보 사용/공유로 인해
             <br></br>
             발생된 문제의 책임은 전적으로 사용자에게 있어요.
             <br />
@@ -73,7 +74,7 @@ const LayoutFooter: React.FC<Props> = ({ simplified }) => {
 const Wrapper = styled("div", {
   columnCenteredX: true,
   paddingY: rem(16),
-  paddingX: rem(8),
+  paddingX: rem(2),
 });
 
 const SubText = styled("div", {
@@ -91,7 +92,7 @@ const Text = styled("div", {
   justifyContent: "center",
 
   opacity: 0.8,
-  lineHeight: rem(20),
+  lineHeight: rem(22),
   wordBreak: "keep-all",
 });
 
