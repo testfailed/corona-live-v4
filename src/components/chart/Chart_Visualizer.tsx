@@ -529,7 +529,7 @@ const ChartVisualizer: React.FC<Props> = ({
                   .append("path")
                   .attr("class", `area-${i}`)
                   .attr("stroke", lineColor)
-                  .attr("strokeWidth", lineThickness)
+                  .attr("stroke-width", lineThickness)
                   .attr("clip-path", `url(#maskClipPath)`)
                   .attr("d", (a) => {
                     return (
@@ -787,8 +787,6 @@ const ChartVisualizer: React.FC<Props> = ({
   );
 
   const isExpanded = mode === "EXPANDED";
-
-  console.log(lastIndex);
 
   return (
     <div ref={containerRef}>
@@ -1124,10 +1122,6 @@ const DataSource = styled("a", {
         position: "absolute",
         left: rem(6),
         top: rem(5),
-
-        "&:before": {
-          // content: "*",
-        },
       },
     },
   },

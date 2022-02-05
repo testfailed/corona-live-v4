@@ -423,7 +423,8 @@ const Chart = <MainOption extends string, SubOption extends string>(
             )}
           </Row>
           {enableExpandMode && (
-            <ChartModeButtonContainer leftFadeOut={_mode === "DEFAULT"}>
+            <ChartModeButtonContainer>
+              {_mode === "DEFAULT" && <ChartHeadingDivider />}
               <ChartModeButton onClick={toggleChartMode}>
                 <ExpandIcon
                   stroke={theme.colors.gray900}
@@ -489,6 +490,18 @@ const Heading = styled(SubSection, {
   rowCenteredY: true,
 });
 
+const ChartHeadingDivider = styled("div", {
+  height: "100%",
+  position: "absolute",
+  right: "101%",
+  bottom: 0,
+  top: 0,
+  width: rem(36),
+  // background: `linear-gradient(to left, $whiteA100 25%, $whiteA000)`,
+  // backgroundImage: `-webkit-linear-gradient(to left, $whiteA100 25%, $whiteA000)`,
+  zIndex: 1,
+});
+
 const ChartModeButtonContainer = styled("div", {
   position: "relative",
 
@@ -510,7 +523,7 @@ const ChartModeButtonContainer = styled("div", {
           bottom: 0,
           top: 0,
           width: rem(36),
-          background: "linear-gradient(to left, $white 25%, transparent)",
+          background: `linear-gradient(to left, ${theme.colors.white.computedValue} 25%, transparent)`,
           zIndex: 1,
         },
       },

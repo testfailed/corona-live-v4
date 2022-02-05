@@ -26,14 +26,16 @@ const WorldPage: React.FC = () => {
         canonical={`${WEB_URL}${WORLD_PATH}`}
       />
 
-      <FadeIn show={data !== undefined} fallback={<WorldPageSkeleton />}>
+      <WorldPageSkeleton />
+
+      {/* <FadeIn show={data !== undefined} fallback={<WorldPageSkeleton />}>
         <Column>
           <WorldStatSection />
           <WorldLiveSection />
           <WorldChartSection />
           <WorldCountrySection />
         </Column>
-      </FadeIn>
+      </FadeIn> */}
     </>
   );
 };
