@@ -55,7 +55,7 @@ const LayoutMobileHeader: React.FC = () => {
 
         <LayoutMobileMenuTrigger>
           <Button icon>
-            <MenuIcon size={18} />
+            <MenuIcon size={20} />
           </Button>
         </LayoutMobileMenuTrigger>
       </Header>
