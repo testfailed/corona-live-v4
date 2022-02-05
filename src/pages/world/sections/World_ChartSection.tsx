@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React from "react";
 
 import useApi from "@hooks/useApi";
 import useCachedChartData from "@hooks/useCachedChartData";
@@ -18,7 +18,7 @@ import {
 } from "@utils/chart-util";
 import {
   ChartDefaultOption,
-  ChartDefaultOptionKey,
+  ChartMode,
   ChartRangeOptionValue,
   ChartTypeOptionValue,
 } from "@_types/chart-type";
@@ -29,13 +29,21 @@ import {
 import { theme } from "@styles/stitches.config";
 import WorldApi from "@apis/world-api";
 
-export type WorldChartPrimaryOptions = "deceased" | "confirmed";
-
 export type WorldStat = "confirmed" | "deceased";
 
-type WorldOption = ChartDefaultOptionKey | "compare";
+type ChartCompareOptionValue =
+  | "yesterday"
+  | "weekAgo"
+  | "monthAgo"
+  | "twoWeeksAgo";
 
-const chartStatOptions = createChartStatOptions<WorldStat, WorldOption>()({
+interface WorldOption extends ChartDefaultOption {
+  compare: ChartCompareOptionValue;
+}
+
+type WorldOptionKey = keyof WorldOption;
+
+const chartStatOptions = createChartStatOptions<WorldStat, WorldOptionKey>()({
   confirmed: {
     label: "확진자",
     options: {
@@ -76,92 +84,123 @@ const WorldChartSection: React.FC = () => {
 
   const getChartData = async (
     stat: WorldStat,
-    option: Record<WorldOption, string>
-  ): Promise<ChartVisualizerData> => {
+    option: WorldOption,
+    mode: ChartMode
+  ): Promise<Array<ChartVisualizerData>> => {
     let dataSet: ChartData[] = [];
 
-    const type = option?.type as ChartTypeOptionValue;
-    const range = option?.range as ChartRangeOptionValue;
-    const compare = option?.compare;
+    if (mode === "EXPANDED") {
+      const data = await getCachedChartData({
+        stat: ["confirmed", "deceased"] as Array<WorldStat>,
+        apiName: "all",
+        range: "oneMonth",
+        isCompressed: true,
+        isSingle: false,
+      });
 
-    const xAxis = getDefaultChartXAxis({ type, range });
-    const yAxis = getDefaultChartYAxis(
-      { type, range },
-      { right: { id: stat } }
-    );
+      const xAxis = getDefaultChartXAxis(option);
+      const yAxis = getDefaultChartYAxis(option, { right: { id: stat } });
 
-    if (stat === "confirmed" && type === "live") {
-      const today = liveData.hourlyLive["today"];
-      const compared = liveData.hourlyLive[compare];
-
-      const liveLabel: Record<string, string> = {
-        yesterday: "어제",
-        weekAgo: "1주전",
-        twoWeeksAgo: "2주전",
-        monthAgo: "한달전",
+      const statLabel: Partial<Record<WorldStat, string>> = {
+        confirmed: "확진자",
+        deceased: "사망자",
       };
 
-      dataSet = [
-        {
-          data: compared,
-          config: getDefaultChartConfig(
-            {
-              type,
-              range,
-            },
-            {
-              color: theme.colors.gray400,
-              tooltipLabel: liveLabel[compare],
-              chartType: "line",
-              showPoints: true,
-            }
-          ),
-        },
-        {
-          data: today,
-          config: getDefaultChartConfig(
-            {
-              type,
-              range,
-            },
-            {
-              color: theme.colors.blue500,
-              tooltipLabel: "오늘",
-              chartType: "line",
-              showPoints: true,
-            }
-          ),
-        },
-      ];
+      return Object.keys(data).map((key) => ({
+        dataSet: [
+          {
+            data: transformChartData(data[key], {
+              type: option.type,
+              range: option.range,
+            }),
+            config: getDefaultChartConfig(option, {
+              statLabel: statLabel[key],
+            }),
+          },
+        ],
+        xAxis,
+        yAxis,
+      }));
     } else {
-      const data = await getCachedChartData({ stat: [stat], range });
-      dataSet = [
+      const type = option?.type as ChartTypeOptionValue;
+      const range = option?.range as ChartRangeOptionValue;
+      const compare = option?.compare;
+
+      const xAxis = getDefaultChartXAxis({ type, range });
+      const yAxis = getDefaultChartYAxis(
+        { type, range },
+        { right: { id: stat } }
+      );
+
+      if (stat === "confirmed" && type === "live") {
+        const today = liveData.hourlyLive["today"];
+        const compared = liveData.hourlyLive[compare];
+
+        const liveLabel: Record<string, string> = {
+          yesterday: "어제",
+          weekAgo: "1주전",
+          twoWeeksAgo: "2주전",
+          monthAgo: "한달전",
+        };
+
+        dataSet = [
+          {
+            data: compared,
+            config: getDefaultChartConfig(
+              {
+                type,
+                range,
+              },
+              {
+                color: theme.colors.gray400,
+                tooltipLabel: liveLabel[compare],
+                chartType: "line",
+                showPoints: true,
+              }
+            ),
+          },
+          {
+            data: today,
+            config: getDefaultChartConfig(
+              {
+                type,
+                range,
+              },
+              {
+                color: theme.colors.blue500,
+                tooltipLabel: "오늘",
+                chartType: "line",
+                showPoints: true,
+              }
+            ),
+          },
+        ];
+      } else {
+        const data = await getCachedChartData({ stat: [stat], range });
+        dataSet = [
+          {
+            data: transformChartData(data, {
+              type: option.type,
+              range: option.range,
+            }),
+            config: getDefaultChartConfig({ type, range }),
+          },
+        ];
+      }
+
+      return [
         {
-          data,
-          config: getDefaultChartConfig({ type, range }),
+          dataSet,
+          xAxis,
+          yAxis,
         },
       ];
     }
-
-    return {
-      dataSet: dataSet.map(({ data, config }) => ({
-        config,
-        data: transformChartData(data, {
-          type,
-          range:
-            stat === "confirmed" && range === "oneWeek"
-              ? "oneWeekExtra"
-              : range,
-        }),
-      })),
-      xAxis,
-      yAxis,
-    };
   };
 
   return (
     <Section>
-      <Chart {...{ chartStatOptions, getChartData }} />
+      <Chart enableExpandMode {...{ chartStatOptions, getChartData }} />
     </Section>
   );
 };
