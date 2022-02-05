@@ -10,6 +10,6 @@ export const transformWorldUpdates = (
 
   return updates.map(({ cases, datetime, countryId }) => ({
     date: datetime,
-    update: `${boldify(COUNTRY_NAMES[countryId])} ${cases}명 추가 확진`,
+    update: `${boldify(COUNTRY_NAMES[countryId] ?? "")} ${cases}명 추가 확진`,
   }));
 };

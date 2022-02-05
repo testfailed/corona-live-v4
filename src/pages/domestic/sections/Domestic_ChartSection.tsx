@@ -104,13 +104,6 @@ const DomesticChartSection: React.FC = () => {
             },
           ],
         },
-        deceased: {
-          label: "사망자",
-          options: {
-            type: chartTypeOptions({ omit: ["live", "accumulated"] }),
-            range: chartRangeOptions(),
-          },
-        },
         "confirmed-severe-symptoms": {
           label: "위중증자",
 
@@ -119,6 +112,13 @@ const DomesticChartSection: React.FC = () => {
               omit: ["live", "accumulated", "monthly"],
             }),
             range: chartRangeOptions({ disable: ["all"] }),
+          },
+        },
+        deceased: {
+          label: "사망자",
+          options: {
+            type: chartTypeOptions({ omit: ["live", "accumulated"] }),
+            range: chartRangeOptions(),
           },
         },
         "tested-positive-rates": {
@@ -159,8 +159,8 @@ const DomesticChartSection: React.FC = () => {
       const data = await getCachedChartData({
         stat: [
           "confirmed",
-          "deceased",
           "confirmed-severe-symptoms",
+          "deceased",
           "tested-positive-rates",
           "tested",
         ] as Array<DomesticStat>,

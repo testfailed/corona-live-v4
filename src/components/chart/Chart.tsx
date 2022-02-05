@@ -32,11 +32,19 @@ const getInitialSelectedSubOptions = <
   MainOption extends string,
   SubOption extends string
 >(
-  chartStatOptions: ChartStatOptions<MainOption, SubOption>
+  chartStatOptions: ChartStatOptions<MainOption, SubOption>,
+  defaultMode?: ChartMode
 ) => {
   const stat = Object.keys(chartStatOptions)[0] as MainOption;
   const { options } = chartStatOptions[stat];
   const defaultOptions = chartStatOptions[stat]?.defaultOptions;
+
+  if (defaultMode === "EXPANDED") {
+    return {
+      type: "daily",
+      range: "oneMonth",
+    };
+  }
 
   return formatObjectValues(
     removeNullFromObject(options),
@@ -264,13 +272,16 @@ const createReducer =
 const initReducerState = <MainOption extends string, SubOption extends string>(
   props: Props<MainOption, SubOption>
 ): ReducerState<MainOption, SubOption> => {
-  const { chartStatOptions } = props;
+  const { chartStatOptions, defaultMode } = props;
   const stats = Object.keys(chartStatOptions) as MainOption[];
-  const selectedSubOptions = getInitialSelectedSubOptions(chartStatOptions);
+  const selectedSubOptions = getInitialSelectedSubOptions(
+    chartStatOptions,
+    defaultMode
+  );
 
   return {
     chartData: [],
-    mode: "DEFAULT",
+    mode: props.defaultMode ?? "DEFAULT",
     selectedMainOption: stats[0],
     selectedSubOptions,
     props,
@@ -288,6 +299,7 @@ interface Props<MainOption extends string, SubOption extends string> {
   ) => Promise<Array<ChartVisualizerData>>;
   forceUpdate?: any;
   enableExpandMode?: boolean;
+  defaultMode?: ChartMode;
 }
 
 const Chart = <MainOption extends string, SubOption extends string>(
@@ -298,6 +310,7 @@ const Chart = <MainOption extends string, SubOption extends string>(
     getChartData,
     forceUpdate,
     enableExpandMode = false,
+    defaultMode = "DEFAULT",
   } = props;
 
   const reducer = createReducer<MainOption, SubOption>();
@@ -486,17 +499,17 @@ const ChartModeButton = styled("div", {
     stroke: "$gray900",
   },
 
-  "&:before": {
-    content: "",
-    height: "100%",
-    position: "absolute",
-    right: "101%",
-    bottom: 0,
-    top: 0,
-    width: rem(36),
-    background: "linear-gradient(to left, white 25%, transparent)",
-    zIndex: 1,
-  },
+  // "&:before": {
+  //   content: "",
+  //   height: "100%",
+  //   position: "absolute",
+  //   right: "101%",
+  //   bottom: 0,
+  //   top: 0,
+  //   width: rem(36),
+  //   background: "linear-gradient(to left, white 25%, transparent)",
+  //   zIndex: 1,
+  // },
 });
 
 const Box = styled("div", {});

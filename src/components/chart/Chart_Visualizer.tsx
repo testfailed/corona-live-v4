@@ -769,16 +769,12 @@ const ChartVisualizer: React.FC<Props> = ({
   return (
     <div ref={containerRef}>
       <Wrapper expanded={isExpanded}>
-        {mode === "EXPANDED" && (
+        {mode === "EXPANDED" && xValue !== undefined && (
           <TitleContainer>
-            <TitleText>
-              {dataSet[0].config.statLabel}
-              {/* <span>{xLabelValue}</span> */}
-            </TitleText>
-            {/* <TitleSubText>{xLabelValue}</TitleSubText> */}
+            <TitleText>{dataSet[0].config.statLabel}</TitleText>
             {dataSource && (
               <DataSource target="_blank" href={dataSource?.url}>
-                <label>출처</label>
+                <label>출처 - </label>
                 {dataSource.url ? (
                   <a target="_blank" href={dataSource.url}>
                     {dataSource.text}
@@ -793,7 +789,7 @@ const ChartVisualizer: React.FC<Props> = ({
 
         {mode === "DEFAULT" && dataSource && (
           <DataSource target="_blank" href={dataSource?.url} absolute={true}>
-            <label>출처</label>
+            <label>출처 - </label>
             {dataSource.url ? (
               <a target="_blank" href={dataSource.url}>
                 {dataSource.text}
@@ -962,15 +958,6 @@ const TitleText = styled("div", {
   },
 });
 
-const TitleSubText = styled("div", {
-  body3: true,
-  color: "$gray700",
-
-  "@md": {
-    body1: true,
-  },
-});
-
 const Tooltip = styled("div", {
   height: rem(50),
   marginTop: rem(12),
@@ -1082,16 +1069,16 @@ const DataSource = styled("a", {
     body2: true,
   },
 
-  "&:before": {
-    content: "*",
-  },
-
   variants: {
     absolute: {
       true: {
         position: "absolute",
         left: rem(6),
-        top: rem(16),
+        top: rem(5),
+
+        "&:before": {
+          // content: "*",
+        },
       },
     },
   },
