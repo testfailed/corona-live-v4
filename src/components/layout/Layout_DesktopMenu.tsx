@@ -24,11 +24,14 @@ import {
   VACCINE_PATH,
   WORLD_PATH,
 } from "@constants/route-constants";
+import { useTranslation } from "react-i18next";
 
 const LayoutMenu: React.FC = () => {
   const { push } = useHistory();
   const { pathname } = useLocation();
   const { colorMode, toggleTheme } = useTheme();
+
+  const { t } = useTranslation();
 
   return (
     <Wrapper>
@@ -53,9 +56,17 @@ const LayoutMenu: React.FC = () => {
           tabIndicatorType="contained"
           delay
         >
-          <Tab value={DOMESTIC_PATH} text="국내" icon={<DomesticIcon />} />
-          <Tab value={WORLD_PATH} text="세계" icon={<WorldIcon />} />
-          <Tab value={VACCINE_PATH} text="백신" icon={<VaccineIcon />} />
+          <Tab
+            value={DOMESTIC_PATH}
+            text={t("menu.domestic")}
+            icon={<DomesticIcon />}
+          />
+          <Tab value={WORLD_PATH} text={t("menu.world")} icon={<WorldIcon />} />
+          <Tab
+            value={VACCINE_PATH}
+            text={t("menu.vaccine")}
+            icon={<VaccineIcon />}
+          />
         </Tabs>
       </Section>
 
@@ -63,7 +74,7 @@ const LayoutMenu: React.FC = () => {
         <MenuThemeContainer>
           <Row centeredY>
             <NightIcon />
-            <MenuText>다크모드</MenuText>
+            <MenuText>{t("menu.dark_mode")}</MenuText>
           </Row>
           <Switch onClick={toggleTheme} checked={colorMode == "dark"} />
         </MenuThemeContainer>
@@ -71,7 +82,7 @@ const LayoutMenu: React.FC = () => {
         <ReportModalTrigger>
           <MenuContainer>
             <SendMessageIcon />
-            <MenuText>제보 / 문의</MenuText>
+            <MenuText>{t("menu.report")}</MenuText>
           </MenuContainer>
         </ReportModalTrigger>
       </Section>

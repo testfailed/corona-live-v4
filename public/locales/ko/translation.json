@@ -246,7 +246,7 @@
   "c.16.1": "서귀포시",
   "c.17": "검역",
 
-  "menu.korea": "국내",
+  "menu.domestic": "국내",
   "menu.world": "세계",
   "menu.vaccine": "백신",
   "menu.dark_mode": "다크모드",

@@ -21,6 +21,7 @@ import Section, { SubSection } from "@components/Section";
 import CoronaLiveIcon from "@components/icon/Icon_CoronaLive";
 import SendMessageIcon from "@components/icon/Icon_SendMessage";
 import ReportModalTrigger from "@components/modal/Modal_Report";
+import { useTranslation } from "react-i18next";
 
 const LayoutMobileHeader: React.FC = () => {
   const [renderThemeButton, setRenderThemeButton] = useState<boolean>(null);
@@ -33,6 +34,7 @@ const LayoutMobileHeader: React.FC = () => {
     setRenderThemeButton(Math.random() >= 0.5);
   }, []);
 
+  const { t } = useTranslation();
   const { pathname } = location;
 
   return (
@@ -72,9 +74,9 @@ const LayoutMobileHeader: React.FC = () => {
         tabIndicatorLengthType="text"
         delay
       >
-        <Tab text="국내" value={DOMESTIC_PATH} />
-        <Tab text="세계" value={WORLD_PATH} />
-        <Tab text="백신" value={VACCINE_PATH} />
+        <Tab text={t("menu.domestic")} value={DOMESTIC_PATH} />
+        <Tab text={t("menu.world")} value={WORLD_PATH} />
+        <Tab text={t("menu.vaccine")} value={VACCINE_PATH} />
       </Tabs>
     </Wrapper>
   );
