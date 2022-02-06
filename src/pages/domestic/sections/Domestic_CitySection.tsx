@@ -12,9 +12,11 @@ import TableIcon from "@components/icon/Icon_Table";
 
 import DomesticCityMap from "./domestic-city/Domestic_CityMap";
 import DomesticCityTable from "./domestic-city/Domestic_CityTable";
+import { useTranslation } from "react-i18next";
 
 const Domestic_CitySection: React.FC = () => {
   const [viewType, setViewType] = useState<"list" | "map">("list");
+  const { t } = useTranslation();
 
   return (
     <Section>
@@ -24,8 +26,16 @@ const Domestic_CitySection: React.FC = () => {
           onChange={setViewType}
           tabIndicatorType="contained"
         >
-          <Tab value="map" text="지도" icon={<MapIcon />} />
-          <Tab value="list" text="리스트" icon={<TableIcon size={20} />} />
+          <Tab
+            value="map"
+            text={t("domestic.city.tab.map")}
+            icon={<MapIcon />}
+          />
+          <Tab
+            value="list"
+            text={t("domestic.city.tab.list")}
+            icon={<TableIcon size={20} />}
+          />
         </Tabs>
       </TabsContainer>
       {viewType === "map" && <DomesticCityMap />}

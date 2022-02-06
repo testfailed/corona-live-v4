@@ -29,6 +29,7 @@ import type {
   ChartVisualizerData,
 } from "@components/chart/Chart_Visualizer";
 import { KDCA_DATA_SOURCE } from "@constants/constants";
+import { useTranslation } from "react-i18next";
 
 type DomesticStat =
   | "confirmed"
@@ -67,6 +68,7 @@ const DomesticChartSection: React.FC = () => {
   const { forceUpdate, shoulUpdate } = useDomesticChartForceUpdateStore(
     ({ forceUpdate, shoulUpdate }) => ({ forceUpdate, shoulUpdate })
   );
+  const { t } = useTranslation();
 
   useUpdateEffect(() => {
     forceUpdate();
@@ -76,7 +78,7 @@ const DomesticChartSection: React.FC = () => {
     () =>
       createChartStatOptions<DomesticStat, DomesticOptionKey>()({
         confirmed: {
-          label: "확진자",
+          label: t("stat.confirmed"),
           options: {
             type: chartTypeOptions({ omit: ["accumulated"] }),
             range: chartRangeOptions(),
@@ -105,8 +107,7 @@ const DomesticChartSection: React.FC = () => {
           ],
         },
         "confirmed-severe-symptoms": {
-          label: "위중증자",
-
+          label: t("stat.confirmed_severe"),
           options: {
             type: chartTypeOptions({
               omit: ["live", "accumulated", "monthly"],
@@ -115,15 +116,15 @@ const DomesticChartSection: React.FC = () => {
           },
         },
         deceased: {
-          label: "사망자",
+          label: t("stat.deceased"),
+
           options: {
             type: chartTypeOptions({ omit: ["live", "accumulated"] }),
             range: chartRangeOptions(),
           },
         },
         "tested-positive-rates": {
-          label: "확진율",
-
+          label: t("stat.tested_positive"),
           options: {
             type: chartTypeOptions({
               omit: ["live", "accumulated", "monthly"],
@@ -132,7 +133,7 @@ const DomesticChartSection: React.FC = () => {
           },
         },
         tested: {
-          label: "검사자",
+          label: t("stat.tested"),
           options: {
             type: chartTypeOptions({
               omit: ["live", "accumulated", "monthly"],

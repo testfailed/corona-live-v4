@@ -15,6 +15,8 @@ import UpdatesRow, {
 import Skeleton from "./Skeleton";
 import Column from "./Column";
 import Space from "./Space";
+import { t } from "i18next";
+import { useTranslation } from "react-i18next";
 
 export interface LiveBoardComparedValue {
   label: string;
@@ -38,6 +40,8 @@ const LiveBoard: React.FC<Props> = ({
 }) => {
   const [activeUpdateId, setActiveUpdateId] = useState(0);
 
+  const { t } = useTranslation();
+
   useEffect(() => {
     let intervalId = setInterval(() => {
       setActiveUpdateId((prev) => (prev + 1) % updates.length);
@@ -60,7 +64,7 @@ const LiveBoard: React.FC<Props> = ({
           <CurrentValueLabel>{currentValueLabel}</CurrentValueLabel>
           <CurrentValue>
             {numberWithCommas(currentValue)}
-            <span>명</span>
+            <span>{t("stat.unit")}</span>
           </CurrentValue>
         </CurrentValueContainer>
         {chunckedComparedValues.map((column, index) => (
@@ -192,7 +196,7 @@ const MockUpdateRow = styled("div", {
 const ComparedValueContainer = styled("div", {
   rowCenteredY: true,
   marginY: rem(5),
-  justifyContent: "space-between",
+  // justifyContent: "space-between",
 });
 
 const ComparedValueLabel = styled("div", {

@@ -13,45 +13,7 @@ import Table from "@components/Table";
 import type { Stat } from "@_types/common-type";
 import type { DomesticTableKey } from "@_types/domestic-type";
 import type { TableColumn, TableRow, TableRowValue } from "@components/Table";
-
-const columns: Array<TableColumn<DomesticTableKey | "cityName">> = [
-  {
-    id: "cityName",
-    name: "지역",
-    width: rem(46),
-  },
-  {
-    id: "casesLive",
-    name: "오늘 확진자",
-    width: rem(106),
-    sortable: true,
-    defaultSortBy: true,
-  },
-  {
-    id: "confirmed",
-    name: "총 확진자",
-    width: rem(132),
-    sortable: true,
-  },
-  {
-    id: "deceased",
-    name: "총 사망자",
-    width: rem(90),
-    sortable: true,
-  },
-  {
-    id: "recovered",
-    name: "총 완치자",
-    width: rem(126),
-    sortable: true,
-  },
-  {
-    id: "per100k",
-    name: "10만명당 확진자",
-    width: rem(80),
-    sortable: true,
-  },
-];
+import { useTranslation } from "react-i18next";
 
 type ColumnKey = typeof columns[number]["id"];
 
@@ -69,6 +31,47 @@ const statToTableRowValue = (value: Stat | string): TableRowValue => {
 const DomesticTable: React.FC = () => {
   const { data: live } = useApi(DomesticApi.live);
   const { data: stat } = useApi(DomesticApi.stat);
+
+  const { t } = useTranslation();
+
+  const columns: Array<TableColumn<DomesticTableKey | "cityName">> = [
+    {
+      id: "cityName",
+      name: t("city"),
+      width: rem(46),
+    },
+    {
+      id: "casesLive",
+      name: t("stat.confirmed_today"),
+      width: rem(112),
+      sortable: true,
+      defaultSortBy: true,
+    },
+    {
+      id: "confirmed",
+      name: t("stat.confirmed"),
+      width: rem(132),
+      sortable: true,
+    },
+    {
+      id: "deceased",
+      name: t("stat.deceased"),
+      width: rem(90),
+      sortable: true,
+    },
+    {
+      id: "recovered",
+      name: t("stat.recovered"),
+      width: rem(126),
+      sortable: true,
+    },
+    {
+      id: "per100k",
+      name: t("stat.confirmed_cases_per_100k"),
+      width: rem(100),
+      sortable: true,
+    },
+  ];
 
   const rows: Array<TableRow<ColumnKey>> = Object.keys(stat.cities).map(
     (_cityId) => {
@@ -88,7 +91,7 @@ const DomesticTable: React.FC = () => {
 
   return (
     <Wrapper>
-      <Table columns={columns} rows={rows} statUnit="명" />
+      <Table columns={columns} rows={rows} statUnit={t("stat.unit")} />
     </Wrapper>
   );
 };

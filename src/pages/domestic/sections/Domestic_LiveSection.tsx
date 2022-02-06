@@ -9,26 +9,29 @@ import DomesticUpdatesModalTrigger from "./domestic-live/Domestic_LiveUpdatesMod
 import DomesticApi from "@apis/domestic-api";
 import { transformDomesticUpdates } from "@utils/domestic-util";
 import Section from "@components/Section";
+import { useTranslation } from "react-i18next";
 
 const DomesticLive: React.FC = () => {
   const { data } = useApi(DomesticApi.live);
 
+  const { t } = useTranslation();
+
   const comparedValues: Array<LiveBoardComparedValue> = useMemo(
     () => [
       {
-        label: "어제",
+        label: t("live.yesterday"),
         delta: data.live.today - data.live.yesterday,
       },
       {
-        label: "1주전",
+        label: t("live.one_week_ago"),
         delta: data.live.today - data.live.weekAgo,
       },
       {
-        label: "2주전",
+        label: t("live.two_weeks_ago"),
         delta: data.live.today - data.live.twoWeeksAgo,
       },
       {
-        label: "4주전",
+        label: t("live.one_month_ago"),
         delta: data.live.today - data.live.monthAgo,
       },
     ],
@@ -43,7 +46,7 @@ const DomesticLive: React.FC = () => {
   return (
     <Section>
       <LiveBoard
-        currentValueLabel="오늘 확진자"
+        currentValueLabel={t("stat.confirmed_today")}
         currentValue={data.live.today}
         comparedValues={comparedValues}
         updates={updates}

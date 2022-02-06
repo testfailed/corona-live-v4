@@ -1,5 +1,6 @@
 import "./fonts.css";
 import "./index.css";
+import "./i18n/i18n";
 import "@ungap/global-this";
 
 import React from "react";

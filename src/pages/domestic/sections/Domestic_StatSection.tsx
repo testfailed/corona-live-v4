@@ -7,46 +7,38 @@ import { StatsBoardSkeleton } from "@components/StatsBoard";
 import type { StatsBoardStat } from "@components/StatsBoard";
 import DomesticApi from "@apis/domestic-api";
 import Section from "@components/Section";
+import { useTranslation } from "react-i18next";
 
 const DomesticStat: React.FC = () => {
   const { data } = useApi(DomesticApi.stat);
+  const { t } = useTranslation();
 
-  const {
-    confirmed,
-    deceased,
-    confirmedSevereSymptoms,
-    confirmedOmicron,
-    recovered,
-  } = data.overview!;
+  const { confirmed, deceased, confirmedSevereSymptoms, recovered } =
+    data.overview!;
 
   const stats: Array<StatsBoardStat> = [
     {
-      label: "확진자",
+      label: t("stat.confirmed"),
       color: "red",
       value: confirmed[0],
       delta: confirmed[1],
     },
     {
-      label: "사망자",
+      label: t("stat.deceased"),
       color: "grey",
       value: deceased[0],
       delta: deceased[1],
     },
 
     {
-      label: "완치자",
+      label: t("stat.recovered"),
       color: "blue",
       value: recovered[0],
       delta: recovered[1],
     },
-    // {
-    //   label: "오미크론",
-    //   color: "blue",
-    //   value: confirmedOmicron[0],
-    //   delta: confirmedOmicron[1],
-    // },
+
     {
-      label: "위중증자",
+      label: t("stat.confirmed_severe"),
       color: "grey",
       value: confirmedSevereSymptoms[0],
       delta: confirmedSevereSymptoms[1],

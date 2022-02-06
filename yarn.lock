@@ -302,6 +302,15 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@babel/runtime@npm:^7.12.0, @babel/runtime@npm:^7.14.5, @babel/runtime@npm:^7.14.6":
+  version: 7.17.0
+  resolution: "@babel/runtime@npm:7.17.0"
+  dependencies:
+    regenerator-runtime: ^0.13.4
+  checksum: 1864ac3c6aa061798c706ce858af311f06f6ad6efafc20cca7029fdaa9786c58ccaf5bdb8bd133cb505f27bed7659b65f1503b8da58adbd1eb88f7333644e6ed
+  languageName: node
+  linkType: hard
+
 "@babel/template@npm:^7.16.7":
   version: 7.16.7
   resolution: "@babel/template@npm:7.16.7"
@@ -1351,11 +1360,15 @@ __metadata:
     d3-transition: ^3.0.1
     dayjs: ^1.10.7
     eslint-config-react-app: ^6.0.0
+    i18next: ^21.6.10
+    i18next-browser-languagedetector: ^6.1.3
+    i18next-http-backend: ^1.3.2
     polished: ^4.1.3
     react: ^17.0.2
     react-copy-to-clipboard: ^5.0.4
     react-dom: ^17.0.2
     react-helmet: ^6.1.0
+    react-i18next: ^11.15.3
     react-intersection-observer: ^8.32.2
     react-router-dom: ^5.3.0
     react-snap: ^1.23.0
@@ -1370,6 +1383,15 @@ __metadata:
     zustand: ^3.6.5
   languageName: unknown
   linkType: soft
+
+"cross-fetch@npm:3.1.5":
+  version: 3.1.5
+  resolution: "cross-fetch@npm:3.1.5"
+  dependencies:
+    node-fetch: 2.6.7
+  checksum: f6b8c6ee3ef993ace6277fd789c71b6acf1b504fd5f5c7128df4ef2f125a429e29cd62dc8c127523f04a5f2fa4771ed80e3f3d9695617f441425045f505cf3bb
+  languageName: node
+  linkType: hard
 
 "css-select@npm:~1.2.0":
   version: 1.2.0
@@ -2338,6 +2360,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"html-escaper@npm:^2.0.2":
+  version: 2.0.2
+  resolution: "html-escaper@npm:2.0.2"
+  checksum: d2df2da3ad40ca9ee3a39c5cc6475ef67c8f83c234475f24d8e9ce0dc80a2c82df8e1d6fa78ddd1e9022a586ea1bd247a615e80a5cd9273d90111ddda7d9e974
+  languageName: node
+  linkType: hard
+
 "html-minifier@npm:3.5.21":
   version: 3.5.21
   resolution: "html-minifier@npm:3.5.21"
@@ -2352,6 +2381,15 @@ __metadata:
   bin:
     html-minifier: ./cli.js
   checksum: 66a86841a8b919a11a13d9b80176845cfbc5dda6e88efea2cf312ecc07427d9eab4aca70537357583e5e66ee1e62da14e035792eea000f8f3a9ca1856b2fb2b2
+  languageName: node
+  linkType: hard
+
+"html-parse-stringify@npm:^3.0.1":
+  version: 3.0.1
+  resolution: "html-parse-stringify@npm:3.0.1"
+  dependencies:
+    void-elements: 3.1.0
+  checksum: 334fdebd4b5c355dba8e95284cead6f62bf865a2359da2759b039db58c805646350016d2017875718bc3c4b9bf81a0d11be5ee0cf4774a3a5a7b97cde21cfd67
   languageName: node
   linkType: hard
 
@@ -2425,6 +2463,33 @@ __metadata:
   dependencies:
     ms: ^2.0.0
   checksum: 9c7a74a2827f9294c009266c82031030eae811ca87b0da3dceb8d6071b9bde22c9f3daef0469c3c533cc67a97d8a167cd9fc0389350e5f415f61a79b171ded16
+  languageName: node
+  linkType: hard
+
+"i18next-browser-languagedetector@npm:^6.1.3":
+  version: 6.1.3
+  resolution: "i18next-browser-languagedetector@npm:6.1.3"
+  dependencies:
+    "@babel/runtime": ^7.14.6
+  checksum: 72ad25e80ea6dd7e04bede41eb6580c784fa480f535e68451555754e7f57e2b00182195c68f123729476262f0b5ff428b7c9b3c6ca0627f772607fd714d9a55a
+  languageName: node
+  linkType: hard
+
+"i18next-http-backend@npm:^1.3.2":
+  version: 1.3.2
+  resolution: "i18next-http-backend@npm:1.3.2"
+  dependencies:
+    cross-fetch: 3.1.5
+  checksum: f6ea34185941d6d7c14941832f5be28b16df3b1133063539d1d539f40e687ee74604d72e2839bc3f4f1a462a33a52bd9bb08e4ddf4829ab9e272eb32fe1397fe
+  languageName: node
+  linkType: hard
+
+"i18next@npm:^21.6.10":
+  version: 21.6.10
+  resolution: "i18next@npm:21.6.10"
+  dependencies:
+    "@babel/runtime": ^7.12.0
+  checksum: 0b01761d71a2fd79fad12bcccebbb14d72286f7eb94eec04f383dd67448022a2b2d9bee56d46ec800197724e1389578abfb11ef9105c647ad80ce1feb3da8c6c
   languageName: node
   linkType: hard
 
@@ -2939,6 +3004,20 @@ __metadata:
   languageName: node
   linkType: hard
 
+"node-fetch@npm:2.6.7":
+  version: 2.6.7
+  resolution: "node-fetch@npm:2.6.7"
+  dependencies:
+    whatwg-url: ^5.0.0
+  peerDependencies:
+    encoding: ^0.1.0
+  peerDependenciesMeta:
+    encoding:
+      optional: true
+  checksum: 8d816ffd1ee22cab8301c7756ef04f3437f18dace86a1dae22cf81db8ef29c0bf6655f3215cb0cdb22b420b6fe141e64b26905e7f33f9377a7fa59135ea3e10b
+  languageName: node
+  linkType: hard
+
 "node-fetch@npm:^1.0.1":
   version: 1.7.3
   resolution: "node-fetch@npm:1.7.3"
@@ -3282,6 +3361,25 @@ __metadata:
   peerDependencies:
     react: ">=16.3.0"
   checksum: a4998479dab7fc1c2799eddefb1870a9d881b5f71cfdf97979a9882e42f4bb50402d55335f308f461e735e01a06f46b16cc7b4e6bcb22c7a4a6f85a753c5c106
+  languageName: node
+  linkType: hard
+
+"react-i18next@npm:^11.15.3":
+  version: 11.15.3
+  resolution: "react-i18next@npm:11.15.3"
+  dependencies:
+    "@babel/runtime": ^7.14.5
+    html-escaper: ^2.0.2
+    html-parse-stringify: ^3.0.1
+  peerDependencies:
+    i18next: ">= 19.0.0"
+    react: ">= 16.8.0"
+  peerDependenciesMeta:
+    react-dom:
+      optional: true
+    react-native:
+      optional: true
+  checksum: 8bb926e40136f57c21771d41b92c445ce457b70243fef45642c98967d2c6bb2d8a0df3c0db16909c2c6a8b007b2f7a4355b949a80e07f7e1152ed1be4756400d
   languageName: node
   linkType: hard
 
@@ -3931,6 +4029,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"tr46@npm:~0.0.3":
+  version: 0.0.3
+  resolution: "tr46@npm:0.0.3"
+  checksum: 726321c5eaf41b5002e17ffbd1fb7245999a073e8979085dacd47c4b4e8068ff5777142fc6726d6ca1fd2ff16921b48788b87225cbc57c72636f6efa8efbffe3
+  languageName: node
+  linkType: hard
+
 "tsc@npm:^2.0.3":
   version: 2.0.3
   resolution: "tsc@npm:2.0.3"
@@ -4145,6 +4250,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"void-elements@npm:3.1.0":
+  version: 3.1.0
+  resolution: "void-elements@npm:3.1.0"
+  checksum: 0390f818107fa8fce55bb0a5c3f661056001c1d5a2a48c28d582d4d847347c2ab5b7f8272314cac58acf62345126b6b09bea623a185935f6b1c3bbce0dfd7f7f
+  languageName: node
+  linkType: hard
+
 "web-vitals@npm:^1.0.1":
   version: 1.1.2
   resolution: "web-vitals@npm:1.1.2"
@@ -4152,10 +4264,27 @@ __metadata:
   languageName: node
   linkType: hard
 
+"webidl-conversions@npm:^3.0.0":
+  version: 3.0.1
+  resolution: "webidl-conversions@npm:3.0.1"
+  checksum: c92a0a6ab95314bde9c32e1d0a6dfac83b578f8fa5f21e675bc2706ed6981bc26b7eb7e6a1fab158e5ce4adf9caa4a0aee49a52505d4d13c7be545f15021b17c
+  languageName: node
+  linkType: hard
+
 "whatwg-fetch@npm:>=0.10.0":
   version: 3.6.2
   resolution: "whatwg-fetch@npm:3.6.2"
   checksum: ee976b7249e7791edb0d0a62cd806b29006ad7ec3a3d89145921ad8c00a3a67e4be8f3fb3ec6bc7b58498724fd568d11aeeeea1f7827e7e1e5eae6c8a275afed
+  languageName: node
+  linkType: hard
+
+"whatwg-url@npm:^5.0.0":
+  version: 5.0.0
+  resolution: "whatwg-url@npm:5.0.0"
+  dependencies:
+    tr46: ~0.0.3
+    webidl-conversions: ^3.0.0
+  checksum: b8daed4ad3356cc4899048a15b2c143a9aed0dfae1f611ebd55073310c7b910f522ad75d727346ad64203d7e6c79ef25eafd465f4d12775ca44b90fa82ed9e2c
   languageName: node
   linkType: hard
 

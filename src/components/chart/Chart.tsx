@@ -384,7 +384,7 @@ const Chart = <MainOption extends string, SubOption extends string>(
     if ((_mode === "EXPANDED" && chartData.length > 1) || _mode === "DEFAULT") {
       setTimeout(() => {
         const { height } = contentRef.current.getBoundingClientRect();
-        setWrapperHeight(rem(height));
+        if (height) setWrapperHeight(rem(height));
       }, 0);
       setMode(_mode);
     }
