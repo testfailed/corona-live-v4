@@ -1,6 +1,7 @@
 //@ts-nocheck
 import { boldify } from "@utils/html-util";
 import { CITY_GU_NAMES, CITY_NAME_LIST } from "@constants/constants";
+import { t } from "i18next";
 
 import type { UpdateRow } from "@components/updates/Updates_Row";
 import { UpdatesCategory } from "@components/updates/Updates_Categories";
@@ -10,8 +11,10 @@ import type { DomesticUpdate } from "@features/domestic/domestic-type";
 export const getCityGuNameWithIds = (cityId, guId = undefined) => {
   if (cityId === undefined) return "";
 
-  let cityName = CITY_GU_NAMES[`${cityId}`] || "";
-  let guName = CITY_GU_NAMES[`${cityId}/${guId}`] || "";
+  let cityName = t(`c.${cityId}`);
+  let guName = t(`c.${cityId}.${guId}`);
+
+  if (guName === `c.${cityId}.${guId}`) guName = "";
 
   guName = guId === "-1" ? "전체" : guName;
 
@@ -25,9 +28,9 @@ export const transformDomesticUpdates = (
 
   return updates.map(({ cases, cityId, guId, datetime }) => ({
     date: datetime,
-    update: `${boldify(
-      getCityGuNameWithIds(cityId, guId)
-    )} ${cases}명 추가 확진`,
+    update: `${boldify(getCityGuNameWithIds(cityId, guId))} ${cases}${t(
+      "stat.unit"
+    )} ${t("updates.new_confirmed_cases")}`,
     category: cityId,
   }));
 };

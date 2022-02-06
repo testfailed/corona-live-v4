@@ -246,16 +246,17 @@
   "c.16.1": "서귀포시",
   "c.17": "검역",
 
-  "menu.korea": "국내",
+  "menu.domestic": "국내",
   "menu.world": "세계",
   "menu.vaccine": "백신",
   "menu.dark_mode": "다크모드",
   "menu.report": "제보 / 문의",
+  "menu": "메뉴",
 
   "stat.confirmed": "확진자",
   "stat.deceased": "사망자",
   "stat.recovered": "완치자",
-  "stat.confirmed_severe": "위중증자",
+  "stat.confirmed_critical": "위중증자",
   "stat.tested": "검사자",
   "stat.tested_positive": "확진율",
   "sta..confirmed_cases_per_100k": "10만명당 확진자",
@@ -320,5 +321,7 @@
   "updates.title": "실시간 확진 현황",
   "updates.new_confirmed_cases": "추가 확진",
 
-  "all": "전체"
+  "all": "전체",
+  "city": "지역",
+  "country": "나라"
 }

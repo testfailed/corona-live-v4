@@ -251,11 +251,12 @@
   "menu.vaccine": "Vaccine",
   "menu.dark_mode": "Dark mode",
   "menu.report": "Report",
+  "menu": "Menu",
 
   "stat.confirmed": "Confirmed",
   "stat.deceased": "Deceased",
   "stat.recovered": "Recovered",
-  "stat.confirmed_severe": "Severe",
+  "stat.confirmed_critical": "Critical",
   "stat.tested": "Tested",
   "stat.tested_positive": "Positive %",
   "stat.confirmed_cases_per_100k": "Cases per 100k",
@@ -276,24 +277,24 @@
 
   "stat.unit": "",
 
-  "live.yesterday": "1d",
-  "live.one_week_ago": "1w",
-  "live.two_weeks_ago": "2w",
-  "live.one_month_ago": "4w",
+  "live.yesterday": "1D",
+  "live.one_week_ago": "1W",
+  "live.two_weeks_ago": "2W",
+  "live.one_month_ago": "4W",
 
   "chart.option.daily": "D",
   "chart.option.weekly": "W",
   "chart.option.monthly": "M",
-  "chart.option.live": "Live",
-  "chart.option.accumulated": "Accumulated",
+  "chart.option.live": "LIVE",
+  "chart.option.accumulated": "ACC",
 
   "chart.option.one_week": "1W",
   "chart.option.one_month": "1M",
   "chart.option.three_months": "3M",
   "chart.option.all_time": "ALL",
 
-  "chart.option.yesterday": "1d ago",
-  "chart.option.one_week_ago": "1w ago",
+  "chart.option.yesterday": "VS 1D",
+  "chart.option.one_week_ago": "VS 1W",
 
   "domestic.city.tab.map": "Map",
   "domestic.city.tab.list": "List",
@@ -322,5 +323,6 @@
   "updates.no_updates": "No updates yet",
 
   "all": "All",
-  "city": "City"
+  "city": "City",
+  "country": "Country"
 }

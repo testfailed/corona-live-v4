@@ -14,7 +14,7 @@ import { useTranslation } from "react-i18next";
 const DomesticLive: React.FC = () => {
   const { data } = useApi(DomesticApi.live);
 
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
 
   const comparedValues: Array<LiveBoardComparedValue> = useMemo(
     () => [
@@ -35,12 +35,12 @@ const DomesticLive: React.FC = () => {
         delta: data.live.today - data.live.monthAgo,
       },
     ],
-    [data.live]
+    [data.live, i18n.language]
   );
 
   const updates = useMemo(
     () => transformDomesticUpdates(data.updatesPreview),
-    [data.updatesPreview]
+    [data.updatesPreview, i18n.language]
   );
 
   return (

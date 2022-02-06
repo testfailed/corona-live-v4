@@ -9,6 +9,7 @@ import { css, styled } from "@styles/stitches.config";
 import Child from "./Child";
 
 import type { CssComponent } from "@stitches/react/types/styled-component";
+import { useTranslation } from "react-i18next";
 
 interface TabsProps<T extends any> {
   value: T;
@@ -93,6 +94,7 @@ export const Tabs = <T extends any>({
   animation = true,
 }: TabsProps<T>) => {
   const [tabValue, setTabValue] = useState(value);
+  const { i18n } = useTranslation();
 
   const tabsRef = useRef<HTMLDivElement>(null);
   const tabValueToIndex = new Map();
@@ -167,6 +169,17 @@ export const Tabs = <T extends any>({
   useEffect(() => {
     updateIndicatorStyle();
   }, [tabValue, childrenProps.length]);
+
+  const firstMount = useRef(true);
+
+  useEffect(() => {
+    if (firstMount.current === false) {
+      setTimeout(() => {
+        updateIndicatorStyle();
+      }, 0);
+    }
+    firstMount.current = false;
+  }, [i18n.language]);
 
   const children = React.Children.map(childrenProps, (child, index) => {
     if (!React.isValidElement(child)) {

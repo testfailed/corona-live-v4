@@ -4,6 +4,8 @@ import {
   ChartVisualizerData,
 } from "@components/chart/Chart_Visualizer";
 
+import { t } from "i18next";
+
 import { theme } from "@styles/stitches.config";
 
 import { formatObjectValues } from "./object-util";
@@ -33,19 +35,19 @@ export const chartTypeOptions = (config?: {
 
   const options: Partial<Record<ChartTypeOptionValue, OptionValue>> = {
     daily: {
-      label: "일별",
+      label: t("chart.option.daily"),
     },
     weekly: {
-      label: "주별",
+      label: t("chart.option.weekly"),
     },
     monthly: {
-      label: "월별",
+      label: t("chart.option.monthly"),
     },
     accumulated: {
-      label: "누적",
+      label: t("chart.option.accumulated"),
     },
     live: {
-      label: "실시간",
+      label: t("chart.option.live"),
     },
   };
 
@@ -70,16 +72,16 @@ export const chartRangeOptions = (config?: {
 
   const options: Partial<Record<ChartRangeOptionValue, OptionValue>> = {
     oneWeek: {
-      label: "1주",
+      label: t("chart.option.one_week"),
     },
     oneMonth: {
-      label: "1달",
+      label: t("chart.option.one_month"),
     },
     threeMonths: {
-      label: "3달",
+      label: t("chart.option.three_months"),
     },
     all: {
-      label: "전체",
+      label: t("chart.option.all_time"),
     },
   };
 

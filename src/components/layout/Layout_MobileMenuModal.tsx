@@ -14,11 +14,13 @@ import SendMessageIcon from "@components/icon/Icon_SendMessage";
 import ReportModalTrigger from "@components/modal/Modal_Report";
 import LayoutFooter from "./Layout_Footer";
 import Section, { SubSection } from "@components/Section";
+import { useTranslation } from "react-i18next";
 
 interface Props {}
 
 const LayoutMobileMenuModalTrigger: React.FC<Props> = ({ children }) => {
   const { colorMode, toggleTheme } = useTheme();
+  const { t } = useTranslation();
 
   return (
     <Modal
@@ -42,7 +44,7 @@ const LayoutMobileMenuModalTrigger: React.FC<Props> = ({ children }) => {
           <MenuThemeContainer>
             <Row centeredY>
               <NightIcon />
-              <MenuText>다크모드</MenuText>
+              <MenuText>{t("menu.dark_mode")}</MenuText>
             </Row>
             <Switch onClick={toggleTheme} checked={colorMode === "dark"} />
           </MenuThemeContainer>
@@ -50,7 +52,7 @@ const LayoutMobileMenuModalTrigger: React.FC<Props> = ({ children }) => {
           <ReportModalTrigger>
             <MenuContainer>
               <SendMessageIcon />
-              <MenuText>제보 / 피드백</MenuText>
+              <MenuText>{t("menu.report")}</MenuText>
             </MenuContainer>
           </ReportModalTrigger>
         </Section>

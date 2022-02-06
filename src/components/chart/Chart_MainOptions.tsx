@@ -13,6 +13,7 @@ interface Props<T> {
 
 const ChartMainOptions = <T extends string>(props: Props<T>) => {
   const { value, onChange, mainOptions } = props;
+
   return (
     <Tabs
       {...{

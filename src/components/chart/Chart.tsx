@@ -69,7 +69,7 @@ interface ReducerState<MainOption extends string, SubOption extends string> {
 }
 
 type ReducerAction<MainOption extends string, SubOption extends string> =
-  | { type: "INIT" }
+  | { type: "INIT"; payload: { props: Props<MainOption, SubOption> } }
   | { type: "TOGGLE_MODE" }
   | { type: "UPDATE_OPTIONS_LIST" }
   | { type: "UPDATE_SELECTED_OPTIONS" }
@@ -108,7 +108,7 @@ const createReducer =
             newMode === "EXPANDED"
               ? selectedSubOptions
               : state.selectedSubOptions,
-            newMode
+            { mode: newMode }
           ),
           selectedSubOptions:
             newMode === "EXPANDED"
@@ -143,13 +143,15 @@ const createReducer =
       case "INIT":
         return {
           ...state,
+          props: action.payload.props,
           subOptions: getSubOptions(
-            getInitialSelectedSubOptions(state.props.chartStatOptions)
+            getInitialSelectedSubOptions(action.payload.props.chartStatOptions),
+            { chartOptions: action.payload.props.chartStatOptions }
           ),
-          mainOptions: Object.keys(state.props.chartStatOptions).map(
+          mainOptions: Object.keys(action.payload.props.chartStatOptions).map(
             (stat) => ({
               value: stat,
-              text: state.props.chartStatOptions[stat].label,
+              text: action.payload.props.chartStatOptions[stat].label,
             })
           ),
         };
@@ -221,10 +223,13 @@ const createReducer =
 
     function getSubOptions(
       selectedSubOptions: Record<SubOption, string>,
-      mode?: ChartMode
+      config?: {
+        mode?: ChartMode;
+        chartOptions?: ChartStatOptions<MainOption, SubOption>;
+      }
     ) {
       const { props, selectedMainOption } = state;
-      const { chartStatOptions } = props;
+      const chartStatOptions = config?.chartOptions ?? props.chartStatOptions;
 
       const transformOptionsList = (options) => {
         return formatObjectValues(
@@ -239,7 +244,7 @@ const createReducer =
         ) as Record<SubOption, Array<TabProps>>;
       };
 
-      if ((mode ?? state?.mode) === "EXPANDED") {
+      if ((config?.mode ?? state?.mode) === "EXPANDED") {
         return transformOptionsList({
           type: chartTypeOptions({ omit: ["accumulated", "live", "monthly"] }),
           range: chartRangeOptions({ omit: ["all"] }),
@@ -334,7 +339,7 @@ const Chart = <MainOption extends string, SubOption extends string>(
   const [wrapperHeight, setWrapperHeight] = useState("auto");
 
   useEffect(() => {
-    dispatch({ type: "INIT" });
+    dispatch({ type: "INIT", payload: { props } });
   }, [chartStatOptions]);
 
   useUpdateEffect(() => {

@@ -38,7 +38,7 @@ const DomesticStat: React.FC = () => {
     },
 
     {
-      label: t("stat.confirmed_severe"),
+      label: t("stat.confirmed_critical"),
       color: "grey",
       value: confirmedSevereSymptoms[0],
       delta: confirmedSevereSymptoms[1],

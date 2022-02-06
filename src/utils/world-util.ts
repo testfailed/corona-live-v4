@@ -1,3 +1,4 @@
+import { t } from "i18next";
 import { UpdateRow } from "@components/updates/Updates_Row";
 import { COUNTRY_NAMES } from "@constants/constants";
 import { boldify } from "@utils/html-util";
@@ -10,6 +11,8 @@ export const transformWorldUpdates = (
 
   return updates.map(({ cases, datetime, countryId }) => ({
     date: datetime,
-    update: `${boldify(COUNTRY_NAMES[countryId] ?? "")} ${cases}명 추가 확진`,
+    update: `${boldify(COUNTRY_NAMES[countryId] ?? "")} ${cases}${t(
+      "stat.unit"
+    )} ${t("updates.new_confirmed_cases")}`,
   }));
 };

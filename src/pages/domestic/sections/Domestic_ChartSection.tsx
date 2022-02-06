@@ -68,7 +68,7 @@ const DomesticChartSection: React.FC = () => {
   const { forceUpdate, shoulUpdate } = useDomesticChartForceUpdateStore(
     ({ forceUpdate, shoulUpdate }) => ({ forceUpdate, shoulUpdate })
   );
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
 
   useUpdateEffect(() => {
     forceUpdate();
@@ -95,10 +95,10 @@ const DomesticChartSection: React.FC = () => {
               options: {
                 compare: {
                   yesterday: {
-                    label: "어제",
+                    label: t("chart.option.yesterday"),
                   },
                   weekAgo: {
-                    label: "1주전",
+                    label: t("chart.option.one_week_ago"),
                   },
                 },
                 range: null,
@@ -107,7 +107,7 @@ const DomesticChartSection: React.FC = () => {
           ],
         },
         "confirmed-severe-symptoms": {
-          label: t("stat.confirmed_severe"),
+          label: t("stat.confirmed_critical"),
           options: {
             type: chartTypeOptions({
               omit: ["live", "accumulated", "monthly"],
@@ -142,7 +142,7 @@ const DomesticChartSection: React.FC = () => {
           },
         },
       }),
-    [shoulUpdate]
+    [shoulUpdate, i18n.language]
   );
 
   const chartMode: ChartMode = useMemo(() => {
@@ -175,10 +175,10 @@ const DomesticChartSection: React.FC = () => {
       const yAxis = getDefaultChartYAxis(option, { right: { id: stat } });
 
       const statLabel: Partial<Record<DomesticStat, string>> = {
-        confirmed: "확진자",
-        deceased: "사망자",
-        "confirmed-severe-symptoms": "위중증자",
-        tested: "검사자",
+        confirmed: t("stat.confirmed"),
+        deceased: t("stat.deceased"),
+        "confirmed-severe-symptoms": t("stat.confirmed_critical"),
+        tested: t("stat.tested"),
       };
 
       return Object.keys(data).map((key) => ({
@@ -194,7 +194,7 @@ const DomesticChartSection: React.FC = () => {
               key === "tested-positive-rates"
                 ? {
                     tooltipUnit: "%",
-                    statLabel: "확진율",
+                    statLabel: t("stat.tested_positive_rates"),
                   }
                 : {
                     statLabel: statLabel[key],
@@ -215,10 +215,10 @@ const DomesticChartSection: React.FC = () => {
         const compared = domesticLiveData.hourlyLive[option.compare];
 
         const liveLabel: Record<ChartCompareOptionValue, string> = {
-          yesterday: "어제",
-          weekAgo: "1주전",
-          twoWeeksAgo: "2주전",
-          monthAgo: "한달전",
+          yesterday: t("live.yesterday"),
+          weekAgo: t("live.one_week_ago"),
+          twoWeeksAgo: t("live.two_weeks_ago"),
+          monthAgo: t("live.one_month_ago"),
         };
 
         dataSet = [
