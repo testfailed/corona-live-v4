@@ -10,33 +10,35 @@ import LiveBoard, {
 } from "@components/LiveBoard";
 import Section from "@components/Section";
 import WorldLiveUpdatesModalTrigger from "./world-live/World_UpdatesModal";
+import { useTranslation } from "react-i18next";
 
 const WorldLiveSection: React.FC = () => {
+  const { t, i18n } = useTranslation();
   const { data } = useApi(WorldApi.live);
 
   const comparedValues: Array<LiveBoardComparedValue> = useMemo(
     () => [
       {
-        label: "어제",
+        label: t("live.yesterday"),
         delta: data.live.today - data.live.yesterday,
       },
       {
-        label: "1주전",
+        label: t("live.one_week_ago"),
         delta: data.live.today - data.live.weekAgo,
       },
     ],
-    [data.live]
+    [data.live, i18n.language]
   );
 
   const updates = useMemo(
     () => transformWorldUpdates(data.updates),
-    [data.updates]
+    [data.updates, i18n.language]
   );
 
   return (
     <Section>
       <LiveBoard
-        currentValueLabel="오늘 확진자"
+        currentValueLabel={t("stat.confirmed_today")}
         currentValue={data.live.today}
         comparedValues={comparedValues}
         updates={updates}

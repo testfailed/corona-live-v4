@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useMemo } from "react";
 
 import WorldApi from "@apis/world-api";
 import { transformWorldUpdates } from "@utils/world-util";
@@ -9,10 +9,12 @@ import UpdatesContent, {
   UpdatesContentSkeleton,
 } from "@components/updates/Updates_Content";
 import UpdatesModal from "@components/updates/Updates_Modal";
+import { useTranslation } from "react-i18next";
 
 interface Props {}
 
 const WorldUpdatesModalTrigger: React.FC<Props> = ({ children }) => {
+  const { i18n } = useTranslation();
   return (
     <UpdatesModal triggerNode={children}>
       <Api api={WorldApi.updates}>

@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 
 import { rem } from "polished";
 
@@ -10,53 +10,63 @@ import Section from "@components/Section";
 import Table, { TableColumn, TableRow } from "@components/Table";
 import { WorldTableKey } from "@_types/world-type";
 import WorldApi from "@apis/world-api";
-
-const columns: Array<TableColumn<WorldTableKey | "index" | "countryName">> = [
-  {
-    id: "index",
-    name: "",
-    width: rem(10),
-  },
-  {
-    id: "countryName",
-    name: "나라",
-    width: rem(110),
-    deltaPosition: "right",
-  },
-
-  {
-    id: "confirmed",
-    name: "총 확진자",
-    width: rem(110),
-    sortable: true,
-    deltaPosition: "bottom",
-  },
-  {
-    id: "deceased",
-    name: "총 사망자",
-    width: rem(90),
-    sortable: true,
-    deltaPosition: "bottom",
-  },
-  {
-    id: "recovered",
-    name: "총 완치자",
-    width: rem(100),
-    sortable: true,
-  },
-  {
-    id: "casesPerMil",
-    name: "100만명당 확진",
-    width: rem(80),
-    sortable: true,
-  },
-];
-
-type ColumnKey = typeof columns[number]["id"];
+import { useTranslation } from "react-i18next";
 
 const WorldCountrySection: React.FC = () => {
   const { data } = useApi(WorldApi.live);
   const [rowsCount, setRowsCount] = useState(15);
+  const { t } = useTranslation();
+
+  const columns: Array<TableColumn<WorldTableKey | "index" | "countryName">> =
+    useMemo(
+      () => [
+        {
+          id: "index",
+          name: "",
+          width: rem(10),
+        },
+        {
+          id: "countryName",
+          name: t("country"),
+          width: rem(110),
+          deltaPosition: "right",
+        },
+
+        {
+          id: "confirmed",
+          name: t("stat.confirmed"),
+
+          width: rem(110),
+          sortable: true,
+          deltaPosition: "bottom",
+        },
+        {
+          id: "deceased",
+          name: t("stat.deceased"),
+
+          width: rem(90),
+          sortable: true,
+          deltaPosition: "bottom",
+        },
+        {
+          id: "recovered",
+          name: t("stat.recovered"),
+
+          width: rem(100),
+          sortable: true,
+        },
+        {
+          id: "casesPerMil",
+          name: t("stat.confirmed_cases_per_100k"),
+
+          width: rem(100),
+          sortable: true,
+        },
+      ],
+      [t]
+    );
+
+  type ColumnKey = typeof columns[number]["id"];
 
   const rows: Array<TableRow<ColumnKey>> = Object.keys(data.countries)
     .map((countryId, index) => {
