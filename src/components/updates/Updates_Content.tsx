@@ -29,6 +29,8 @@ const UpdatesContent: React.FC<Props> = ({ updates, categories }) => {
     [category, updates]
   );
 
+  console.log(filteredUpdates);
+
   return (
     <Wrapper>
       {categories && (
@@ -40,9 +42,9 @@ const UpdatesContent: React.FC<Props> = ({ updates, categories }) => {
       )}
       {filteredUpdates && (
         <Container>
-          {filteredUpdates?.map((update) => (
-            <UpdatesRow key={update.date} {...update} />
-          ))}
+          {filteredUpdates?.map((update, index) => {
+            return <UpdatesRow key={`${update.date}/${index}`} {...update} />;
+          })}
         </Container>
       )}
     </Wrapper>
