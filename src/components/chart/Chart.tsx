@@ -27,6 +27,8 @@ import ExpandIcon from "@components/icon/Icon_Expand";
 import type { ChartMode } from "@_types/chart-type";
 import type { ChartStatOptions } from "@_types/chart-type";
 import type { ChartVisualizerData } from "./Chart_Visualizer";
+import Tooltip from "@components/Tooltip";
+import { useLocalStorage } from "@hooks/useLocalStorage";
 
 const getInitialSelectedSubOptions = <
   MainOption extends string,
@@ -338,6 +340,15 @@ const Chart = <MainOption extends string, SubOption extends string>(
   const [isLoading, setIsLoading] = useDebounceState(false);
   const [wrapperHeight, setWrapperHeight] = useState("auto");
 
+  const [seenChartModeTooltip, setSeenChartModeTooltip] = useLocalStorage(
+    "seen-chart-mode-tooltip",
+    false
+  );
+
+  const [showTooltip, setShowTooltip] = useState(
+    seenChartModeTooltip === false
+  );
+
   useEffect(() => {
     dispatch({ type: "INIT", payload: { props } });
   }, [chartStatOptions]);
@@ -381,6 +392,8 @@ const Chart = <MainOption extends string, SubOption extends string>(
   };
 
   const toggleChartMode = async () => {
+    setSeenChartModeTooltip(true);
+    setShowTooltip(false);
     dispatch({ type: "TOGGLE_MODE" });
     await updateChartData();
   };
@@ -431,10 +444,15 @@ const Chart = <MainOption extends string, SubOption extends string>(
             <ChartModeButtonContainer>
               {_mode === "DEFAULT" && <ChartHeadingDivider />}
               <ChartModeButton onClick={toggleChartMode}>
-                <ExpandIcon
-                  stroke={theme.colors.gray900}
-                  expanded={_mode === "EXPANDED"}
-                />
+                <Tooltip
+                  show={showTooltip}
+                  content={_mode === "EXPANDED" ? "하나씩 보기" : "한눈에 보기"}
+                >
+                  <ExpandIcon
+                    stroke={theme.colors.gray900}
+                    expanded={_mode === "EXPANDED"}
+                  />
+                </Tooltip>
               </ChartModeButton>
             </ChartModeButtonContainer>
           )}
