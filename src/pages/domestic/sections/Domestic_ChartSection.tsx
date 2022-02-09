@@ -124,7 +124,7 @@ const DomesticChartSection: React.FC = () => {
           },
         },
         "tested-positive-rates": {
-          label: t("stat.tested_positive"),
+          label: t("stat.tested_positive_rates"),
           options: {
             type: chartTypeOptions({
               omit: ["live", "accumulated", "monthly"],
@@ -195,6 +195,7 @@ const DomesticChartSection: React.FC = () => {
                 ? {
                     tooltipUnit: "%",
                     statLabel: t("stat.tested_positive_rates"),
+                    info: " = 확진자수 / 전일 검사건수",
                   }
                 : {
                     statLabel: statLabel[key],
@@ -204,7 +205,7 @@ const DomesticChartSection: React.FC = () => {
         ],
         xAxis,
         yAxis,
-        dataSource: KDCA_DATA_SOURCE,
+        dataSource: KDCA_DATA_SOURCE(),
       }));
     } else {
       const xAxis = getDefaultChartXAxis(option);
@@ -260,6 +261,10 @@ const DomesticChartSection: React.FC = () => {
                 ? {
                     tooltipUnit: "%",
                     tooltipLabel: "",
+                    info:
+                      stat === "tested-positive-rates"
+                        ? " = 확진자수 / 전일 검사건수"
+                        : undefined,
                   }
                 : {}
             ),
@@ -272,7 +277,7 @@ const DomesticChartSection: React.FC = () => {
           dataSet,
           xAxis,
           yAxis,
-          dataSource: option?.type === "live" ? null : KDCA_DATA_SOURCE,
+          dataSource: option?.type === "live" ? null : KDCA_DATA_SOURCE(),
         },
       ];
     }
@@ -290,9 +295,13 @@ const DomesticChartSection: React.FC = () => {
 };
 
 export const DomesticChartSectionSkeleton = () => {
+  const chartMode: ChartMode = useMemo(() => {
+    return isInTimeRange("09:30:00", "15:00:00") ? "EXPANDED" : "DEFAULT";
+  }, []);
+
   return (
     <Section>
-      <ChartSkeleton tabs={5} />
+      <ChartSkeleton tabs={5} mode={chartMode} charts={5} />
     </Section>
   );
 };
