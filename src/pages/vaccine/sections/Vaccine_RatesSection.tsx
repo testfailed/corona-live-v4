@@ -9,11 +9,16 @@ import Section, { SubSection } from "@components/Section";
 import VaccineRates, {
   VaccineRatesSkeleton,
 } from "./vaccine-rates/Vaccine_Rates";
+import { useTranslation } from "react-i18next";
 
 const VaccineRatesSection: React.FC = () => {
   const { data } = useApi(VaccinApi.stat);
 
+  const { t } = useTranslation();
+
   const { partiallyVaccinated, fullyVaccinated, booster } = data!.overview;
+
+  console.log(t("vaccine.vaccine_rates.all").length);
 
   return (
     <>
@@ -24,19 +29,23 @@ const VaccineRatesSection: React.FC = () => {
           third={booster.rates}
           boldText={
             <Row css={{ position: "relative" }}>
-              <div
-                style={{
-                  position: "absolute",
-                  left: "50%",
-                  transform: "translateX(-50%)",
-                }}
-              >
-                전체
+              {t("vaccine.vaccine_rates.all").length > 1 && (
+                <div
+                  style={{
+                    position: "absolute",
+                    left: "50%",
+                    transform: "translateX(-50%)",
+                  }}
+                >
+                  {t("vaccine.vaccine_rates.all")}
+                </div>
+              )}
+              <div style={{ visibility: "hidden" }}>
+                {t("vaccine.vaccine_rates.over18")}
               </div>
-              <div style={{ visibility: "hidden" }}>18세 이상</div>
             </Row>
           }
-          text="접종률"
+          text={t("vaccine.vaccine_rates")}
           labelPosition="top"
         />
       </Section>
@@ -48,8 +57,8 @@ const VaccineRatesSection: React.FC = () => {
               first={partiallyVaccinated.over18rates}
               second={fullyVaccinated.over18rates}
               third={booster.over18rates}
-              boldText="18세 이상"
-              text="접종률"
+              boldText={t("vaccine.vaccine_rates.over18")}
+              text={t("vaccine.vaccine_rates")}
               labelPosition="top"
             />
           </SubSection>
@@ -58,8 +67,8 @@ const VaccineRatesSection: React.FC = () => {
             first={partiallyVaccinated.over60rates}
             second={fullyVaccinated.over60rates}
             third={booster.over60rates}
-            boldText="60세 이상"
-            text="접종률"
+            boldText={t("vaccine.vaccine_rates.over60")}
+            text={t("vaccine.vaccine_rates")}
             labelPosition="top"
           />
         </Wrapper>

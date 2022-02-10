@@ -8,33 +8,32 @@ import StatsBoard, {
   StatsBoardStat,
 } from "@components/StatsBoard";
 import Section from "@components/Section";
+import { useTranslation } from "react-i18next";
 
 const VaccineBoard: React.FC = () => {
   const { data } = useApi(VaccinApi.stat);
+  const { t } = useTranslation();
 
   const { partiallyVaccinated, fullyVaccinated, booster } = data.overview!;
 
   const stats: Array<StatsBoardStat> = [
     {
-      label: "1차 접종",
+      label: t("stat.vaccine.first_dose"),
       color: "grey",
-      // value: partiallyVaccinated.rates.toFixed(1) + "%",
       value: partiallyVaccinated.total,
       delta: partiallyVaccinated.delta,
     },
 
     {
-      label: "2차 접종",
+      label: t("stat.vaccine.second_dose"),
       color: "blue",
-      // value: fullyVaccinated.rates.toFixed(1) + "%",
       value: fullyVaccinated.total,
       delta: fullyVaccinated.delta,
     },
 
     {
-      label: "3차 접종",
+      label: t("stat.vaccine.third_dose"),
       color: "red",
-      // value: booster.rates.toFixed(1) + "%",
       value: booster.total,
       delta: booster.delta,
     },

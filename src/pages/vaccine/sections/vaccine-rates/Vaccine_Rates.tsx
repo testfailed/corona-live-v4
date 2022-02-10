@@ -8,6 +8,7 @@ import Space from "@components/Space";
 import Column from "@components/Column";
 import Skeleton from "@components/Skeleton";
 import Row from "@components/Row";
+import { useTranslation } from "react-i18next";
 
 interface VaccineRatesProps {
   first: number;
@@ -35,6 +36,8 @@ const VaccineRates: React.FC<VaccineRatesProps> = ({
     second: 0,
     third: 0,
   });
+
+  const { t } = useTranslation();
 
   useEffect(() => {
     setTimeout(() => {
@@ -90,7 +93,7 @@ const VaccineRates: React.FC<VaccineRatesProps> = ({
           <StatLabelContainer>
             <StatLabelLegend css={{ background: "$blue500" }} />
             <StatLabelText>
-              3차
+              {t("stat.vaccine.third_dose.shortened")}
               <b>{third.toFixed(1)}%</b>
             </StatLabelText>
           </StatLabelContainer>
@@ -100,7 +103,8 @@ const VaccineRates: React.FC<VaccineRatesProps> = ({
           <StatLabelContainer>
             <StatLabelLegend css={{ background: "$blue400" }} />
             <StatLabelText>
-              2차
+              {t("stat.vaccine.second_dose.shortened")}
+
               <b>{second.toFixed(1)}%</b>
             </StatLabelText>
           </StatLabelContainer>
@@ -110,7 +114,8 @@ const VaccineRates: React.FC<VaccineRatesProps> = ({
           <StatLabelContainer>
             <StatLabelLegend css={{ background: "$blue200" }} />
             <StatLabelText>
-              1차
+              {t("stat.vaccine.first_dose.shortened")}
+
               <b>{first.toFixed(1)}%</b>
             </StatLabelText>
           </StatLabelContainer>

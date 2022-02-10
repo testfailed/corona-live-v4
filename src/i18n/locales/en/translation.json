@@ -258,16 +258,16 @@
   "stat.recovered": "Recovered",
   "stat.confirmed_critical": "Critical",
   "stat.tested": "Tested",
-  "stat.tested_positive": "Positive %",
+  "stat.tested_positive_rates": "Positive %",
   "stat.confirmed_cases_per_100k": "Cases per 100k",
   "stat.confirmed_today": "Confirmed today",
 
-  "stat.vaccine.first_dose": "1st does",
+  "stat.vaccine.first_dose": "1st Dose",
   "stat.vaccine.first_dose.shortened": "1st",
-  "stat.vaccine.second_dose": "2nd does",
+  "stat.vaccine.second_dose": "2nd Dose",
   "stat.vaccine.second_dose.shortened": "2nd",
-  "stat.vaccine.thid_dose": "3rd does",
-  "stat.vaccine.thid_dose.shortened": "3rd",
+  "stat.vaccine.third_dose": "3rd Dose",
+  "stat.vaccine.third_dose.shortened": "3rd",
 
   "stat.vaccine.all": "All",
   "stat.vaccine.pfizer": "Pfizer",
@@ -301,12 +301,13 @@
 
   "domestic.city.table.header.city": "",
 
-  "vaccine.vaccine_rates": "Vaccine Rates",
-  "vaccine.vaccine_rates.over18": "",
-  "vaccine.vaccine_rates.over60": "",
+  "vaccine.vaccine_rates": "% of population",
+  "vaccine.vaccine_rates.all": "All",
+  "vaccine.vaccine_rates.over18": "18+",
+  "vaccine.vaccine_rates.over60": "60+",
 
-  "chart.data_source": "",
-  "chart.data_source.kdca": "",
+  "chart.data_source": "Data Source",
+  "chart.data_source.kdca": "KDCA",
 
   "input.optional": "",
   "input.required": "",
@@ -324,5 +325,7 @@
 
   "all": "All",
   "city": "City",
-  "country": "Country"
+  "country": "Country",
+  "today": "Today",
+  "yesterday": "Yesterday"
 }
