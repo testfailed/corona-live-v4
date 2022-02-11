@@ -296,7 +296,7 @@ const DomesticChartSection: React.FC = () => {
 
 export const DomesticChartSectionSkeleton = () => {
   const chartMode: ChartMode = useMemo(() => {
-    return isInTimeRange("09:30:00", "15:00:00") ? "EXPANDED" : "DEFAULT";
+    return isInTimeRange("09:30:00", "16:30:00") ? "EXPANDED" : "DEFAULT";
   }, []);
 
   return (
