@@ -18,6 +18,11 @@ import Row from "@components/Row";
 import { ChartMode } from "@_types/chart-type";
 import Underline from "@components/Underline";
 import Space from "@components/Space";
+import { useTranslation } from "react-i18next";
+import InfoIcon from "@components/icon/Icon_Info";
+import Tooltip from "@components/Tooltip";
+import { copyFileSync } from "fs";
+import { useLocalStorage } from "@hooks/useLocalStorage";
 
 export type ChartType = "line" | "bar";
 export type YAxisPosition = "left" | "right";
@@ -54,6 +59,7 @@ export interface ChartConfig {
   statLabel?: string;
 
   zIndex?: number;
+  info?: string | React.ReactNode;
 }
 
 export interface ChartData {
@@ -163,6 +169,7 @@ const ChartVisualizer: React.FC<Props> = ({
   setSelectedX: parentSetSelectedX,
   lastIndex,
 }) => {
+  const { t } = useTranslation();
   const svgRef = useRef<SVGSVGElement>(null);
   const containerRef = useRef<HTMLDivElement>(null);
 
@@ -174,6 +181,10 @@ const ChartVisualizer: React.FC<Props> = ({
 
   const selectedX = mode === "DEFAULT" ? _selectedX : parentSelectedX;
   const setSelectedX = mode === "DEFAULT" ? _setSelectedX : parentSetSelectedX;
+
+  const [titleAlignment, setTitleAlignment] = useState<"left" | "right">(
+    "left"
+  );
 
   const { xValues, xParser, xScale, yScales, margin } = useMemo(() => {
     let margin = { left: 20, right: 20, top: 16, bottom: 20 };
@@ -666,6 +677,10 @@ const ChartVisualizer: React.FC<Props> = ({
       updateTooltip();
     }
 
+    setTitleAlignment(
+      xScale(xParser(selectedX)) > width / 2 ? "left" : "right"
+    );
+
     dataSet.forEach(({ data, config }, i) => {
       const yScale = yScales[config.yAxisPosition];
 
@@ -790,20 +805,20 @@ const ChartVisualizer: React.FC<Props> = ({
 
   return (
     <div ref={containerRef}>
-      <Wrapper borderBottom={isExpanded && !lastIndex}>
+      <Wrapper borderBottom={isExpanded && !lastIndex} last={lastIndex}>
         {mode === "EXPANDED" && xValue !== undefined && (
-          <TitleContainer>
-            <TitleText>{dataSet[0].config.statLabel}</TitleText>
+          <TitleContainer alignment={titleAlignment}>
+            <Row centeredY>
+              <TitleText>{dataSet[0].config.statLabel}</TitleText>
+              {dataSet[0].config.info && (
+                <TitleInfo>{dataSet[0].config.info}</TitleInfo>
+              )}
+            </Row>
             {dataSource && (
               <DataSource target="_blank" href={dataSource?.url}>
-                <label>출처 - </label>
-                {dataSource.url ? (
-                  <a target="_blank" href={dataSource.url}>
-                    {dataSource.text}
-                  </a>
-                ) : (
-                  <div>{dataSource.text}</div>
-                )}
+                <label>
+                  {t("chart.data_source")} -{dataSource.text}{" "}
+                </label>
               </DataSource>
             )}
           </TitleContainer>
@@ -811,7 +826,7 @@ const ChartVisualizer: React.FC<Props> = ({
 
         {mode === "DEFAULT" && dataSource && (
           <DataSource target="_blank" href={dataSource?.url} absolute={true}>
-            <label>출처 - </label>
+            <label>{t("chart.data_source")} - </label>
             {dataSource.url ? (
               <a target="_blank" href={dataSource.url}>
                 {dataSource.text}
@@ -822,7 +837,7 @@ const ChartVisualizer: React.FC<Props> = ({
           </DataSource>
         )}
 
-        <Tooltip
+        <ChartTooltip
           expanded={isExpanded}
           className="chart-tooltip-container"
           css={{
@@ -853,7 +868,7 @@ const ChartVisualizer: React.FC<Props> = ({
                 )
               )}
           </Row>
-        </Tooltip>
+        </ChartTooltip>
 
         <TooltipLine className="chart-tooltip-line" />
 
@@ -884,6 +899,29 @@ const ChartVisualizer: React.FC<Props> = ({
   );
 };
 
+const TooltipDate = styled("div", {
+  body3: true,
+  rowCenteredY: true,
+  position: "absolute",
+  background: "$shadowBackground1",
+  boxShadow: `${rem(-1)} ${rem(1)} ${rem(12)} ${rem(-2)} #0000001f`,
+  color: "$gray900",
+  borderRadius: rem(16),
+  paddingY: rem(1),
+  paddingX: rem(8),
+  zIndex: 2,
+  border: `${rem(1)} solid $gray300`,
+  height: rem(20),
+  transform: `translateY(${rem(-9)})`,
+  letterSpacing: rem(-0.5),
+  fontWeight: 700,
+
+  "@md": {
+    height: rem(22),
+    transform: `translateY(${rem(-8)})`,
+  },
+});
+
 const Wrapper = styled("div", {
   position: "relative",
   zIndex: 1,
@@ -903,6 +941,17 @@ const Wrapper = styled("div", {
           height: rem(1),
         },
         paddingBottom: rem(6),
+      },
+    },
+    last: {
+      true: {
+        [`& ${TooltipDate}`]: {
+          transform: `translateY(${rem(-2)})`,
+          "@md": {
+            height: rem(22),
+            transform: `translateY(${rem(-2)})`,
+          },
+        },
       },
     },
   },
@@ -960,9 +1009,23 @@ const Svg = styled("svg", {
 
 const TitleContainer = styled("div", {
   position: "absolute",
-  left: rem(10),
+  column: true,
 
   "@md": {},
+
+  variants: {
+    alignment: {
+      left: {
+        left: rem(10),
+        right: null,
+      },
+      right: {
+        right: rem(32),
+        left: null,
+        alignItems: "flex-end",
+      },
+    },
+  },
 });
 
 const TitleText = styled("div", {
@@ -982,7 +1045,13 @@ const TitleText = styled("div", {
   },
 });
 
-const Tooltip = styled("div", {
+const TitleInfo = styled("div", {
+  body3: true,
+  marginLeft: rem(6),
+  color: "$gray700",
+});
+
+const ChartTooltip = styled("div", {
   height: rem(50),
   marginTop: rem(12),
   marginBottom: rem(2),
@@ -1072,34 +1141,12 @@ const TooltipLine = styled("div", {
   zIndex: -1,
 });
 
-const TooltipDate = styled("div", {
-  body3: true,
-  rowCenteredY: true,
-  position: "absolute",
-  background: "$shadowBackground1",
-  boxShadow: `${rem(-1)} ${rem(1)} ${rem(12)} ${rem(-2)} #0000001f`,
-  color: "$gray900",
-  borderRadius: rem(16),
-  paddingY: rem(1),
-  paddingX: rem(8),
-  zIndex: 2,
-  border: `${rem(1)} solid $gray300`,
-  height: rem(20),
-  transform: `translateY(${rem(-9)})`,
-  letterSpacing: rem(-0.5),
-  fontWeight: 700,
-
-  "@md": {
-    height: rem(22),
-    transform: `translateY(${rem(-8)})`,
-  },
-});
-
 const DataSource = styled("a", {
   zIndex: 0,
   rowCenteredY: true,
   body3: true,
   textDecoration: "none",
+  wordBreak: "keep-all",
 
   "& label": {
     color: "$gray700",
