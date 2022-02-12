@@ -7,14 +7,14 @@ import { createEmptyArray } from "@utils/array-util";
 
 import Skeleton from "@components/Skeleton";
 
-export interface UpdatesCategory {
+export interface IUpdatesCategory {
   text: string;
   value: string;
   count: number;
 }
 
 interface Props {
-  categories: Array<UpdatesCategory>;
+  categories: Array<IUpdatesCategory>;
   value: string;
   onChange: (value: string) => void;
 }

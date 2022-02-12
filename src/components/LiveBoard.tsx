@@ -6,16 +6,15 @@ import { styled } from "@styles/stitches.config";
 import { numberWithCommas } from "@utils/number-util";
 import { chunkArray, createEmptyArray } from "@utils/array-util";
 
-import Section, { SubSection } from "./Section";
+import { SubSection } from "./Section";
 import DeltaTag from "./DeltaTag";
 import UpdatesRow, {
-  UpdateRow,
-  UpdateRowSkeleton,
-} from "./updates/Updates_Row";
+  ILiveUpdatesRow,
+  LiveUpdatesRowSkeleton,
+} from "./live-updates/LiveUpdates_Row";
 import Skeleton from "./Skeleton";
 import Column from "./Column";
 import Space from "./Space";
-import { t } from "i18next";
 import { useTranslation } from "react-i18next";
 
 export interface LiveBoardComparedValue {
@@ -27,7 +26,7 @@ interface Props {
   currentValue: number;
   currentValueLabel: string;
   comparedValues: Array<LiveBoardComparedValue>;
-  updates: Array<UpdateRow>;
+  updates: Array<ILiveUpdatesRow>;
   updatesModalTrigger?: React.ReactNode;
 }
 
@@ -135,7 +134,7 @@ export const LiveBoardSkeleton: React.FC<{ columns: number }> = ({
           </Column>
         ))}
       </StatsContainer>
-      <UpdateRowSkeleton type="preview" />
+      <LiveUpdatesRowSkeleton type="preview" />
     </Wrapper>
   );
 };

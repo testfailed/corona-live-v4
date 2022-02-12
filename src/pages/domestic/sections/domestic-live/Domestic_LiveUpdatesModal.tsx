@@ -6,19 +6,20 @@ import {
 } from "@utils/domestic-util";
 import DomesticApi from "@apis/domestic-api";
 
-import UpdatesContent, {
-  UpdatesContentSkeleton,
-} from "@components/updates/Updates_Content";
+import LiveUpdatesContent, {
+  LiveUpdatesContentSkeleton,
+} from "@components/live-updates/LiveUpdates_Content";
+import LiveUpdatesModal from "@components/live-updates/LiveUpdates_ModalTrigger";
+
 import Api from "@components/Api";
 import FadeIn from "@components/FadeIn";
-import UpdatesModal from "@components/updates/Updates_Modal";
 
 const DomesticLiveUpdatesModalTrigger: React.FC<{ cityId?: string }> = ({
   children,
   cityId,
 }) => {
   return (
-    <UpdatesModal triggerNode={children}>
+    <LiveUpdatesModal triggerNode={children}>
       <Api api={DomesticApi.updates}>
         {({ data }) => {
           const rawUpdates = transformDomesticUpdates(data?.updates ?? []);
@@ -38,14 +39,14 @@ const DomesticLiveUpdatesModalTrigger: React.FC<{ cityId?: string }> = ({
           return (
             <FadeIn
               show={data?.updates !== undefined}
-              fallback={<UpdatesContentSkeleton hasCategories />}
+              fallback={<LiveUpdatesContentSkeleton hasCategories />}
             >
-              <UpdatesContent {...{ updates, categories }} />
+              <LiveUpdatesContent {...{ updates, categories }} />
             </FadeIn>
           );
         }}
       </Api>
-    </UpdatesModal>
+    </LiveUpdatesModal>
   );
 };
 

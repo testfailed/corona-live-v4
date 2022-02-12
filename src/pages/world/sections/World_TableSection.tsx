@@ -1,6 +1,7 @@
 import React, { useEffect, useMemo, useState } from "react";
 
 import { rem } from "polished";
+import { useTranslation } from "react-i18next";
 
 import useApi from "@hooks/useApi";
 import { styled } from "@styles/stitches.config";
@@ -10,9 +11,8 @@ import Section from "@components/Section";
 import Table, { TableColumn, TableRow } from "@components/Table";
 import { WorldTableKey } from "@_types/world-type";
 import WorldApi from "@apis/world-api";
-import { useTranslation } from "react-i18next";
 
-const WorldCountrySection: React.FC = () => {
+const WorldTableSection: React.FC = () => {
   const { data } = useApi(WorldApi.live);
   const [rowsCount, setRowsCount] = useState(15);
   const { t } = useTranslation();
@@ -123,7 +123,7 @@ const WorldCountrySection: React.FC = () => {
   );
 };
 
-export const WorldCountrySectionSkeleton = () => {
+export const WorldTableSectionSkeleton = () => {
   return <Wrapper css={{ height: rem(1605) }}></Wrapper>;
 };
 
@@ -132,4 +132,4 @@ const Wrapper = styled(Section, {
   paddingY: rem(20),
 });
 
-export default WorldCountrySection;
+export default WorldTableSection;

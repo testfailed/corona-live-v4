@@ -277,7 +277,7 @@ const DomesticChartSection: React.FC = () => {
           dataSet,
           xAxis,
           yAxis,
-          dataSource: option?.type === "live" ? null : KDCA_DATA_SOURCE(),
+          dataSource: option?.type === "live" ? null : KDCA_DATA_SOURCE,
         },
       ];
     }

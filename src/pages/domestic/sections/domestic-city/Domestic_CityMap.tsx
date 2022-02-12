@@ -1,6 +1,6 @@
 import React, { useMemo, useState } from "react";
 
-import { css, styled, theme } from "@styles/stitches.config";
+import { css, styled } from "@styles/stitches.config";
 
 import { rem } from "polished";
 

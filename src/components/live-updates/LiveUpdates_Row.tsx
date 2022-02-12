@@ -1,25 +1,26 @@
 import React from "react";
 
-import { styled } from "@styles/stitches.config";
-import UpdatesTimeDisplay from "./Updates_TimeDisplay";
-import { ChevronDownIcon } from "@components/icon/Icon_Chevron";
 import { rem } from "polished";
-import { fadeInUp } from "@styles/animations/fade-animation";
-import Skeleton from "@components/Skeleton";
-import Space from "@components/Space";
 
-export interface UpdateRow {
+import { styled } from "@styles/stitches.config";
+import { fadeInUp } from "@styles/animations/fade-animation";
+
+import Skeleton from "@components/Skeleton";
+import UpdatesTimeDisplay from "./LiveUpdates_TimeDisplay";
+import { ChevronDownIcon } from "@components/icon/Icon_Chevron";
+
+export interface ILiveUpdatesRow {
   date: string;
   update: string;
   category?: string;
 }
 
-interface Props extends UpdateRow {
+interface Props extends ILiveUpdatesRow {
   type?: "preview";
   fadeInUp?: boolean;
 }
 
-const UpdatesRow: React.FC<Props> = ({ type, date, update, fadeInUp }) => {
+const LiveUpdatesRow: React.FC<Props> = ({ type, date, update, fadeInUp }) => {
   return (
     <Wrapper fadeInUp={fadeInUp} preview={type === "preview"}>
       <UpdatesTimeDisplay date={date} />
@@ -29,7 +30,9 @@ const UpdatesRow: React.FC<Props> = ({ type, date, update, fadeInUp }) => {
   );
 };
 
-export const UpdateRowSkeleton: React.FC<{ type?: "preview" }> = ({ type }) => {
+export const LiveUpdatesRowSkeleton: React.FC<{ type?: "preview" }> = ({
+  type,
+}) => {
   return (
     <Wrapper
       preview={type === "preview"}
@@ -83,4 +86,4 @@ const Value = styled("div", {
   },
 });
 
-export default UpdatesRow;
+export default LiveUpdatesRow;

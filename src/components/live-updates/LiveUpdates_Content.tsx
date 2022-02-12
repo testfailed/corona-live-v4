@@ -1,24 +1,25 @@
 import React, { useMemo, useState } from "react";
 
 import { styled } from "@styles/stitches.config";
-
-import UpdatesCategories, {
-  UpdatesCategoriesSkeleton,
-  UpdatesCategory,
-} from "@components/updates/Updates_Categories";
-import UpdatesRow, {
-  UpdateRow,
-  UpdateRowSkeleton,
-} from "@components/updates/Updates_Row";
 import { createEmptyArray } from "@utils/array-util";
 
+import LiveUpdatesCategories, {
+  UpdatesCategoriesSkeleton,
+} from "@components/live-updates/LiveUpdates_Categories";
+import LiveUpdatesRow, {
+  ILiveUpdatesRow,
+  LiveUpdatesRowSkeleton,
+} from "@components/live-updates/LiveUpdates_Row";
+
+import type { IUpdatesCategory } from "@components/live-updates/LiveUpdates_Categories";
+
 interface Props {
-  updates: Array<UpdateRow>;
-  categories?: Array<UpdatesCategory>;
+  updates: Array<ILiveUpdatesRow>;
+  categories?: Array<IUpdatesCategory>;
   triggerNode?: React.ReactNode;
 }
 
-const UpdatesContent: React.FC<Props> = ({ updates, categories }) => {
+const LiveUpdatesContent: React.FC<Props> = ({ updates, categories }) => {
   const [category, setCategory] = useState(null);
 
   const filteredUpdates = useMemo(
@@ -29,12 +30,10 @@ const UpdatesContent: React.FC<Props> = ({ updates, categories }) => {
     [category, updates]
   );
 
-  console.log(filteredUpdates);
-
   return (
     <Wrapper>
       {categories && (
-        <UpdatesCategories
+        <LiveUpdatesCategories
           categories={categories}
           value={category}
           onChange={setCategory}
@@ -43,7 +42,9 @@ const UpdatesContent: React.FC<Props> = ({ updates, categories }) => {
       {filteredUpdates && (
         <Container>
           {filteredUpdates?.map((update, index) => {
-            return <UpdatesRow key={`${update.date}/${index}`} {...update} />;
+            return (
+              <LiveUpdatesRow key={`${update.date}/${index}`} {...update} />
+            );
           })}
         </Container>
       )}
@@ -51,7 +52,7 @@ const UpdatesContent: React.FC<Props> = ({ updates, categories }) => {
   );
 };
 
-export const UpdatesContentSkeleton: React.FC<{
+export const LiveUpdatesContentSkeleton: React.FC<{
   hasCategories?: boolean;
 }> = (props) => {
   return (
@@ -59,7 +60,7 @@ export const UpdatesContentSkeleton: React.FC<{
       {props.hasCategories && <UpdatesCategoriesSkeleton />}
       <Container>
         {createEmptyArray(20).map(() => (
-          <UpdateRowSkeleton />
+          <LiveUpdatesRowSkeleton />
         ))}
       </Container>
     </Wrapper>
@@ -82,4 +83,4 @@ const Container = styled("div", {
   },
 });
 
-export default UpdatesContent;
+export default LiveUpdatesContent;

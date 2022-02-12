@@ -15,8 +15,6 @@ import type { DomesticTableKey } from "@_types/domestic-type";
 import type { TableColumn, TableRow, TableRowValue } from "@components/Table";
 import { useTranslation } from "react-i18next";
 
-type ColumnKey = typeof columns[number]["id"];
-
 const statToTableRowValue = (value: Stat | string): TableRowValue => {
   if (typeof value === "string") {
     return { text: value };
@@ -72,6 +70,8 @@ const DomesticTable: React.FC = () => {
       sortable: true,
     },
   ];
+
+  type ColumnKey = typeof columns[number]["id"];
 
   const rows: Array<TableRow<ColumnKey>> = Object.keys(stat.cities).map(
     (_cityId) => {

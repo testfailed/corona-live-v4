@@ -33,7 +33,6 @@ const VaccinePage: React.FC = () => {
         fallback={<VaccineSkeleton />}
       >
         <Column>
-          {/* <VaccineSkeleton /> */}
           <VaccineStatSection />
           <VaccineRatioSection />
           <VaccineChartSection />

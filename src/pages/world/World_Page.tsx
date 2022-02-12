@@ -13,7 +13,7 @@ import WorldPageSkeleton from "./World_PageSkeleton";
 import WorldStatSection from "./sections/World_StatSection";
 import WorldLiveSection from "./sections/World_LiveSection";
 import WorldChartSection from "./sections/World_ChartSection";
-import WorldCountrySection from "./sections/World_CountrySection";
+import WorldTableSection from "./sections/World_TableSection";
 
 const WorldPage: React.FC = () => {
   const { data } = useApi(WorldApi.live);
@@ -31,7 +31,7 @@ const WorldPage: React.FC = () => {
           <WorldStatSection />
           <WorldLiveSection />
           <WorldChartSection />
-          <WorldCountrySection />
+          <WorldTableSection />
         </Column>
       </FadeIn>
     </>

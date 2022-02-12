@@ -1,6 +1,6 @@
 //@ts-nocheck
 import { boldify } from "@utils/html-util";
-import { CITY_GU_NAMES, CITY_NAME_LIST } from "@constants/constants";
+import { CITY_NAME_LIST } from "@constants/constants";
 import { t } from "i18next";
 
 import type { UpdateRow } from "@components/updates/Updates_Row";
