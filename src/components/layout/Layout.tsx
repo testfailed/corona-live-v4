@@ -6,10 +6,11 @@ import { styled } from "@styles/stitches.config";
 import { CITY_NAME_LIST } from "@constants/constants";
 
 import Space from "@components/Space";
+import Section from "@components/Section";
+
 import LayoutFooter from "./Layout_Footer";
 import LayoutDesktopMenu from "./Layout_DesktopMenu";
 import LayoutMobileHeader from "./Layout_MobileHeader";
-import Section from "@components/Section";
 
 interface Props {
   hideMobileHeader?: boolean;

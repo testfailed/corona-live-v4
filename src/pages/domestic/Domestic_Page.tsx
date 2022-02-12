@@ -1,14 +1,14 @@
 import React from "react";
 
 import useApi from "@hooks/useApi";
-import DomesticApi from "@apis/domestic-api";
+import DomesticApi from "@features/domestic/domestic-api";
 import { WEB_URL } from "@constants/constants";
 
 import DomesticSkeleton from "./Domestic_PageSkeleton";
-import DomesticLiveSection from "./sections/Domestic_LiveSection";
-import DomesticStatSection from "./sections/Domestic_StatSection";
-import DomesticCitySection from "./sections/Domestic_CitySection";
-import DomesticChartSection from "./sections/Domestic_ChartSection";
+import DomesticLiveSection from "../../features/domestic/components/sections/Domestic_LiveSection";
+import DomesticStatSection from "../../features/domestic/components/sections/Domestic_StatSection";
+import DomesticCitySection from "../../features/domestic/components/sections/Domestic_CitySection";
+import DomesticChartSection from "../../features/domestic/components/sections/Domestic_ChartSection";
 
 import Seo from "@components/Seo";
 import FadeIn from "@components/FadeIn";

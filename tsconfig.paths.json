@@ -4,18 +4,18 @@
     "baseUrl": ".",
     "paths": {
       "@apis/*": ["src/apis/*"],
-      "@_types/*": ["src/types/*"],
       "@hooks/*": ["src/hooks/*"],
       "@pages/*": ["src/pages/*"],
       "@utils/*": ["src/utils/*"],
+      "@_types/*": ["src/types/*"],
       "@stores/*": ["src/stores/*"],
       "@styles/*": ["src/styles/*"],
+      "@features/*": ["src/features/*"],
       "@contexts/*": ["src/contexts/*"],
-      "@constants": ["src/constants/index"],
       "@constants/*": ["src/constants/*"],
+      "@constants": ["src/constants/index"],
       "@components/*": ["src/components/*"],
-      "@containers/*": ["src/containers/*"],
-      "@features/*": ["src/features/*"]
+      "@containers/*": ["src/containers/*"]
     }
   }
 }

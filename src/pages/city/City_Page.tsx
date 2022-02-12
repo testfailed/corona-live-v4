@@ -3,22 +3,22 @@ import React, { useMemo } from "react";
 import { useParams } from "react-router-dom";
 
 import useApi from "@hooks/useApi";
-import CityApi from "@apis/city-api";
+import CityApi from "@features/city/city-api";
 import { WEB_URL } from "@constants/constants";
 import { useScrollTop } from "@hooks/useScrollTop";
 import { CITY_PATH } from "@constants/route-constants";
-import { getCityGuNameWithIds } from "@utils/domestic-util";
 
 import Seo from "@components/Seo";
 import FadeIn from "@components/FadeIn";
 import Column from "@components/Column";
 
 import CitySkelton from "./City_PageSkeleton";
-import CityLiveSection from "./sections/City_LiveSection";
-import CityStatSection from "./sections/City_StatSection";
-import CityChartSection from "./sections/City_ChartSection";
-import CityTableSection from "./sections/City_TableSection";
-import CityTitleSection from "./sections/City_TitleSection";
+import { getCityGuNameWithIds } from "@features/domestic/domestic-util";
+import { CityTitleSection } from "@features/city/components/City_TitleSection";
+import { CityStatSection } from "@features/city/components/City_StatSection";
+import { CityLiveSection } from "@features/city/components/City_LiveSection";
+import { CityChartSection } from "@features/city/components/City_ChartSection";
+import { CityTableSection } from "@features/city/components/City_TableSection";
 
 const CityPage: React.FC = () => {
   useScrollTop();

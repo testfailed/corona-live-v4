@@ -33,10 +33,6 @@ const LayoutMobileHeader: React.FC = () => {
 
   useEffect(() => {
     setRenderThemeButton(Math.random() >= 0.5);
-
-    setTimeout(() => {
-      i18n.changeLanguage(i18n.language === "en" ? "ko" : "en");
-    }, 3000);
   }, []);
 
   const { t } = useTranslation();

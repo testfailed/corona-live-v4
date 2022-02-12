@@ -5,7 +5,7 @@ import { useTranslation } from "react-i18next";
 
 import useApi from "@hooks/useApi";
 import { dayjs, isInTimeRange } from "@utils/date-util";
-import DomesticApi from "@apis/domestic-api";
+import DomesticApi from "@features/domestic/domestic-api";
 import { numberWithCommas } from "@utils/number-util";
 import { css, styled } from "@styles/stitches.config";
 

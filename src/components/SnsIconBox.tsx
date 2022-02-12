@@ -1,26 +1,25 @@
 import React from "react";
 
+import { rem } from "polished";
 import { CopyToClipboard } from "react-copy-to-clipboard";
 
 import { styled, theme } from "@styles/stitches.config";
 
+import {
+  EMAIL,
+  INSTA_SNS_URL,
+  TWITTER_SNS_URL,
+  TWITTER_URL,
+  WEB_URL,
+} from "@constants/constants";
+import { useTimeoutState } from "@hooks/useTimeoutState";
+import { fadeInUp } from "@styles/animations/fade-animation";
+
 import LinkIcon from "./icon/Icon_Link";
+import EmailIcon from "./icon/Icon_Email";
+import CheckIcon from "./icon/Icon_Check";
 import TwitterIcon from "./icon/Icon_Twitter";
 import InstagramIcon from "./icon/Icon_Instagram";
-import { EMAIL, WEB_URL } from "@constants/constants";
-import { fadeInUp } from "@styles/animations/fade-animation";
-import { useTimeoutState } from "@hooks/useTimeoutState";
-import CheckIcon from "./icon/Icon_Check";
-import { rem } from "polished";
-import EmailIcon from "./icon/Icon_Email";
-
-export const WEBSITE_URL = `https://corona-live.com`;
-export const FACEBOOK_URL = `https://www.facebook.com/sharer/sharer.php?u=${WEBSITE_URL}%2F&amp;src=sdkpreparse`;
-export const BLOG_URL = `http://blog.naver.com/openapi/share?url=${WEBSITE_URL}&title=[코로나 라이브] 코로나 현황 실시간으로 보기`;
-export const TWITTER_URL = `http://twitter.com/share?url=${WEBSITE_URL}&text=코로나 현황 실시간으로 보기`;
-export const KAKAOPAY_URL = `https://qr.kakaopay.com/281006011172839271003566`;
-export const TWITTER_SNS_URL = `https://twitter.com/corona__live`;
-export const INSTA_SNS_URL = `https://www.instagram.com/corona_live_official/`;
 
 const IconBox = styled("a", {
   width: rem(34),

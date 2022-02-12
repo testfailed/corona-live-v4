@@ -1,7 +1,7 @@
 import React from "react";
 
 import useApi from "@hooks/useApi";
-import WorldApi from "@apis/world-api";
+import WorldApi from "@features/world/world-api";
 import { WEB_URL } from "@constants/constants";
 import { WORLD_PATH } from "@constants/route-constants";
 

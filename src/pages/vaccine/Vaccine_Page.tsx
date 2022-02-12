@@ -1,7 +1,7 @@
 import React from "react";
 
 import useApi from "@hooks/useApi";
-import VaccinApi from "@apis/vaccine-api";
+import VaccinApi from "@features/vaccine/vaccine-api";
 
 import { WEB_URL } from "@constants/constants";
 import { VACCINE_PATH } from "@constants/route-constants";
@@ -11,10 +11,10 @@ import Column from "@components/Column";
 import FadeIn from "@components/FadeIn";
 
 import VaccineSkeleton from "./Vaccine_PageSkeleton";
-import VaccineInfoSection from "./sections/Vaccine_InfoSection";
-import VaccineStatSection from "./sections/Vaccine_StatSection";
-import VaccineChartSection from "./sections/Vaccine_ChartSection";
-import VaccineRatioSection from "./sections/Vaccine_RatesSection";
+import VaccineInfoSection from "../../features/vaccine/components/sections/Vaccine_InfoSection";
+import VaccineStatSection from "../../features/vaccine/components/sections/Vaccine_StatSection";
+import VaccineChartSection from "../../features/vaccine/components/sections/Vaccine_ChartSection";
+import VaccineRatioSection from "../../features/vaccine/components/sections/Vaccine_RatesSection";
 
 const VaccinePage: React.FC = () => {
   const { data: stat } = useApi(VaccinApi.stat);

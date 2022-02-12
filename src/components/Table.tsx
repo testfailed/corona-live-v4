@@ -338,6 +338,11 @@ const HeaderTh = styled("th", {
         },
       },
     },
+    shadow: {
+      true: {
+        boxShadow: `${rem(4)} 0 ${rem(14)} ${rem(4)} #0000000005`,
+      },
+    },
   },
 });
 
@@ -385,68 +390,6 @@ const StatContainer = styled("div", {
       },
     },
   },
-});
-
-const TBodyTh = styled("th", {
-  padding: rem(0),
-  borderRadius: rem(8),
-  verticalAlign: "middle",
-
-  "& a": {
-    color: "$gray900",
-    textDecoration: "none",
-  },
-
-  // position: "sticky",
-  // "&": {
-  //   position: "-webkit-sticky",
-  // },
-  // left: rem(6),
-  // zIndex: 5,
-
-  // [`&:before`]: {
-  //   content: "",
-  //   position: "absolute",
-  //   borderRadius: rem(8),
-  //   background: "$white",
-  //   width: "calc(200%)",
-  //   height: "100%",
-  //   right: 0,
-  //   top: 0,
-  //   bottom: 0,
-  //   zIndex: -1,
-  // },
-
-  // [`&:after`]: {
-  //   content: "",
-  //   position: "absolute",
-  //   background: "inherit",
-  //   boxShadow: `${rem(4)} 0 ${rem(14)} ${rem(4)} #00000005`,
-  //   transition: "150ms",
-  //   width: rem(0.1),
-  //   height: "100%",
-  //   right: 2,
-  //   top: 0,
-  //   bottom: 0,
-  //   zIndex: -1,
-  // },
-
-  // variants: {
-  //   shadow: {
-  //     true: {
-  //       [`&:after`]: {
-  //         boxShadow: `${rem(4)} 0 ${rem(14)} ${rem(4)} #0000000005`,
-  //       },
-  //     },
-  //   },
-  //   centered: {
-  //     true: {
-  //       [`& ${TdContainer}`]: {
-  //         justifyContent: "center",
-  //       },
-  //     },
-  //   },
-  // },
 });
 
 const InViewCheck = styled("div", {

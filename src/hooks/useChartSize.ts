@@ -1,4 +1,4 @@
-import { ChartMode } from "@_types/chart-type";
+import { ChartMode } from "@features/chart/chart-type";
 import { useState, useEffect } from "react";
 
 function useChartSize(config?: {
