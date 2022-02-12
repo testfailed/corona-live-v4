@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 
 import { rem } from "polished";
+import { useTranslation } from "react-i18next";
 import { CopyToClipboard } from "react-copy-to-clipboard";
 
 import { useTimeoutState } from "@hooks/useTimeoutState";
@@ -16,6 +17,8 @@ import CheckIcon from "@components/icon/Icon_Check";
 import KakaoPayIcon from "@components/icon/Icon_KakaoPay";
 
 const DonationModalTrigger: React.FC = ({ children }) => {
+  const { t } = useTranslation();
+
   const [copied, setCopied] = useTimeoutState(false, 1000);
   const [isAnimationEnabled, setIsAnimationEnabled] = useState(false);
 
@@ -29,7 +32,7 @@ const DonationModalTrigger: React.FC = ({ children }) => {
 
         "@md": { width: rem(300) },
       })}
-      confirmText="닫기"
+      confirmText={t("닫기")}
       onConfrim={(closeModal) => {
         closeModal();
       }}
@@ -38,13 +41,15 @@ const DonationModalTrigger: React.FC = ({ children }) => {
           setIsAnimationEnabled(false);
         }
       }}
-      title="서버비용 후원"
+      title={t("donation_modal.title")}
       triggerNode={children}
     >
       <Wrapper>
-        <SubText>계좌</SubText>
+        <SubText> {t("donation_modal.bank_account")} </SubText>
         <Container>
-          <BankAccounInfo>카카오뱅크 | 홍준서</BankAccounInfo>
+          <BankAccounInfo>
+            {t("donation_modal.kakaobank")} | 홍준서
+          </BankAccounInfo>
           <CopyToClipboard text={3333188178788}>
             <BankAccoutContainer
               onClick={() => {
@@ -61,7 +66,7 @@ const DonationModalTrigger: React.FC = ({ children }) => {
                     <CheckIcon size={16} fill={theme.colors.gray600} />
                   </span>
                 ) : (
-                  <span key={"not-copied"}>복사</span>
+                  <span key={"not-copied"}>{t("copy")}</span>
                 )}
               </BankAccountCopyButton>
             </BankAccoutContainer>
@@ -72,13 +77,13 @@ const DonationModalTrigger: React.FC = ({ children }) => {
 
         <PayContainer>
           <Column centeredX>
-            <SubText>카카오페이</SubText>
+            <SubText>{t("donation_modal.kakaopay")}</SubText>
             <IconContainer href={KAKAOPAY_URL} target="_blank">
               <KakaoPayIcon style={{ transform: `translateY(${rem(1)})` }} />
             </IconContainer>
           </Column>
           <Column centeredX>
-            <SubText>토스</SubText>
+            <SubText>{t("donation_modal.toss")}</SubText>
             <IconContainer href={TOSS_URL} target="_blank">
               <TossIcon />
             </IconContainer>

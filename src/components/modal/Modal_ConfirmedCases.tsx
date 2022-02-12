@@ -1,9 +1,10 @@
 import React, { useEffect, useMemo, useRef, useState } from "react";
 
 import { rem } from "polished";
+import { useTranslation } from "react-i18next";
 
 import useApi from "@hooks/useApi";
-import { dayjs, isInTimeRange, isNotInTimeRange } from "@utils/date-util";
+import { dayjs, isInTimeRange } from "@utils/date-util";
 import DomesticApi from "@apis/domestic-api";
 import { numberWithCommas } from "@utils/number-util";
 import { css, styled } from "@styles/stitches.config";
@@ -17,6 +18,8 @@ const ConfirmedCasesModal: React.FC = () => {
 
   const skipInterval = useRef(false);
   const intervalId = useRef<ReturnType<typeof setInterval>>();
+
+  const { t } = useTranslation();
 
   const title = useMemo(() => {
     const date = dayjs().subtract(12, "hour");
@@ -58,12 +61,15 @@ const ConfirmedCasesModal: React.FC = () => {
         "@md": { width: rem(300) },
       })}
       onConfrim={(close) => close()}
-      confirmText="닫기"
+      confirmText={t("close")}
       title={title}
     >
       <Wrapper>
-        <Text>최소수치</Text>
-        <Cases>{numberWithCommas(data.live.today)}</Cases>
+        <Text>{t("confirmed_modal.text")}</Text>
+        <Cases>
+          {numberWithCommas(data.live.today)}
+          <span>{t("stat.unit")}</span>
+        </Cases>
         <SnsContainer>
           <SnsIcons>
             <TwitterIconBox type="profile" />
@@ -91,8 +97,8 @@ const Text = styled("div", {
 const Cases = styled("div", {
   heading1: true,
   justifyContent: "center",
-  "&:after": {
-    content: "명",
+
+  "& span": {
     fontWeight: 300,
   },
 });

@@ -26,7 +26,7 @@ const LayoutMobileMenuModalTrigger: React.FC<Props> = ({ children }) => {
     <Modal
       modalId="menu"
       triggerNode={children}
-      title="메뉴"
+      title={t("menu")}
       showCloseButton
       className={css({
         width: "85%",
