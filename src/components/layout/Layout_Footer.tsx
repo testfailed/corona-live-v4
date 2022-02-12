@@ -1,7 +1,10 @@
 import React from "react";
 
-import { styled } from "@styles/stitches.config";
 import { rem } from "polished";
+import { useTranslation } from "react-i18next";
+
+import { styled } from "@styles/stitches.config";
+
 import {
   EmailIconBox,
   InstagramIconBox,
@@ -16,21 +19,24 @@ interface Props {
 }
 
 const LayoutFooter: React.FC<Props> = ({ simplified }) => {
+  const { t } = useTranslation("");
   return (
     <Wrapper className="user-select" css={simplified && { padding: 0 }}>
       <Space h={simplified ? 12 : 24} />
 
-      <SubText>서버비용 후원</SubText>
-      <Text>
-        이용하시는데 불편함이 없도록 광고 없이 운영을 하고 있어요.
-        {simplified ? " " : <br></br>}
-        서버비용 충당후 후원금이 남을시 코로나19 관련 단체에 기부 할 예정이에요.
-      </Text>
+      <SubText>{t("footer.donate_title")}</SubText>
+      {simplified ? (
+        <Text children={t("footer.donate_message")} />
+      ) : (
+        <Text
+          dangerouslySetInnerHTML={{ __html: t("footer.donate_message.lb") }}
+        />
+      )}
 
       <DonationModalTrigger>
         <DonateButton>
           <DonationIcon size={8} />
-          <span>후원하기</span>
+          <span>{t("donate")}</span>
         </DonateButton>
       </DonationModalTrigger>
 
@@ -47,24 +53,15 @@ const LayoutFooter: React.FC<Props> = ({ simplified }) => {
       ) : (
         <>
           <Space h={32} />
-          <Text>
-            본사이트에서 제공하는 실시간 확진자수는 각 지자체에서 제공하는
-            <br></br> 제공하는 자료를 기반으로 민간이 취합한 집계이므로 공식적인
-            <br></br>
-            근거 자료로 활용될수 없고, 해당 정보 사용/공유로 인해
-            <br></br>
-            발생된 문제의 책임은 전적으로 사용자에게 있어요.
-            <br />
-          </Text>
-
+          <Text
+            dangerouslySetInnerHTML={{
+              __html: t("footer.important_message.lb"),
+            }}
+          />
           <Space h={36} />
         </>
       )}
-      <InfoText>
-        <div>
-          MADE BY<b>CHINCHILLA</b>
-        </div>
-      </InfoText>
+      <InfoText dangerouslySetInnerHTML={{ __html: t("footer.info_text") }} />
 
       {simplified ? <Space h={24} /> : <Space h={32} />}
     </Wrapper>
@@ -102,27 +99,18 @@ const SnsContainer = styled("div", {
 });
 
 const InfoText = styled("div", {
-  columnCentered: true,
-  whiteSpace: "nowrap",
-  "& span": {
-    caption1: true,
+  rowCenteredY: true,
+  caption1: true,
+  paddingX: rem(12),
+  paddingY: rem(4),
+  borderRadius: rem(16),
+  transform: "scaleY(0.95)",
+  color: "$gray700",
 
-    marginBottom: rem(4),
-  },
-  "& div": {
-    rowCenteredY: true,
-    caption1: true,
-    paddingX: rem(12),
-    paddingY: rem(4),
-    borderRadius: rem(16),
-    transform: "scaleY(0.95)",
-    color: "$gray700",
-
-    "& b": {
-      marginLeft: rem(4),
-      fontWeight: 700,
-      color: "$gray800",
-    },
+  "& b": {
+    marginLeft: rem(4),
+    fontWeight: 700,
+    color: "$gray800",
   },
 });
 
