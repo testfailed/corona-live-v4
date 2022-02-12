@@ -5,8 +5,6 @@
 /.pnp
 .pnp.js
 .yarn/*
-!.yarn/releases
-!.yarn/plugins
 .vscode
 
 
