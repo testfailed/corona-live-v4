@@ -4,34 +4,32 @@ import { theme } from "@styles/stitches.config";
 import useCachedChartData from "@features/chart/hooks/useCachedChartData";
 
 import Section from "@components/Section";
-import Chart from "@components/chart/Chart";
-import { ChartSkeleton } from "@components/chart/Chart";
-
+import Chart, { ChartSkeleton } from "@features/chart/components/Chart";
 import {
   chartRangeOptions,
   chartTypeOptions,
-  createChartStatOptions,
+  createChartOptions,
   getDefaultChartConfig,
   getDefaultChartXAxis,
   getDefaultChartYAxis,
   transformChartData,
-} from "@utils/chart-util";
+} from "@features/chart/chart-util";
 
+import type {
+  ChartData,
+  ChartVisualiserData,
+} from "@features/chart/components/Chart_Visualiser";
 import type {
   ChartDefaultOptionKey,
   ChartRangeOptionValue,
   ChartTypeOptionValue,
 } from "@features/chart/chart-type";
-import type {
-  ChartData,
-  ChartVisualiserData,
-} from "@components/chart/Chart_Visualiser";
 
 export type VaccineStat = "az" | "pfizer" | "jansen" | "moderna" | "all";
 
 type VaccineOption = ChartDefaultOptionKey;
 
-const chartStatOptions = createChartStatOptions<VaccineStat, VaccineOption>()({
+const chartOptions = createChartOptions<VaccineStat, VaccineOption>()({
   all: {
     label: "전체",
 
@@ -85,7 +83,7 @@ const chartStatOptions = createChartStatOptions<VaccineStat, VaccineOption>()({
   },
 });
 
-const VaccineChart: React.FC = () => {
+export const VaccineChartSection: React.FC = () => {
   const { getCachedChartData } = useCachedChartData("vaccine");
 
   const getChartData = async (
@@ -177,7 +175,7 @@ const VaccineChart: React.FC = () => {
 
   return (
     <Section>
-      <Chart {...{ chartStatOptions, getChartData }} />
+      <Chart {...{ chartOptions, getChartData }} />
     </Section>
   );
 };
@@ -189,5 +187,3 @@ export const VaccineChartSectionSkeleton = () => {
     </Section>
   );
 };
-
-export default VaccineChart;

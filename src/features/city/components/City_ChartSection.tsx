@@ -1,25 +1,26 @@
 import React from "react";
 
-import useCachedChartData from "@features/chart/hooks/useCachedChartData";
+import { useParams } from "react-router-dom";
 
 import Section from "@components/Section";
 
-import Chart, { ChartSkeleton } from "@features/chart/components/Chart";
 import {
   chartRangeOptions,
   chartTypeOptions,
-  createChartStatOptions,
+  createChartOptions,
   getDefaultChartConfig,
   getDefaultChartXAxis,
   getDefaultChartYAxis,
   transformChartData,
 } from "@features/chart/chart-util";
-import { ChartDefaultOption } from "@features/chart/chart-type";
-import {
+import Chart, { ChartSkeleton } from "@features/chart/components/Chart";
+import useCachedChartData from "@features/chart/hooks/useCachedChartData";
+
+import type { ChartDefaultOption } from "@features/chart/chart-type";
+import type {
   ChartData,
   ChartVisualiserData,
 } from "@features/chart/components/Chart_Visualiser";
-import { useParams } from "react-router-dom";
 
 type CityStat = "confirmed";
 
@@ -27,7 +28,7 @@ interface CityOption extends ChartDefaultOption {}
 
 type CityOptionKey = keyof CityOption;
 
-const chartStatOptions = createChartStatOptions<CityStat, CityOptionKey>()({
+const chartOptions = createChartOptions<CityStat, CityOptionKey>()({
   confirmed: {
     label: "확진자",
     options: {
@@ -82,7 +83,7 @@ export const CityChartSection: React.FC = () => {
 
   return (
     <Section>
-      <Chart {...{ chartStatOptions, getChartData }} />
+      <Chart {...{ chartOptions, getChartData }} />
     </Section>
   );
 };

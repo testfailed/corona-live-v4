@@ -5,8 +5,6 @@ import { Presence } from "@radix-ui/react-presence";
 
 import { styled, theme } from "@styles/stitches.config";
 import { fadeIn, fadeOut } from "@styles/animations/fade-animation";
-import { chartRangeOptions, chartTypeOptions } from "@utils/chart-util";
-import { formatObjectValues, removeNullFromObject } from "@utils/object-util";
 
 import useChartSize from "@hooks/useChartSize";
 import useUpdateEffect from "@hooks/useUpdatedEffect";
@@ -23,38 +21,23 @@ import Loader from "@components/Loader";
 import Tooltip from "@components/Tooltip";
 import RenderIf from "@components/RenderIf";
 import Skeleton from "@components/Skeleton";
-import { TabProps } from "@components/Tabs";
 import { SubSection } from "@components/Section";
 import RenderSwitch from "@components/RenderSwitch";
 import ExpandIcon from "@components/icon/Icon_Expand";
 
-import type { ChartStatOptions } from "@features/chart/chart-type";
-import type { ChartVisualiserData } from "./Chart_Visualiser";
-import type { ChartMode, OptionValue } from "@features/chart/chart-type";
-
-interface Props<MainOption extends string, SubOption extends string> {
-  chartStatOptions: ChartStatOptions<MainOption, SubOption>;
-  getChartData: (
-    selectedMainOption: MainOption,
-    selectedSubOptions: Record<SubOption, string>,
-    mode: ChartMode
-  ) => Promise<Array<ChartVisualiserData>>;
-  forceUpdate?: any;
-  enableExpandMode?: boolean;
-  defaultMode?: ChartMode;
-}
+import type { ChartMode, ChartProps } from "@features/chart/chart-type";
+import useChartReducer from "../hooks/useChartReducer";
 
 const Chart = <MainOption extends string, SubOption extends string>(
-  props: Props<MainOption, SubOption>
+  props: ChartProps<MainOption, SubOption>
 ) => {
   const {
-    chartStatOptions,
+    chartOptions,
     getChartData,
     forceUpdate,
     enableExpandMode = false,
   } = props;
 
-  const reducer = createReducer<MainOption, SubOption>();
   const [
     {
       chartData,
@@ -65,7 +48,7 @@ const Chart = <MainOption extends string, SubOption extends string>(
       mode: _mode,
     },
     dispatch,
-  ] = useReducer(reducer, null, () => initReducerState(props));
+  ] = useChartReducer<MainOption, SubOption>(props);
 
   const contentRef = useRef<HTMLDivElement>(null);
 
@@ -85,7 +68,7 @@ const Chart = <MainOption extends string, SubOption extends string>(
 
   useEffect(() => {
     dispatch({ type: "INIT", payload: { props } });
-  }, [chartStatOptions]);
+  }, [chartOptions]);
 
   useUpdateEffect(() => {
     dispatch({ type: "UPDATE_OPTIONS_LIST" });
@@ -349,7 +332,13 @@ const FadeInAnimationContainer = styled("div", {
   animation: `${fadeIn} 500ms ease 0s`,
 });
 
-export const ChartSkeleton = ({ tabs }: { tabs: number }) => {
+export const ChartSkeleton = ({
+  tabs,
+}: {
+  tabs: number;
+  mode?: ChartMode;
+  charts?: number;
+}) => {
   const { width, height } = useChartSize({ mode: "DEFAULT" });
 
   return (

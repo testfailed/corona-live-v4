@@ -1,35 +1,36 @@
 import React, { useMemo } from "react";
 
 import create from "zustand";
+import { useTranslation } from "react-i18next";
+
+import useApi from "@hooks/useApi";
+import { theme } from "@styles/stitches.config";
+import { isInTimeRange } from "@utils/date-util";
+import useUpdateEffect from "@hooks/useUpdatedEffect";
+import { KDCA_DATA_SOURCE } from "@constants/constants";
+
+import Section from "@components/Section";
 
 import {
   chartRangeOptions,
   chartTypeOptions,
-  createChartStatOptions,
+  createChartOptions,
   getDefaultChartConfig,
   getDefaultChartXAxis,
   getDefaultChartYAxis,
   transformChartData,
-} from "@utils/chart-util";
+} from "@features/chart/chart-util";
 
-import useApi from "@hooks/useApi";
-import DomesticApi from "@features/domestic/domestic-api";
-import { theme } from "@styles/stitches.config";
-import { isInTimeRange } from "@utils/date-util";
-import useUpdateEffect from "@hooks/useUpdatedEffect";
+import Chart, { ChartSkeleton } from "@features/chart/components/Chart";
 import useCachedChartData from "@features/chart/hooks/useCachedChartData";
 
-import Section from "@components/Section";
-import Chart from "@components/chart/Chart";
-import { ChartSkeleton } from "@components/chart/Chart";
+import DomesticApi from "@features/domestic/domestic-api";
 
 import type { ChartDefaultOption, ChartMode } from "@features/chart/chart-type";
 import type {
   ChartData,
   ChartVisualiserData,
-} from "@components/chart/Chart_Visualiser";
-import { KDCA_DATA_SOURCE } from "@constants/constants";
-import { useTranslation } from "react-i18next";
+} from "@features/chart/components/Chart_Visualiser";
 
 type DomesticStat =
   | "confirmed"
@@ -62,7 +63,7 @@ export const useDomesticChartForceUpdateStore = create<State>((set) => ({
   },
 }));
 
-const DomesticChartSection: React.FC = () => {
+export const DomesticChartSection: React.FC = () => {
   const { getCachedChartData } = useCachedChartData("domestic");
   const { data: domesticLiveData } = useApi(DomesticApi.live);
   const { forceUpdate, shoulUpdate } = useDomesticChartForceUpdateStore(
@@ -74,9 +75,9 @@ const DomesticChartSection: React.FC = () => {
     forceUpdate();
   }, [domesticLiveData]);
 
-  const chartStatOptions = useMemo(
+  const chartOptions = useMemo(
     () =>
-      createChartStatOptions<DomesticStat, DomesticOptionKey>()({
+      createChartOptions<DomesticStat, DomesticOptionKey>()({
         confirmed: {
           label: t("stat.confirmed"),
           options: {
@@ -85,7 +86,7 @@ const DomesticChartSection: React.FC = () => {
             compare: null,
           },
 
-          defaultOptions: isInTimeRange("09:30:00", "15:00:00")
+          defaultOptions: isInTimeRange("09:30:00", "17:00:00")
             ? { type: "daily" }
             : { type: "live" },
 
@@ -146,7 +147,7 @@ const DomesticChartSection: React.FC = () => {
   );
 
   const chartMode: ChartMode = useMemo(() => {
-    return isInTimeRange("09:30:00", "15:00:00") ? "EXPANDED" : "DEFAULT";
+    return isInTimeRange("09:30:00", "17:00:00") ? "EXPANDED" : "DEFAULT";
   }, [shoulUpdate]);
 
   const getChartData = async (
@@ -219,7 +220,7 @@ const DomesticChartSection: React.FC = () => {
           yesterday: t("live.yesterday"),
           weekAgo: t("live.one_week_ago"),
           twoWeeksAgo: t("live.two_weeks_ago"),
-          monthAgo: t("live.one_month_ago"),
+          monthAgo: t("live.four_weeks_ago"),
         };
 
         dataSet = [
@@ -277,7 +278,7 @@ const DomesticChartSection: React.FC = () => {
           dataSet,
           xAxis,
           yAxis,
-          dataSource: option?.type === "live" ? null : KDCA_DATA_SOURCE,
+          dataSource: option?.type === "live" ? null : KDCA_DATA_SOURCE(),
         },
       ];
     }
@@ -288,7 +289,7 @@ const DomesticChartSection: React.FC = () => {
       <Chart
         enableExpandMode
         defaultMode={chartMode}
-        {...{ chartStatOptions, getChartData, forceUpdate: shoulUpdate }}
+        {...{ chartOptions, getChartData, forceUpdate: shoulUpdate }}
       />
     </Section>
   );
@@ -296,7 +297,7 @@ const DomesticChartSection: React.FC = () => {
 
 export const DomesticChartSectionSkeleton = () => {
   const chartMode: ChartMode = useMemo(() => {
-    return isInTimeRange("09:30:00", "16:30:00") ? "EXPANDED" : "DEFAULT";
+    return isInTimeRange("09:30:00", "17:00:00") ? "EXPANDED" : "DEFAULT";
   }, []);
 
   return (

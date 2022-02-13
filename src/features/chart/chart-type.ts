@@ -1,3 +1,5 @@
+import type { ChartVisualiserData } from "./components/Chart_Visualiser";
+
 export type ChartConditionType = "equal" | "not-equal";
 
 export type ChartTypeOptionValue =
@@ -55,7 +57,7 @@ export type ChartCondition<
     options: ChartOverrideOptions<Config, Option>;
   };
 
-export type ChartStatOptions<
+export type ChartOptions<
   Stat extends string = string,
   Option extends string = string,
   Config extends {} = {},
@@ -90,3 +92,18 @@ export type ChartStatOptions<
 >;
 
 export type ChartMode = "EXPANDED" | "DEFAULT";
+
+export interface ChartProps<
+  MainOption extends string,
+  SubOption extends string
+> {
+  chartOptions: ChartOptions<MainOption, SubOption>;
+  getChartData: (
+    selectedMainOption: MainOption,
+    selectedSubOptions: Record<SubOption, string>,
+    mode: ChartMode
+  ) => Promise<Array<ChartVisualiserData>>;
+  forceUpdate?: any;
+  enableExpandMode?: boolean;
+  defaultMode?: ChartMode;
+}

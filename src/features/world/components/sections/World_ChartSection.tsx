@@ -1,28 +1,35 @@
 import React, { useMemo } from "react";
 
+import { useTranslation } from "react-i18next";
+
 import useApi from "@hooks/useApi";
-import useCachedChartData from "@features/chart/hooks/useCachedChartData";
+import { theme } from "@styles/stitches.config";
 
 import Section from "@components/Section";
 
-import Chart, { ChartSkeleton } from "@features/chart/components/Chart";
 import {
   chartRangeOptions,
   chartTypeOptions,
-  createChartStatOptions,
+  createChartOptions,
   getDefaultChartConfig,
   getDefaultChartXAxis,
   getDefaultChartYAxis,
   transformChartData,
 } from "@features/chart/chart-util";
-import { ChartDefaultOption } from "@features/chart/chart-type";
-import {
+import Chart, { ChartSkeleton } from "@features/chart/components/Chart";
+import useCachedChartData from "@features/chart/hooks/useCachedChartData";
+
+import WorldApi from "@features/world/world-api";
+
+import type {
   ChartData,
   ChartVisualiserData,
 } from "@features/chart/components/Chart_Visualiser";
-import { theme } from "@styles/stitches.config";
-import WorldApi from "@features/world/world-api";
-import { useTranslation } from "react-i18next";
+import type {
+  ChartDefaultOption,
+  ChartRangeOptionValue,
+  ChartTypeOptionValue,
+} from "@features/chart/chart-type";
 
 export type WorldStat = "confirmed" | "deceased";
 
@@ -44,9 +51,9 @@ const WorldChartSection: React.FC = () => {
   const { getCachedChartData } = useCachedChartData("world");
   const { data: liveData } = useApi(WorldApi.live);
 
-  const chartStatOptions = useMemo(
+  const chartOptions = useMemo(
     () =>
-      createChartStatOptions<WorldStat, WorldOptionKey>()({
+      createChartOptions<WorldStat, WorldOptionKey>()({
         confirmed: {
           label: t("stat.confirmed"),
           options: {
@@ -202,7 +209,7 @@ const WorldChartSection: React.FC = () => {
 
   return (
     <Section>
-      <Chart enableExpandMode {...{ chartStatOptions, getChartData }} />
+      <Chart enableExpandMode {...{ chartOptions, getChartData }} />
     </Section>
   );
 };

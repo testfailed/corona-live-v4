@@ -1,13 +1,17 @@
 import { useReducer } from "react";
 
-import { chartRangeOptions, chartTypeOptions } from "@utils/chart-util";
 import { formatObjectValues, removeNullFromObject } from "@utils/object-util";
 
 import { TabProps } from "@components/Tabs";
 
-import type { ChartStatOptions } from "@features/chart/chart-type";
-import type { ChartVisualiserData } from "../../../components/chart/Chart_Visualiser";
+import {
+  chartRangeOptions,
+  chartTypeOptions,
+} from "@features/chart/chart-util";
+
+import type { ChartProps, ChartOptions } from "@features/chart/chart-type";
 import type { ChartMode, OptionValue } from "@features/chart/chart-type";
+import type { ChartVisualiserData } from "@features/chart/components/Chart_Visualiser";
 
 const createReducer =
   <MainOption extends string, SubOption extends string>() =>
@@ -74,13 +78,13 @@ const createReducer =
           ...state,
           props: action.payload.props,
           subOptions: getSubOptions(
-            getInitialSelectedSubOptions(action.payload.props.chartStatOptions),
-            { chartOptions: action.payload.props.chartStatOptions }
+            getInitialSelectedSubOptions(action.payload.props.chartOptions),
+            { chartOptions: action.payload.props.chartOptions }
           ),
-          mainOptions: Object.keys(action.payload.props.chartStatOptions).map(
+          mainOptions: Object.keys(action.payload.props.chartOptions).map(
             (stat) => ({
               value: stat,
-              text: action.payload.props.chartStatOptions[stat].label,
+              text: action.payload.props.chartOptions[stat].label,
             })
           ),
         };
@@ -91,7 +95,7 @@ const createReducer =
 
     function getSelectedSubOptions(prevselectedSubOptions) {
       const { selectedMainOption, props } = state;
-      const { chartStatOptions } = props;
+      const { chartOptions } = props;
       const newOptionsList = getSubOptions(prevselectedSubOptions);
 
       return formatObjectValues(newOptionsList, (_, optionName) => {
@@ -138,7 +142,7 @@ const createReducer =
           return avaliableValue;
         } else {
           const defaultOptions =
-            chartStatOptions[selectedMainOption]?.defaultOptions;
+            chartOptions[selectedMainOption]?.defaultOptions;
 
           return (
             defaultOptions?.[optionName] ??
@@ -154,11 +158,11 @@ const createReducer =
       selectedSubOptions: Record<SubOption, string>,
       config?: {
         mode?: ChartMode;
-        chartOptions?: ChartStatOptions<MainOption, SubOption>;
+        chartOptions?: ChartOptions<MainOption, SubOption>;
       }
     ) {
       const { props, selectedMainOption } = state;
-      const chartStatOptions = config?.chartOptions ?? props.chartStatOptions;
+      const chartOptions = config?.chartOptions ?? props.chartOptions;
 
       const transformOptionsList = (options) => {
         return formatObjectValues(
@@ -180,10 +184,10 @@ const createReducer =
         });
       }
 
-      const { options: _options } = chartStatOptions[selectedMainOption];
+      const { options: _options } = chartOptions[selectedMainOption];
       const options = _options;
       const overrideOptionsIf =
-        chartStatOptions[selectedMainOption]?.overrideOptionsIf;
+        chartOptions[selectedMainOption]?.overrideOptionsIf;
 
       const overriddenOptions = {
         ...options,
@@ -203,31 +207,45 @@ const createReducer =
     }
   };
 
-const useChartReducer = (props) => {
+const initReducerState = <MainOption extends string, SubOption extends string>(
+  props: ChartProps<MainOption, SubOption>
+): ReducerState<MainOption, SubOption> => {
+  const { chartOptions, defaultMode } = props;
+  const stats = Object.keys(chartOptions) as MainOption[];
+  const selectedSubOptions = getInitialSelectedSubOptions(
+    chartOptions,
+    defaultMode
+  );
+
+  return {
+    chartData: [],
+    mode: props.defaultMode ?? "DEFAULT",
+    selectedMainOption: stats[0],
+    selectedSubOptions,
+    props,
+    subOptions: {} as Record<SubOption, Array<TabProps>>,
+    mainOptions: [],
+  };
+};
+
+const useChartReducer = <MainOption extends string, SubOption extends string>(
+  props
+) => {
   const reducer = createReducer<MainOption, SubOption>();
-  const [
-    {
-      chartData,
-      mainOptions,
-      subOptions,
-      selectedSubOptions,
-      selectedMainOption,
-      mode: _mode,
-    },
-    dispatch,
-  ] = useReducer(reducer, null, () => initReducerState(props));
+  const returnValue = useReducer(reducer, null, () =>
+    initReducerState<MainOption, SubOption>(props)
+  );
+
+  return returnValue;
 };
 
 function getInitialSelectedSubOptions<
   MainOption extends string,
   SubOption extends string
->(
-  chartMainOptions: ChartStatOptions<MainOption, SubOption>,
-  defaultMode?: ChartMode
-) {
-  const firstMainOption = Object.keys(chartMainOptions)[0] as MainOption;
+>(chartOptions: ChartOptions<MainOption, SubOption>, defaultMode?: ChartMode) {
+  const firstMainOption = Object.keys(chartOptions)[0] as MainOption;
   const { options: subOptions, defaultOptions: defaultSubOptions } =
-    chartMainOptions[firstMainOption];
+    chartOptions[firstMainOption];
 
   if (defaultMode === "EXPANDED") {
     return {
@@ -251,7 +269,7 @@ function getInitialSelectedSubOptions<
 }
 
 interface ReducerState<MainOption extends string, SubOption extends string> {
-  props: Props<MainOption, SubOption>;
+  props: ChartProps<MainOption, SubOption>;
   mode: ChartMode;
   chartData: Array<ChartVisualiserData>;
   selectedMainOption: MainOption;
@@ -261,7 +279,7 @@ interface ReducerState<MainOption extends string, SubOption extends string> {
 }
 
 type ReducerAction<MainOption extends string, SubOption extends string> =
-  | { type: "INIT"; payload: { props: Props<MainOption, SubOption> } }
+  | { type: "INIT"; payload: { props: ChartProps<MainOption, SubOption> } }
   | { type: "TOGGLE_MODE" }
   | { type: "UPDATE_OPTIONS_LIST" }
   | { type: "UPDATE_SELECTED_OPTIONS" }
@@ -274,26 +292,5 @@ type ReducerAction<MainOption extends string, SubOption extends string> =
       payload: { optionName: string; value: SubOption };
     }
   | { type: "CHANGE_MAIN_OPTION"; payload: { value: MainOption } };
-
-const initReducerState = <MainOption extends string, SubOption extends string>(
-  props: Props<MainOption, SubOption>
-): ReducerState<MainOption, SubOption> => {
-  const { chartStatOptions, defaultMode } = props;
-  const stats = Object.keys(chartStatOptions) as MainOption[];
-  const selectedSubOptions = getInitialSelectedSubOptions(
-    chartStatOptions,
-    defaultMode
-  );
-
-  return {
-    chartData: [],
-    mode: props.defaultMode ?? "DEFAULT",
-    selectedMainOption: stats[0],
-    selectedSubOptions,
-    props,
-    subOptions: {} as Record<SubOption, Array<TabProps>>,
-    mainOptions: [],
-  };
-};
 
 export default useChartReducer;

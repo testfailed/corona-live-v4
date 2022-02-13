@@ -8,12 +8,9 @@ import {
   getChartRangeLength,
   getChartRangeSlug,
   parseCompressedChartData,
-} from "@utils/chart-util";
+} from "@features/chart/chart-util";
 
-import type {
-  ChartMode,
-  ChartRangeOptionValue,
-} from "@features/chart/chart-type";
+import type { ChartRangeOptionValue } from "@features/chart/chart-type";
 
 interface State {
   data: any;

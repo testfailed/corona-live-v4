@@ -801,33 +801,24 @@ const ChartVisualiser: React.FC<Props> = ({
     <div ref={containerRef}>
       <Wrapper borderBottom={isExpanded && !lastIndex} last={lastIndex}>
         {mode === "EXPANDED" && xValue !== undefined && (
-          <TitleContainer alignment={titleAlignment}>
+          <TitleContainer alignment={titleAlignment} key={titleAlignment}>
             <Row centeredY>
               <TitleText>{dataSet[0].config.statLabel}</TitleText>
-              {dataSet[0].config.info && (
+              {dataSet[0].config.info && titleAlignment === "left" && (
                 <TitleInfo>{dataSet[0].config.info}</TitleInfo>
               )}
             </Row>
             {dataSource && (
-              <DataSource target="_blank" href={dataSource?.url}>
-                <label>
-                  {t("chart.data_source")} -{dataSource.text}{" "}
-                </label>
+              <DataSource>
+                {t("chart.data_source")} - {dataSource.text}
               </DataSource>
             )}
           </TitleContainer>
         )}
 
         {mode === "DEFAULT" && dataSource && (
-          <DataSource target="_blank" href={dataSource?.url} absolute={true}>
-            <label>{t("chart.data_source")} - </label>
-            {dataSource.url ? (
-              <a target="_blank" href={dataSource.url}>
-                {dataSource.text}
-              </a>
-            ) : (
-              <div>{dataSource.text}</div>
-            )}
+          <DataSource absolute={true}>
+            {t("chart.data_source")} - {dataSource.text}
           </DataSource>
         )}
 
@@ -1001,8 +992,9 @@ const Svg = styled("svg", {
 });
 
 const TitleContainer = styled("div", {
-  position: "absolute",
   column: true,
+  fadeIn: 300,
+  position: "absolute",
 
   "@md": {},
 
@@ -1134,25 +1126,16 @@ const TooltipLine = styled("div", {
   zIndex: -1,
 });
 
-const DataSource = styled("a", {
+const DataSource = styled("div", {
   zIndex: 0,
   rowCenteredY: true,
   body3: true,
   textDecoration: "none",
   wordBreak: "keep-all",
-
-  "& label": {
-    color: "$gray700",
-  },
-  "& a, & div": {
-    marginLeft: rem(3),
-    textDecoration: "none",
-    color: "$gray700",
-  },
+  color: "$gray700",
 
   "@md": {
     left: rem(8),
-
     body2: true,
   },
 

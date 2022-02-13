@@ -2,21 +2,21 @@ import {
   ChartConfig,
   ChartData,
   ChartVisualiserData,
-} from "@components/chart/Chart_Visualiser";
+} from "@features/chart/components/Chart_Visualiser";
 
 import { t } from "i18next";
 
 import { theme } from "@styles/stitches.config";
 
-import { formatObjectValues } from "./object-util";
-import { koreanNumberFormat, numberWithCommas } from "./number-util";
 import {
   dayjs,
-  generateDatesBetweenTwoDates,
   getDaysInMonth,
-} from "./date-util";
+  generateDatesBetweenTwoDates,
+} from "@utils/date-util";
+import { formatObjectValues } from "@utils/object-util";
+import { koreanNumberFormat, numberWithCommas } from "@utils/number-util";
 
-import {
+import type {
   OptionValue,
   ChartCondition,
   ChartStatOptions,
@@ -112,17 +112,17 @@ export const getInvalidRangeOptionsByType = (
   }
 };
 
-interface CreateChartStatOptions<Stat extends string, Option extends string> {
+interface CreateChartOptions<Stat extends string, Option extends string> {
   create: <Config extends {}>(
     config: ChartStatOptions<Stat, Option, Config>
   ) => any;
 }
 
-export const createChartStatOptions = <
+export const createChartOptions = <
   MainOptiona extends string,
   SubOption extends string
 >() => {
-  const create: CreateChartStatOptions<MainOptiona, SubOption>["create"] = (
+  const create: CreateChartOptions<MainOptiona, SubOption>["create"] = (
     config
   ) => {
     const stats = Object.keys(config) as Array<MainOptiona>;
