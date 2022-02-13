@@ -31,12 +31,13 @@ import type {
   ChartData,
   ChartVisualiserData,
 } from "@features/chart/components/Chart_Visualiser";
+import { useShowDomesticLiveChart } from "@features/domestic/hooks/useShowDomesticLiveChart";
 
-type DomesticStat =
+type DomesticMainOption =
   | "confirmed"
   | "deceased"
   | "tested"
-  | "confirmed-severe-symptoms"
+  | "confirmed-critical"
   | "tested-positive-rates";
 
 type ChartCompareOptionValue =
@@ -45,11 +46,11 @@ type ChartCompareOptionValue =
   | "monthAgo"
   | "twoWeeksAgo";
 
-interface DomesticOption extends ChartDefaultOption {
+interface DomesticSubOptionObject extends ChartDefaultOption {
   compare: ChartCompareOptionValue;
 }
 
-type DomesticOptionKey = keyof DomesticOption;
+type DomesticSubOption = keyof DomesticSubOptionObject;
 
 interface State {
   shoulUpdate: number;
@@ -71,13 +72,15 @@ export const DomesticChartSection: React.FC = () => {
   );
   const { t, i18n } = useTranslation();
 
+  const showDomesticLiveChart = useShowDomesticLiveChart();
+
   useUpdateEffect(() => {
     forceUpdate();
   }, [domesticLiveData]);
 
   const chartOptions = useMemo(
     () =>
-      createChartOptions<DomesticStat, DomesticOptionKey>()({
+      createChartOptions<DomesticMainOption, DomesticSubOption>()({
         confirmed: {
           label: t("stat.confirmed"),
           options: {
@@ -86,9 +89,7 @@ export const DomesticChartSection: React.FC = () => {
             compare: null,
           },
 
-          defaultOptions: isInTimeRange("09:30:00", "17:00:00")
-            ? { type: "daily" }
-            : { type: "live" },
+          defaultOptions: { type: "live" },
 
           overrideOptionsIf: [
             {
@@ -107,7 +108,7 @@ export const DomesticChartSection: React.FC = () => {
             },
           ],
         },
-        "confirmed-severe-symptoms": {
+        "confirmed-critical": {
           label: t("stat.confirmed_critical"),
           options: {
             type: chartTypeOptions({
@@ -143,17 +144,13 @@ export const DomesticChartSection: React.FC = () => {
           },
         },
       }),
-    [shoulUpdate, i18n.language]
+    [shoulUpdate, i18n.language, showDomesticLiveChart]
   );
 
-  const chartMode: ChartMode = useMemo(() => {
-    return isInTimeRange("09:30:00", "17:00:00") ? "EXPANDED" : "DEFAULT";
-  }, [shoulUpdate]);
-
   const getChartData = async (
-    stat: DomesticStat,
-    option: DomesticOption,
-    mode: ChartMode
+    mainOption: DomesticMainOption,
+    subOptions: DomesticSubOptionObject,
+    { mode, shouldInvalidate }: { mode: ChartMode; shouldInvalidate: boolean }
   ): Promise<Array<ChartVisualiserData>> => {
     let dataSet: ChartData[] = [];
 
@@ -161,24 +158,27 @@ export const DomesticChartSection: React.FC = () => {
       const data = await getCachedChartData({
         stat: [
           "confirmed",
-          "confirmed-severe-symptoms",
+          "confirmed-critical",
           "deceased",
           "tested-positive-rates",
           "tested",
-        ] as Array<DomesticStat>,
+        ] as Array<DomesticMainOption>,
         apiName: "all",
         range: "oneMonth",
         isCompressed: true,
         isSingle: false,
+        shouldInvalidate,
       });
 
-      const xAxis = getDefaultChartXAxis(option);
-      const yAxis = getDefaultChartYAxis(option, { right: { id: stat } });
+      const xAxis = getDefaultChartXAxis(subOptions);
+      const yAxis = getDefaultChartYAxis(subOptions, {
+        right: { id: mainOption },
+      });
 
-      const statLabel: Partial<Record<DomesticStat, string>> = {
+      const statLabel: Partial<Record<DomesticMainOption, string>> = {
         confirmed: t("stat.confirmed"),
         deceased: t("stat.deceased"),
-        "confirmed-severe-symptoms": t("stat.confirmed_critical"),
+        "confirmed-critical": t("stat.confirmed_critical"),
         tested: t("stat.tested"),
       };
 
@@ -186,12 +186,12 @@ export const DomesticChartSection: React.FC = () => {
         dataSet: [
           {
             data: transformChartData(data[key], {
-              type: option.type,
-              range: option.range,
-              fractionDigits: stat === "tested-positive-rates" ? 2 : 0,
+              type: subOptions.type,
+              range: subOptions.range,
+              fractionDigits: mainOption === "tested-positive-rates" ? 2 : 0,
             }),
             config: getDefaultChartConfig(
-              option,
+              subOptions,
               key === "tested-positive-rates"
                 ? {
                     tooltipUnit: "%",
@@ -209,12 +209,14 @@ export const DomesticChartSection: React.FC = () => {
         dataSource: KDCA_DATA_SOURCE(),
       }));
     } else {
-      const xAxis = getDefaultChartXAxis(option);
-      const yAxis = getDefaultChartYAxis(option, { right: { id: stat } });
+      const xAxis = getDefaultChartXAxis(subOptions);
+      const yAxis = getDefaultChartYAxis(subOptions, {
+        right: { id: mainOption },
+      });
 
-      if (stat === "confirmed" && option.type === "live") {
+      if (mainOption === "confirmed" && subOptions.type === "live") {
         const today = domesticLiveData.hourlyLive["today"];
-        const compared = domesticLiveData.hourlyLive[option.compare];
+        const compared = domesticLiveData.hourlyLive[subOptions.compare];
 
         const liveLabel: Record<ChartCompareOptionValue, string> = {
           yesterday: t("live.yesterday"),
@@ -226,16 +228,16 @@ export const DomesticChartSection: React.FC = () => {
         dataSet = [
           {
             data: compared,
-            config: getDefaultChartConfig(option, {
+            config: getDefaultChartConfig(subOptions, {
               color: theme.colors.gray400,
-              tooltipLabel: liveLabel[option.compare],
+              tooltipLabel: liveLabel[subOptions.compare],
               chartType: "line",
               showPoints: true,
             }),
           },
           {
             data: today,
-            config: getDefaultChartConfig(option, {
+            config: getDefaultChartConfig(subOptions, {
               color: theme.colors.blue500,
               tooltipLabel: "오늘",
               chartType: "line",
@@ -245,25 +247,26 @@ export const DomesticChartSection: React.FC = () => {
         ];
       } else {
         const data = await getCachedChartData({
-          stat: [stat],
-          range: option.range,
-          isCompressed: option.range === "all",
+          stat: [mainOption],
+          range: subOptions.range,
+          isCompressed: subOptions.range === "all",
+          shouldInvalidate,
         });
         dataSet = [
           {
             data: transformChartData(data, {
-              type: option.type,
-              range: option.range,
-              fractionDigits: stat === "tested-positive-rates" ? 2 : 0,
+              type: subOptions.type,
+              range: subOptions.range,
+              fractionDigits: mainOption === "tested-positive-rates" ? 2 : 0,
             }),
             config: getDefaultChartConfig(
-              option,
-              stat === "tested-positive-rates"
+              subOptions,
+              mainOption === "tested-positive-rates"
                 ? {
                     tooltipUnit: "%",
                     tooltipLabel: "",
                     info:
-                      stat === "tested-positive-rates"
+                      mainOption === "tested-positive-rates"
                         ? " = 확진자수 / 전일 검사건수"
                         : undefined,
                   }
@@ -278,11 +281,13 @@ export const DomesticChartSection: React.FC = () => {
           dataSet,
           xAxis,
           yAxis,
-          dataSource: option?.type === "live" ? null : KDCA_DATA_SOURCE(),
+          dataSource: subOptions?.type === "live" ? null : KDCA_DATA_SOURCE(),
         },
       ];
     }
   };
+
+  const chartMode: ChartMode = showDomesticLiveChart ? "DEFAULT" : "EXPANDED";
 
   return (
     <Section>
@@ -296,9 +301,8 @@ export const DomesticChartSection: React.FC = () => {
 };
 
 export const DomesticChartSectionSkeleton = () => {
-  const chartMode: ChartMode = useMemo(() => {
-    return isInTimeRange("09:30:00", "17:00:00") ? "EXPANDED" : "DEFAULT";
-  }, []);
+  const showDomesticLiveChart = useShowDomesticLiveChart();
+  const chartMode: ChartMode = showDomesticLiveChart ? "DEFAULT" : "EXPANDED";
 
   return (
     <Section>

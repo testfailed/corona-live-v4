@@ -3,7 +3,7 @@ import { useCallback, useEffect, useMemo, useRef } from "react";
 import axios from "axios";
 import create from "zustand";
 
-import { dayjs, isInTimeRange } from "@utils/date-util";
+import { dayjs } from "@utils/date-util";
 import {
   getChartRangeLength,
   getChartRangeSlug,
@@ -52,12 +52,14 @@ const useCachedChartData = (slug: string) => {
       range,
       apiName,
       isCompressed = false,
+      shouldInvalidate = false,
     }: {
       stat: Array<string>;
       apiName?: string;
       range: ChartRangeOptionValue;
       isCompressed?: boolean;
       isSingle?: boolean;
+      shouldInvalidate?: boolean;
     }) => {
       let rangeSlug = getChartRangeSlug(range);
       const rangeLength = getChartRangeLength(range);
@@ -82,25 +84,21 @@ const useCachedChartData = (slug: string) => {
         }
       };
 
-      const shouldInvalidateCache = () => {
-        return isInTimeRange("09:30:00", "11:00:00");
-      };
-
       const isNotCached = () => {
         return stat.some((k) => !cachedData[k]);
       };
 
-      const requireLargerDataset = () => {
+      const shouldFetchLargerDataset = () => {
         return stat.every((k) => {
           const cachedDataLength = Object.keys(cachedData[k]).length;
           return rangeLength > cachedDataLength;
         });
       };
 
-      if (isNotCached() || shouldInvalidateCache()) {
+      if (isNotCached() || shouldInvalidate) {
         await cacheData();
       } else {
-        if (requireLargerDataset()) {
+        if (shouldFetchLargerDataset()) {
           await cacheData();
         } else {
           // console.log(`${stat} is cached`);
