@@ -18,7 +18,6 @@ import ChartMainOptions from "./Chart_MainOptions";
 import Row from "@components/Row";
 import Space from "@components/Space";
 import Loader from "@components/Loader";
-import Tooltip from "@components/Tooltip";
 import RenderIf from "@components/RenderIf";
 import Skeleton from "@components/Skeleton";
 import { SubSection } from "@components/Section";
@@ -78,12 +77,16 @@ const Chart = <MainOption extends string, SubOption extends string>(
     dispatch({ type: "UPDATE_SELECTED_OPTIONS" });
   }, [selectedMainOption]);
 
-  const updateChartData = async () => {
+  useEffect(() => {
+    if (mode !== props.defaultMode) dispatch({ type: "TOGGLE_MODE" });
+  }, [props.defaultMode]);
+
+  const updateChartData = async (shouldInvalidate: boolean = false) => {
     setIsLoading(true);
     const chartData = await getChartData(
       selectedMainOption,
       selectedSubOptions,
-      _mode
+      { mode: _mode, shouldInvalidate }
     );
     if (chartData) {
       dispatch({
@@ -96,7 +99,7 @@ const Chart = <MainOption extends string, SubOption extends string>(
 
   useUpdateEffect(() => {
     if (isLoading === false || forceUpdate) {
-      updateChartData();
+      updateChartData(true);
     }
   }, [selectedMainOption, selectedSubOptions, forceUpdate]);
 
@@ -171,15 +174,10 @@ const Chart = <MainOption extends string, SubOption extends string>(
                 <ChartHeadingDivider />
               </RenderIf>
               <ChartModeButton onClick={toggleChartMode}>
-                <Tooltip
-                  show={showTooltip}
-                  content={_mode === "EXPANDED" ? "하나씩 보기" : "한눈에 보기"}
-                >
-                  <ExpandIcon
-                    stroke={theme.colors.gray900}
-                    expanded={_mode === "EXPANDED"}
-                  />
-                </Tooltip>
+                <ExpandIcon
+                  stroke={theme.colors.gray900}
+                  expanded={_mode === "EXPANDED"}
+                />
               </ChartModeButton>
             </ChartModeButtonContainer>
           )}
@@ -224,7 +222,7 @@ const Chart = <MainOption extends string, SubOption extends string>(
 
 const Wrapper = styled("div", {
   position: "relative",
-  transition: "300ms ease 0s",
+  transition: "200ms ease 0s",
 });
 
 const Content = styled("div", {});
