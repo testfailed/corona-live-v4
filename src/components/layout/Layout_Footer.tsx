@@ -106,6 +106,7 @@ const InfoText = styled("div", {
   borderRadius: rem(16),
   transform: "scaleY(0.95)",
   color: "$gray700",
+  wordBreak: "keep-all",
 
   "& b": {
     marginLeft: rem(4),
