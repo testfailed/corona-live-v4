@@ -616,7 +616,7 @@ const ChartVisualiser: React.FC<Props> = ({
     const tooltipLine = $container.select(".chart-tooltip-line");
     const tooltipDate = $container.select(".chart-tooltip-date");
 
-    if (xScale(xParser(selectedX)) === undefined) {
+    if (Object.is(NaN, xScale(xParser(selectedX)))) {
       chartTooltipContainer.style("opacity", 0);
       tooltipLine.style("opacity", 0);
       tooltipDate.style("opacity", 0);
