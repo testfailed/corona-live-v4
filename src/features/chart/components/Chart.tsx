@@ -26,6 +26,7 @@ import ExpandIcon from "@components/icon/Icon_Expand";
 
 import type { ChartMode, ChartProps } from "@features/chart/chart-type";
 import useChartReducer from "../hooks/useChartReducer";
+import Column from "@components/Column";
 
 const Chart = <MainOption extends string, SubOption extends string>(
   props: ChartProps<MainOption, SubOption>
@@ -45,6 +46,7 @@ const Chart = <MainOption extends string, SubOption extends string>(
       selectedSubOptions,
       selectedMainOption,
       mode: _mode,
+      selectedX,
     },
     dispatch,
   ] = useChartReducer<MainOption, SubOption>(props);
@@ -52,34 +54,17 @@ const Chart = <MainOption extends string, SubOption extends string>(
   const contentRef = useRef<HTMLDivElement>(null);
 
   const [mode, setMode] = useState(_mode);
-  const [selectedX, setSelectedX] = useState<string>(null);
   const [isLoading, setIsLoading] = useDebounceState(false);
   const [wrapperHeight, setWrapperHeight] = useState("auto");
 
-  const [seenChartModeTooltip, setSeenChartModeTooltip] = useLocalStorage(
-    "seen-chart-mode-tooltip",
-    false
-  );
-
-  const [showTooltip, setShowTooltip] = useState(
-    seenChartModeTooltip === false
-  );
+  const setSelectedX = (value) => {
+    dispatch({ type: "SET_SELECTEDX", payload: { value } });
+  };
 
   useEffect(() => {
-    dispatch({ type: "INIT", payload: { props } });
-  }, [chartOptions]);
-
-  useUpdateEffect(() => {
-    dispatch({ type: "UPDATE_OPTIONS_LIST" });
-  }, [selectedMainOption, selectedSubOptions]);
-
-  useEffect(() => {
-    dispatch({ type: "UPDATE_SELECTED_OPTIONS" });
-  }, [selectedMainOption]);
-
-  useEffect(() => {
-    if (mode !== props.defaultMode) dispatch({ type: "TOGGLE_MODE" });
-  }, [props.defaultMode]);
+    if (props?.defaultMode !== undefined && mode !== props?.defaultMode)
+      dispatch({ type: "TOGGLE_MODE" });
+  }, [props?.defaultMode]);
 
   const updateChartData = async (shouldInvalidate: boolean = false) => {
     setIsLoading(true);
@@ -97,23 +82,27 @@ const Chart = <MainOption extends string, SubOption extends string>(
     setIsLoading(false);
   };
 
+  useEffect(() => {
+    if (isLoading === false || forceUpdate) {
+      updateChartData();
+    }
+  }, [selectedMainOption, selectedSubOptions]);
+
   useUpdateEffect(() => {
     if (isLoading === false || forceUpdate) {
       updateChartData(true);
     }
-  }, [selectedMainOption, selectedSubOptions, forceUpdate]);
+  }, [forceUpdate]);
 
   const onOptionChange = (optionName: string, value: SubOption) => {
-    dispatch({ type: "CHANGE_SUB_OPTION", payload: { optionName, value } });
+    dispatch({ type: "SET_SUB_OPTION", payload: { optionName, value } });
   };
 
   const onStatChange = (value: MainOption) => {
-    dispatch({ type: "CHANGE_MAIN_OPTION", payload: { value } });
+    dispatch({ type: "SET_MAIN_OPTION", payload: { value } });
   };
 
   const toggleChartMode = async () => {
-    setSeenChartModeTooltip(true);
-    setShowTooltip(false);
     dispatch({ type: "TOGGLE_MODE" });
     await updateChartData();
   };
@@ -126,7 +115,7 @@ const Chart = <MainOption extends string, SubOption extends string>(
       }, 0);
       setMode(_mode);
     }
-  }, [_mode, chartData]);
+  }, [_mode, chartData, isLoading]);
 
   const chartVisualiserProps = { mode, selectedX, setSelectedX };
 
@@ -194,25 +183,27 @@ const Chart = <MainOption extends string, SubOption extends string>(
           </RenderIf>
 
           <FadeInAnimationContainer key={mode}>
-            <RenderSwitch
-              value={mode}
-              cases={{
-                DEFAULT: (
-                  <ChartVisualiser
-                    {...chartData[0]}
-                    {...chartVisualiserProps}
-                  />
-                ),
-                EXPANDED: chartData.map((data, index) => (
-                  <ChartVisualiser
-                    key={index}
-                    {...data}
-                    {...chartVisualiserProps}
-                    lastIndex={index === chartData.length - 1}
-                  />
-                )),
-              }}
-            />
+            {mode === "DEFAULT" && (
+              <ChartVisualiser {...chartData[0]} {...chartVisualiserProps} />
+            )}
+            {mode === "EXPANDED" && (
+              <>
+                {chartData.length > 1 ? (
+                  chartData.map((data, index) => (
+                    <ChartVisualiser
+                      key={index}
+                      {...data}
+                      {...chartVisualiserProps}
+                      lastIndex={index === chartData.length - 1}
+                    />
+                  ))
+                ) : (
+                  <>
+                    <div style={{ height: rem(500) }}></div>
+                  </>
+                )}
+              </>
+            )}
           </FadeInAnimationContainer>
         </ChartVisualiserContainer>
       </Content>
@@ -292,20 +283,6 @@ const ChartVisualiserContainer = styled("div", {
     padding: rem(12),
     paddingTop: rem(0),
   },
-  variants: {
-    test: {
-      what: {},
-      yo: {},
-    },
-    tefuckst: {
-      1: {},
-      2: {},
-    },
-  },
-
-  defaultVariants: {
-    test: "",
-  },
 });
 
 const LoadingContainer = styled("div", {
@@ -332,12 +309,63 @@ const FadeInAnimationContainer = styled("div", {
 
 export const ChartSkeleton = ({
   tabs,
+  mode,
+  charts,
 }: {
   tabs: number;
   mode?: ChartMode;
   charts?: number;
 }) => {
-  const { width, height } = useChartSize({ mode: "DEFAULT" });
+  const { height } = useChartSize({ mode });
+
+  if (mode === "EXPANDED") {
+    return (
+      <Wrapper>
+        <SubSection>
+          <Box
+            css={{
+              overflow: "hidden",
+              transform: `translate(${rem(-1)}, ${rem(-1)})`,
+              height: rem(52),
+              paddingX: rem(12),
+              rowCenteredY: true,
+            }}
+          >
+            <Row css={{ justifyContent: "space-between", width: "100%" }}>
+              <Skeleton w={{ _: 180, md: 108 }} h={36} />
+              <Skeleton w={{ _: 120, md: 200 }} h={36} />
+            </Row>
+          </Box>
+        </SubSection>
+        {[...Array(charts)].map((_, index) => (
+          <ChartVisualiserContainer key={index}>
+            <Space h={12} />
+            <Row
+              css={{
+                justifyContent: "space-between",
+                width: "100%",
+                paddingLeft: rem(8),
+                paddingRight: rem(36),
+                height: rem(42),
+                "@md": {
+                  height: rem(46),
+                },
+              }}
+            >
+              <Column>
+                <Skeleton w={64} h={30} />
+                <Space h={6} />
+                <Skeleton w={152} h={12} />
+              </Column>
+              <Skeleton w={100} h={34} />
+            </Row>
+            <Space h={12} />
+            <Skeleton w={{ _: "100%", md: 460 }} h={height - 8} />
+          </ChartVisualiserContainer>
+        ))}
+      </Wrapper>
+    );
+  }
 
   return (
     <Wrapper
