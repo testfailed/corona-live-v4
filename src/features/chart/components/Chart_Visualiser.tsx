@@ -149,7 +149,7 @@ const getXAxisTickValues = (range, xParser) => {
 interface Props extends ChartVisualiserData {
   mode: ChartMode;
   selectedX: string;
-  setSelectedX: React.Dispatch<React.SetStateAction<string>>;
+  setSelectedX: (value) => void;
   lastIndex?: boolean;
 }
 
@@ -159,8 +159,8 @@ const ChartVisualiser: React.FC<Props> = ({
   yAxis,
   mode,
   dataSource,
-  selectedX: parentSelectedX,
-  setSelectedX: parentSetSelectedX,
+  selectedX,
+  setSelectedX,
   lastIndex,
 }) => {
   const { t } = useTranslation();
@@ -169,12 +169,7 @@ const ChartVisualiser: React.FC<Props> = ({
 
   const prevChartTypes = useRef<Array<ChartType>>([]);
 
-  const [_selectedX, _setSelectedX] = useState<string>(null);
-
   const { width, height } = useChartSize({ mode });
-
-  const selectedX = mode === "DEFAULT" ? _selectedX : parentSelectedX;
-  const setSelectedX = mode === "DEFAULT" ? _setSelectedX : parentSetSelectedX;
 
   const [titleAlignment, setTitleAlignment] = useState<"left" | "right">(
     "left"
@@ -222,10 +217,6 @@ const ChartVisualiser: React.FC<Props> = ({
 
     return { xAxis, xValues, xParser, xScale, yScales, margin };
   }, [dataSet, width, height, xAxis, yAxis]);
-
-  useEffect(() => {
-    if (xValues) setSelectedX(xValues[xValues.length - 1]);
-  }, [setSelectedX, xValues]);
 
   useEffect(() => {
     if (!dataSet?.[0] || width === undefined || height === undefined) return;
@@ -594,9 +585,9 @@ const ChartVisualiser: React.FC<Props> = ({
         const index = bisectDate(xValues, x, 1);
         const xLeft = xValues[index - 1];
         const xRight = xValues[index];
-        const selectedX =
+        const newSelectedX =
           x - xParser(xLeft) < xParser(xRight) - x ? xLeft : xRight;
-        setSelectedX((prevX) => selectedX || prevX);
+        setSelectedX(newSelectedX || selectedX);
       }
     }
 
@@ -634,13 +625,15 @@ const ChartVisualiser: React.FC<Props> = ({
         translateX = width - margin.right - containerWidth + 10;
       }
 
-      chartTooltipContainer.style("opacity", 1).style("left", rem(translateX));
+      chartTooltipContainer
+        .style("opacity", 1)
+        .style("right", rem(width - translateX - containerWidth));
 
       tooltipLine
         .style("opacity", 1)
         .style("left", rem(xScale(xParser(selectedX))))
         .style("top", rem(containerHeight))
-        .style("height", rem(height - 18));
+        .style("height", rem(mode === "DEFAULT" ? height - 18 : height));
 
       const updateTooltipDate = () => {
         const xValue = xAxis?.format(
@@ -653,13 +646,15 @@ const ChartVisualiser: React.FC<Props> = ({
         tooltipDate.html(xValue);
         const { width: w } = tooltipDate.node().getBoundingClientRect();
         tooltipDate
-          .style("opacity", selectedX ? 1 : 0)
+          .style("opacity", selectedX && mode === "EXPANDED" ? 1 : 0)
           .style("left", `${xScale(xParser(selectedX)) - w / 2}px`)
           .style("bottom", rem(0));
       };
 
       if (mode === "EXPANDED") {
         updateTooltipDate();
+      } else {
+        tooltipDate.style("opacity", 0);
       }
     };
 
@@ -668,7 +663,9 @@ const ChartVisualiser: React.FC<Props> = ({
         .map(({ data }) => data[selectedX])
         .every((value) => value !== undefined)
     ) {
-      updateTooltip();
+      setTimeout(() => {
+        updateTooltip();
+      }, 0);
     }
 
     setTitleAlignment(
@@ -822,38 +819,40 @@ const ChartVisualiser: React.FC<Props> = ({
           </DataSource>
         )}
 
-        <ChartTooltip
-          expanded={isExpanded}
-          className="chart-tooltip-container"
-          css={{
-            visibility: xValue === undefined ? "hidden" : "visible",
-          }}
-        >
-          {!isExpanded && <TooltipXLabel>{xLabelValue}</TooltipXLabel>}
-          <Row>
-            {dataSet &&
-              dataSet.map(({ config, data }, index) =>
-                config.tooltipLabel !== null ? (
-                  <TooltipContainer key={index}>
-                    <TooltipLegend
-                      css={{
-                        background: config.barColor ?? config.lineColor,
-                      }}
-                    />
-                    {!isExpanded && (
-                      <TooltipLabel>{config.tooltipLabel}</TooltipLabel>
-                    )}
-                    <TooltipValue>
-                      {config.tooltipFormat(data[selectedX])}
-                      <span>{config?.tooltipUnit}</span>
-                    </TooltipValue>
-                  </TooltipContainer>
-                ) : (
-                  <></>
-                )
-              )}
-          </Row>
-        </ChartTooltip>
+        <ChartTooltipPosition>
+          <ChartTooltip
+            expanded={isExpanded}
+            className="chart-tooltip-container"
+            css={{
+              visibility: xValue === undefined ? "hidden" : "visible",
+            }}
+          >
+            {!isExpanded && <TooltipXLabel>{xLabelValue}</TooltipXLabel>}
+            <Row>
+              {dataSet &&
+                dataSet.map(({ config, data }, index) =>
+                  config.tooltipLabel !== null ? (
+                    <TooltipContainer key={index}>
+                      <TooltipLegend
+                        css={{
+                          background: config.barColor ?? config.lineColor,
+                        }}
+                      />
+                      {!isExpanded && (
+                        <TooltipLabel>{config.tooltipLabel}</TooltipLabel>
+                      )}
+                      <TooltipValue>
+                        {config.tooltipFormat(data[selectedX])}
+                        <span>{config?.tooltipUnit}</span>
+                      </TooltipValue>
+                    </TooltipContainer>
+                  ) : (
+                    <></>
+                  )
+                )}
+            </Row>
+          </ChartTooltip>
+        </ChartTooltipPosition>
 
         <TooltipLine className="chart-tooltip-line" />
         <TooltipDate className="chart-tooltip-date" />
@@ -885,6 +884,7 @@ const ChartVisualiser: React.FC<Props> = ({
 
 const TooltipDate = styled("div", {
   body3: true,
+  opacity: 0,
   rowCenteredY: true,
   position: "absolute",
   background: "$shadowBackground1",
@@ -899,6 +899,7 @@ const TooltipDate = styled("div", {
   transform: `translateY(${rem(-9)})`,
   letterSpacing: rem(-0.5),
   fontWeight: 700,
+  whiteSpace: "nowrap",
 
   "@md": {
     height: rem(22),
@@ -1036,13 +1037,27 @@ const TitleInfo = styled("div", {
   color: "$gray700",
 });
 
-const ChartTooltip = styled("div", {
+const ChartTooltipPosition = styled("div", {
+  width: "100%",
   height: rem(50),
   marginTop: rem(12),
   marginBottom: rem(2),
+  position: "relative",
+
+  "@md": {
+    height: rem(54),
+    marginTop: rem(16),
+  },
+});
+
+const ChartTooltip = styled("div", {
+  position: "absolute",
+  opacity: 0.2,
+  height: rem(50),
+  transition: "opacity 50ms",
+  top: 0,
   width: "fit-content",
   columnCenteredY: true,
-  position: "relative",
   borderRadius: rem(12),
   background: "$shadowBackground1",
   boxShadow: `${rem(-1)} ${rem(1)} ${rem(12)} ${rem(-2)} #0000001f`,
@@ -1053,7 +1068,7 @@ const ChartTooltip = styled("div", {
 
   "@md": {
     height: rem(54),
-    marginTop: rem(16),
+    // marginTop: rem(16),
     border: `${rem(1)} solid $sectionBorder`,
   },
 

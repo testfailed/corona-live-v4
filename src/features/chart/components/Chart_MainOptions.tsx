@@ -60,7 +60,7 @@ const tabTextCss = css({
   subtitle2: true,
   color: "$gray900",
   opacity: 0.5,
-  transition: "300ms",
+  transition: "opacity 300ms",
 
   "@md": {
     subtitle1: true,

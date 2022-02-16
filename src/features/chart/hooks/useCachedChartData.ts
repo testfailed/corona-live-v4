@@ -71,6 +71,7 @@ const useCachedChartData = (slug: string) => {
       let cachedData = cachedRef.current;
 
       const cacheData = async () => {
+        if (!rangeSlug) return;
         const data = await fetcher(
           `${slug}/ts/${apiName ?? stat[0]}/${rangeSlug}${
             isCompressed ? "/compressed" : ""

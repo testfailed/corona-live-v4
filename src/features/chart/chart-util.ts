@@ -19,7 +19,7 @@ import { koreanNumberFormat, numberWithCommas } from "@utils/number-util";
 import type {
   OptionValue,
   ChartCondition,
-  ChartStatOptions,
+  ChartOptions,
   ChartRangeOptionValue,
   ChartTypeOptionValue,
   ChartDefaultOptionKey,
@@ -112,20 +112,23 @@ export const getInvalidRangeOptionsByType = (
   }
 };
 
-interface CreateChartOptions<Stat extends string, Option extends string> {
+interface CreateChartOptions<
+  MainOption extends string,
+  SubOption extends string
+> {
   create: <Config extends {}>(
-    config: ChartStatOptions<Stat, Option, Config>
+    config: ChartOptions<MainOption, SubOption, Config>
   ) => any;
 }
 
 export const createChartOptions = <
-  MainOptiona extends string,
+  MainOption extends string,
   SubOption extends string
 >() => {
-  const create: CreateChartOptions<MainOptiona, SubOption>["create"] = (
+  const create: CreateChartOptions<MainOption, SubOption>["create"] = (
     config
   ) => {
-    const stats = Object.keys(config) as Array<MainOptiona>;
+    const stats = Object.keys(config) as Array<MainOption>;
     return stats.reduce((obj, stat) => {
       const { options } = config[stat];
       const overrideOptionsIf = config[stat]?.overrideOptionsIf;
