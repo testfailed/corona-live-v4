@@ -32,7 +32,7 @@ const DonationModalTrigger: React.FC = ({ children }) => {
 
         "@md": { width: rem(300) },
       })}
-      confirmText={t("닫기")}
+      confirmText={t("close")}
       onConfrim={(closeModal) => {
         closeModal();
       }}
@@ -50,12 +50,10 @@ const DonationModalTrigger: React.FC = ({ children }) => {
           <BankAccounInfo>
             {t("donation_modal.kakaobank")} | 홍준서
           </BankAccounInfo>
-          <CopyToClipboard text={3333188178788}>
+          <CopyToClipboard text={3333188178788} onCopy={() => setCopied(true)}>
             <BankAccoutContainer
               onClick={() => {
                 setIsAnimationEnabled(true);
-
-                setCopied(true);
               }}
             >
               <BankAccountNumber>3333-18-8178788</BankAccountNumber>

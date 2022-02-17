@@ -10,7 +10,7 @@ import StatsBoard, {
 import Section from "@components/Section";
 import { useTranslation } from "react-i18next";
 
-const VaccineBoard: React.FC = () => {
+export const VaccineStatSection: React.FC = () => {
   const { data } = useApi(VaccinApi.stat);
   const { t } = useTranslation();
 
@@ -46,12 +46,10 @@ const VaccineBoard: React.FC = () => {
   );
 };
 
-export const VaccineStatSkeleton: React.FC = () => {
+export const VaccineStatSectionSkeleton: React.FC = () => {
   return (
     <Section>
       <StatsBoardSkeleton columns={3} />
     </Section>
   );
 };
-
-export default VaccineBoard;

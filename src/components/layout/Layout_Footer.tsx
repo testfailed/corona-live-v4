@@ -20,6 +20,7 @@ interface Props {
 
 const LayoutFooter: React.FC<Props> = ({ simplified }) => {
   const { t } = useTranslation("");
+
   return (
     <Wrapper className="user-select" css={simplified && { padding: 0 }}>
       <Space h={simplified ? 12 : 24} />
@@ -106,7 +107,7 @@ const InfoText = styled("div", {
   borderRadius: rem(16),
   transform: "scaleY(0.95)",
   color: "$gray700",
-  wordBreak: "keep-all",
+  whiteSpace: "nowrap",
 
   "& b": {
     marginLeft: rem(4),

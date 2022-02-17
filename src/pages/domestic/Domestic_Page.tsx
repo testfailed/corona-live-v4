@@ -1,18 +1,19 @@
 import React from "react";
 
 import useApi from "@hooks/useApi";
-import DomesticApi from "@features/domestic/domestic-api";
 import { WEB_URL } from "@constants/constants";
-
-import DomesticSkeleton from "./Domestic_PageSkeleton";
-import DomesticLiveSection from "../../features/domestic/components/sections/Domestic_LiveSection";
-import DomesticStatSection from "../../features/domestic/components/sections/Domestic_StatSection";
-import DomesticCitySection from "../../features/domestic/components/sections/Domestic_CitySection";
-import DomesticChartSection from "../../features/domestic/components/sections/Domestic_ChartSection";
 
 import Seo from "@components/Seo";
 import FadeIn from "@components/FadeIn";
 import Column from "@components/Column";
+
+import DomesticSkeleton from "./Domestic_PageSkeleton";
+import { DomesticStatSection } from "@features/domestic/components/sections/Domestic_StatSection";
+import { DomesticLiveSection } from "@features/domestic/components/sections/Domestic_LiveSection";
+import { DomesticChartSection } from "@features/domestic/components/sections/Domestic_ChartSection";
+import { DomesticCitySection } from "@features/domestic/components/sections/Domestic_CitySection";
+
+import DomesticApi from "@features/domestic/domestic-api";
 
 const DomesticPage: React.FC = () => {
   const { data: live } = useApi(DomesticApi.live);
@@ -27,7 +28,6 @@ const DomesticPage: React.FC = () => {
         }
         canonical={WEB_URL}
       />
-
       <FadeIn
         show={live !== undefined && stat !== undefined}
         fallback={<DomesticSkeleton />}

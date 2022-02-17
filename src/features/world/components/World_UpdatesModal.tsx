@@ -1,14 +1,15 @@
 import React from "react";
 
-import WorldApi from "@features/world/world-api";
-import { transformWorldLiveUpdates } from "@utils/world-util";
-
 import Api from "@components/Api";
 import FadeIn from "@components/FadeIn";
-import LiveUpdatesContent, {
+import {
+  LiveUpdatesContent,
   LiveUpdatesContentSkeleton,
 } from "@components/live-updates/LiveUpdates_Content";
 import UpdatesModal from "@components/live-updates/LiveUpdates_Modal";
+
+import WorldApi from "@features/world/world-api";
+import { transformWorldLiveUpdates } from "@features/world/world-util";
 
 interface Props {}
 

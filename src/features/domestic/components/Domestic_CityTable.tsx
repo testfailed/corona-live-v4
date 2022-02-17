@@ -1,19 +1,20 @@
 import React from "react";
 
 import { rem } from "polished";
+import { useTranslation } from "react-i18next";
 
 import useApi from "@hooks/useApi";
-import DomesticApi from "@features/domestic/domestic-api";
 import { styled } from "@styles/stitches.config";
 import { formatObjectValues } from "@utils/object-util";
-import { getCityGuNameWithIds } from "@utils/domestic-util";
 
 import Table from "@components/Table";
+
+import DomesticApi from "@features/domestic/domestic-api";
+import { getCityGuNameWithIds } from "@features/domestic/domestic-util";
 
 import type { Stat } from "@_types/common-type";
 import type { DomesticTableKey } from "@features/domestic/domestic-type";
 import type { TableColumn, TableRow, TableRowValue } from "@components/Table";
-import { useTranslation } from "react-i18next";
 
 const statToTableRowValue = (value: Stat | string): TableRowValue => {
   if (typeof value === "string") {
@@ -26,7 +27,7 @@ const statToTableRowValue = (value: Stat | string): TableRowValue => {
   };
 };
 
-const DomesticTable: React.FC = () => {
+const DomesticCityTable: React.FC = () => {
   const { data: live } = useApi(DomesticApi.live);
   const { data: stat } = useApi(DomesticApi.stat);
 
@@ -100,4 +101,4 @@ const Wrapper = styled("div", {
   overflowX: "hidden",
 });
 
-export default DomesticTable;
+export default DomesticCityTable;

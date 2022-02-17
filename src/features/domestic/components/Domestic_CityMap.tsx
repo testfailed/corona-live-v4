@@ -25,7 +25,7 @@ const statTypeToLable: Partial<Record<StatType, string>> = {
   deceased: "총 사망자",
 };
 
-const DomesticMap: React.FC = () => {
+const DomesticCityMap: React.FC = () => {
   const { data: live } = useApi(DomesticApi.live);
   const { data: stat } = useApi(DomesticApi.stat);
 
@@ -93,4 +93,4 @@ const Wrapper = styled("div", {
   columnCenteredX: true,
 });
 
-export default DomesticMap;
+export default DomesticCityMap;

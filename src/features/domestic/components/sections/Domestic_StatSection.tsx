@@ -1,15 +1,17 @@
 import React from "react";
 
+import { useTranslation } from "react-i18next";
+
 import useApi from "@hooks/useApi";
 
+import DomesticApi from "@features/domestic/domestic-api";
+
+import Section from "@components/Section";
 import StatsBoard from "@components/StatsBoard";
 import { StatsBoardSkeleton } from "@components/StatsBoard";
 import type { StatsBoardStat } from "@components/StatsBoard";
-import DomesticApi from "@features/domestic/domestic-api";
-import Section from "@components/Section";
-import { useTranslation } from "react-i18next";
 
-const DomesticStat: React.FC = () => {
+export const DomesticStatSection: React.FC = () => {
   const { data } = useApi(DomesticApi.stat);
   const { t } = useTranslation();
 
@@ -52,12 +54,10 @@ const DomesticStat: React.FC = () => {
   );
 };
 
-export const DomesticStatSkeleton: React.FC = () => {
+export const DomesticStatSectionSkeleton: React.FC = () => {
   return (
     <Section>
       <StatsBoardSkeleton columns={4} />
     </Section>
   );
 };
-
-export default DomesticStat;

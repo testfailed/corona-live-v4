@@ -9,14 +9,12 @@ import Section, { SubSection } from "@components/Section";
 import VaccineRates, { VaccineRatesSkeleton } from "../Vaccine_Rates";
 import { useTranslation } from "react-i18next";
 
-const VaccineRatesSection: React.FC = () => {
+export const VaccineRatesSection: React.FC = () => {
   const { data } = useApi(VaccinApi.stat);
 
   const { t } = useTranslation();
 
   const { partiallyVaccinated, fullyVaccinated, booster } = data!.overview;
-
-  console.log(t("vaccine.vaccine_rates.all").length);
 
   return (
     <>
@@ -96,5 +94,3 @@ export const VaccineRatesSectionSkeleton = () => {
 const Wrapper = styled("div", {
   column: true,
 });
-
-export default VaccineRatesSection;

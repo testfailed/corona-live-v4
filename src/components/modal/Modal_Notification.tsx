@@ -1,21 +1,26 @@
 import React, { useEffect, useState } from "react";
 
 import { rem } from "polished";
+import { useTranslation } from "react-i18next";
 
 import useApi from "@hooks/useApi";
 import CommonApi from "@apis/common-api";
 import { css, styled } from "@styles/stitches.config";
 
-import { Modal } from "@components/Modal";
-import Column from "@components/Column";
-import BellIcon from "@components/icon/Icon_Bell";
 import Space from "@components/Space";
-import { getCityGuNameWithIds } from "@utils/domestic-util";
+import Column from "@components/Column";
+import { Modal } from "@components/Modal";
+import BellIcon from "@components/icon/Icon_Bell";
+
+import { getCityGuNameWithIds } from "@features/domestic/domestic-util";
 
 interface Props {}
 
 const NotificationModal: React.FC<Props> = () => {
+  const { t } = useTranslation();
+
   const [openModal, setOpenModal] = useState(false);
+
   const { data } = useApi(CommonApi.notification, {
     suspense: false,
     revalidateOnFocus: false,
@@ -38,7 +43,7 @@ const NotificationModal: React.FC<Props> = () => {
       onOpenChange={setOpenModal}
       className={css({ width: rem(220), paddingY: rem(20), paddingX: rem(16) })}
       onConfrim={(close) => close()}
-      confirmText="닫기"
+      confirmText={t("close")}
     >
       <Wrapper>
         <BellIconContainer>

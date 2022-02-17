@@ -25,7 +25,7 @@ import type {
   ChartTypeOptionValue,
 } from "@features/chart/chart-type";
 
-export type VaccineStat = "az" | "pfizer" | "jansen" | "moderna" | "all";
+export type VaccineStat = "pfizer" | "jansen" | "moderna" | "all";
 
 type VaccineOption = ChartDefaultOptionKey;
 
@@ -63,16 +63,6 @@ const chartOptions = createChartOptions<VaccineStat, VaccineOption>()({
   },
   jansen: {
     label: "얀센",
-
-    options: {
-      type: chartTypeOptions({
-        omit: ["live", "accumulated"],
-      }),
-      range: chartRangeOptions(),
-    },
-  },
-  az: {
-    label: "AZ",
 
     options: {
       type: chartTypeOptions({

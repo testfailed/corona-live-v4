@@ -11,7 +11,7 @@ import { Tab, Tabs } from "@components/Tabs";
 
 import type { VaccineType } from "@features/vaccine/vaccine-type";
 
-const VaccineInfo: React.FC = () => {
+export const VaccineInfoSection: React.FC = () => {
   const [vaccineType, setVaccineType] = useState<VaccineType>("pfizer");
   const { data } = useApi(VaccinApi.info);
 
@@ -39,7 +39,7 @@ const VaccineInfo: React.FC = () => {
   );
 };
 
-export const VaccineInfoSkeleton = () => {
+export const VaccineInfoSectionSkeleton = () => {
   return <Wrapper css={{ height: rem(310) }}></Wrapper>;
 };
 
@@ -68,5 +68,3 @@ const InfoLabel = styled("div", {
 const InfoValue = styled("div", {
   body1: true,
 });
-
-export default VaccineInfo;

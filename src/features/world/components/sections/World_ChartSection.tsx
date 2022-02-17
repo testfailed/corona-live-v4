@@ -27,6 +27,7 @@ import type {
 } from "@features/chart/components/Chart_Visualiser";
 import type {
   ChartDefaultOption,
+  ChartMode,
   ChartRangeOptionValue,
   ChartTypeOptionValue,
 } from "@features/chart/chart-type";
@@ -57,7 +58,7 @@ const WorldChartSection: React.FC = () => {
         confirmed: {
           label: t("stat.confirmed"),
           options: {
-            type: chartTypeOptions({ omit: ["accumulated"] }),
+            type: chartTypeOptions({ omit: ["live", "accumulated"] }),
             range: chartRangeOptions(),
             compare: null,
           },
@@ -94,7 +95,7 @@ const WorldChartSection: React.FC = () => {
   const getChartData = async (
     stat: WorldStat,
     option: WorldOption,
-    mode: ChartMode
+    { mode, shouldInvalidate }: { mode: ChartMode; shouldInvalidate: boolean }
   ): Promise<Array<ChartVisualiserData>> => {
     let dataSet: ChartData[] = [];
 

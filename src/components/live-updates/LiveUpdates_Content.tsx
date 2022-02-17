@@ -6,7 +6,8 @@ import { createEmptyArray } from "@utils/array-util";
 import LiveUpdatesCategories, {
   UpdatesCategoriesSkeleton,
 } from "@components/live-updates/LiveUpdates_Categories";
-import LiveUpdatesRow, {
+import {
+  LiveUpdatesRow,
   ILiveUpdatesRow,
   LiveUpdatesRowSkeleton,
 } from "@components/live-updates/LiveUpdates_Row";
@@ -19,7 +20,10 @@ interface Props {
   triggerNode?: React.ReactNode;
 }
 
-const LiveUpdatesContent: React.FC<Props> = ({ updates, categories }) => {
+export const LiveUpdatesContent: React.FC<Props> = ({
+  updates,
+  categories,
+}) => {
   const [category, setCategory] = useState(null);
 
   const filteredUpdates = useMemo(
@@ -82,5 +86,3 @@ const Container = styled("div", {
     background: "transparent",
   },
 });
-
-export default LiveUpdatesContent;

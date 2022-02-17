@@ -1,18 +1,20 @@
-import { useInterval } from "@hooks/useInterval";
-import { isNotInTimeRange } from "@utils/date-util";
 import { useRef, useState } from "react";
 
-const shouldShow = () => isNotInTimeRange("09:00:00", "16:00:00");
+import { useInterval } from "@hooks/useInterval";
+import { isNotInTimeRange } from "@utils/date-util";
+
+const shouldShowDomesticLiveChart = () =>
+  isNotInTimeRange("09:00:00", "16:30:00");
 
 export const useShowDomesticLiveChart = () => {
   const [showDomesticLiveChart, setShowDomesticLiveChart] = useState(() =>
-    shouldShow()
+    shouldShowDomesticLiveChart()
   );
   const showDoemsticLiveChartRef = useRef(showDomesticLiveChart);
 
   useInterval(
     () => {
-      const show = shouldShow();
+      const show = shouldShowDomesticLiveChart();
       if (show) {
         if (showDoemsticLiveChartRef.current === false) {
           setShowDomesticLiveChart(true);

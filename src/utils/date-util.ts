@@ -6,7 +6,7 @@ const HOUR = MINUTE * 60;
 const DAY = HOUR * 24;
 
 export const dayjs = (date?: string | number | Date | Dayjs): Dayjs => {
-  return _dayjs.tz(date ?? _dayjs());
+  return _dayjs().tz("Asia/Seoul");
 };
 
 export const getDateDistance = (date: string) => {

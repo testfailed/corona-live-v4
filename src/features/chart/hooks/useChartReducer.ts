@@ -16,7 +16,6 @@ const createReducer =
     state: ChartReducerState<MainOption, SubOption>,
     action: ChartReducerAction<MainOption, SubOption>
   ): ChartReducerState<MainOption, SubOption> => {
-    console.log(action);
     switch (action.type) {
       case "SET_CHART_DATA":
         const xValues = Object.keys(

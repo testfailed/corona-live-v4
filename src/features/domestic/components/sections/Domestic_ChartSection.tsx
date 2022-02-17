@@ -5,7 +5,6 @@ import { useTranslation } from "react-i18next";
 
 import useApi from "@hooks/useApi";
 import { theme } from "@styles/stitches.config";
-import { isInTimeRange } from "@utils/date-util";
 import useUpdateEffect from "@hooks/useUpdatedEffect";
 import { KDCA_DATA_SOURCE } from "@constants/constants";
 
@@ -89,7 +88,7 @@ export const DomesticChartSection: React.FC = () => {
             compare: null,
           },
 
-          defaultOptions: { type: "live" },
+          defaultOptions: { type: showDomesticLiveChart ? "live" : "daily" },
 
           overrideOptionsIf: [
             {

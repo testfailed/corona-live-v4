@@ -10,10 +10,10 @@ import FadeIn from "@components/FadeIn";
 import Column from "@components/Column";
 
 import WorldPageSkeleton from "./World_PageSkeleton";
-import WorldStatSection from "./sections/World_StatSection";
-import WorldLiveSection from "./sections/World_LiveSection";
-import WorldChartSection from "./sections/World_ChartSection";
-import WorldTableSection from "./sections/World_TableSection";
+import WorldStatSection from "@features/world/components/sections/World_StatSection";
+import WorldLiveSection from "@features/world/components/sections/World_LiveSection";
+import WorldChartSection from "@features/world/components/sections/World_ChartSection";
+import WorldTableSection from "@features/world/components/sections/World_TableSection";
 
 const WorldPage: React.FC = () => {
   const { data } = useApi(WorldApi.live);

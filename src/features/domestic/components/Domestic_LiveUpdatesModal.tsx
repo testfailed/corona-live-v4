@@ -3,10 +3,11 @@ import React from "react";
 import {
   transformDomesticUpdates,
   transformDomesticUpdatesCategories,
-} from "@utils/domestic-util";
+} from "@features/domestic/domestic-util";
 import DomesticApi from "@features/domestic/domestic-api";
 
-import LiveUpdatesContent, {
+import {
+  LiveUpdatesContent,
   LiveUpdatesContentSkeleton,
 } from "@components/live-updates/LiveUpdates_Content";
 import LiveUpdatesModal from "@components/live-updates/LiveUpdates_Modal";

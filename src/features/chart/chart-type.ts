@@ -101,7 +101,10 @@ export interface ChartProps<
   getChartData: (
     selectedMainOption: MainOption,
     selectedSubOptions: Record<SubOption, string>,
-    mode: ChartMode
+    config: {
+      mode: ChartMode;
+      shouldInvalidate: boolean;
+    }
   ) => Promise<Array<ChartVisualiserData>>;
   forceUpdate?: any;
   enableExpandMode?: boolean;

@@ -1,21 +1,23 @@
-import React, { useEffect, useMemo, useState } from "react";
+import React, { useMemo, useState } from "react";
 
 import { rem } from "polished";
+import { useTranslation } from "react-i18next";
 
 import { styled } from "@styles/stitches.config";
+import { useInterval } from "@hooks/useInterval";
 import { numberWithCommas } from "@utils/number-util";
 import { chunkArray, createEmptyArray } from "@utils/array-util";
 
-import { SubSection } from "./Section";
+import Space from "./Space";
+import Column from "./Column";
+import Skeleton from "./Skeleton";
 import DeltaTag from "./DeltaTag";
-import UpdatesRow, {
+import { SubSection } from "./Section";
+import {
+  LiveUpdatesRow,
   ILiveUpdatesRow,
   LiveUpdatesRowSkeleton,
 } from "./live-updates/LiveUpdates_Row";
-import Skeleton from "./Skeleton";
-import Column from "./Column";
-import Space from "./Space";
-import { useTranslation } from "react-i18next";
 
 export interface LiveBoardComparedValue {
   label: string;
@@ -30,38 +32,40 @@ interface Props {
   updatesModalTrigger?: React.ReactNode;
 }
 
-const LiveBoard: React.FC<Props> = ({
+export const LiveBoard: React.FC<Props> = ({
   currentValueLabel,
   currentValue,
   comparedValues,
   updates,
   updatesModalTrigger,
 }) => {
-  const [activeUpdateId, setActiveUpdateId] = useState(0);
-
   const { t } = useTranslation();
 
-  useEffect(() => {
-    let intervalId = setInterval(() => {
-      setActiveUpdateId((prev) => (prev + 1) % updates.length);
-    }, 5000);
+  const [activeUpdateId, setActiveUpdateId] = useState(0);
 
-    return () => {
-      clearInterval(intervalId);
-    };
-  }, []);
+  useInterval(
+    () => {
+      setActiveUpdateId((prev) => (prev + 1) % updates.length);
+    },
+    5000,
+    []
+  );
 
   const chunckedComparedValues = useMemo(
     () => chunkArray(comparedValues, 2),
     [comparedValues]
   );
 
+  const isLargeValue = `${currentValue}`.length > 5;
+
   return (
     <Wrapper>
       <StatsContainer>
         <CurrentValueContainer>
-          <CurrentValueLabel>{currentValueLabel}</CurrentValueLabel>
-          <CurrentValue>
+          <CurrentValueLabel largeValue={isLargeValue}>
+            {currentValueLabel}
+          </CurrentValueLabel>
+          <CurrentValue largeValue={isLargeValue}>
             {numberWithCommas(currentValue)}
             <span>{t("stat.unit")}</span>
           </CurrentValue>
@@ -81,11 +85,11 @@ const LiveBoard: React.FC<Props> = ({
       {updates?.length > 0 ? (
         React.cloneElement(updatesModalTrigger as JSX.Element, {
           children: (
-            <UpdatesContainer>
+            <LiveUpdatesContainer>
               {updates.map(
                 (update, index) =>
                   activeUpdateId === index && (
-                    <UpdatesRow
+                    <LiveUpdatesRow
                       key={update.date}
                       fadeInUp
                       type="preview"
@@ -93,14 +97,14 @@ const LiveBoard: React.FC<Props> = ({
                     />
                   )
               )}
-            </UpdatesContainer>
+            </LiveUpdatesContainer>
           ),
         })
       ) : (
         <>
-          <UpdatesContainer>
-            <MockUpdateRow>추가 확진자가 없어요</MockUpdateRow>
-          </UpdatesContainer>
+          <LiveUpdatesContainer>
+            <MockLiveUpdatesRow>추가 확진자가 없어요</MockLiveUpdatesRow>
+          </LiveUpdatesContainer>
         </>
       )}
     </Wrapper>
@@ -158,6 +162,15 @@ const CurrentValueLabel = styled("div", {
 
   color: "$gray900",
   opacity: 0.8,
+  paddingTop: rem(2),
+
+  variants: {
+    largeValue: {
+      true: {
+        paddingTop: rem(4),
+      },
+    },
+  },
 
   "@md": {
     body3: true,
@@ -169,6 +182,14 @@ const CurrentValue = styled("div", {
   heading1: true,
   color: "$gray900",
   lineHeight: rem(36),
+
+  variants: {
+    largeValue: {
+      true: {
+        fontSize: rem(24),
+      },
+    },
+  },
 
   "& span": {
     display: "none",
@@ -184,7 +205,7 @@ const CurrentValue = styled("div", {
   },
 });
 
-const MockUpdateRow = styled("div", {
+const MockLiveUpdatesRow = styled("div", {
   body2: true,
   centered: true,
 
@@ -195,7 +216,6 @@ const MockUpdateRow = styled("div", {
 const ComparedValueContainer = styled("div", {
   rowCenteredY: true,
   marginY: rem(5),
-  // justifyContent: "space-between",
 });
 
 const ComparedValueLabel = styled("div", {
@@ -213,9 +233,4 @@ const ComparedValueLabel = styled("div", {
   },
 });
 
-const UpdatesContainer = styled("div", {
-  // rowCenteredY: true,
-  // justifyContent: "space-between",
-});
-
-export default LiveBoard;
+const LiveUpdatesContainer = styled("div", {});

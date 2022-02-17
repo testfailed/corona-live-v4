@@ -1,16 +1,17 @@
 import React, { useMemo } from "react";
 
-import useApi from "@hooks/useApi";
-import WorldApi from "@features/world/world-api";
-import { transformWorldLiveUpdates } from "@utils/world-util";
-
-import LiveBoard, {
-  LiveBoardComparedValue,
-  LiveBoardSkeleton,
-} from "@components/LiveBoard";
-import Section from "@components/Section";
-import WorldLiveUpdatesModalTrigger from "../World_UpdatesModal";
 import { useTranslation } from "react-i18next";
+
+import useApi from "@hooks/useApi";
+
+import { LiveBoard, LiveBoardSkeleton } from "@components/LiveBoard";
+import Section from "@components/Section";
+
+import WorldApi from "@features/world/world-api";
+import { transformWorldLiveUpdates } from "@features/world/world-util";
+import WorldLiveUpdatesModalTrigger from "@features/world/components/World_UpdatesModal";
+
+import type { LiveBoardComparedValue } from "@components/LiveBoard";
 
 const WorldLiveSection: React.FC = () => {
   const { t, i18n } = useTranslation();

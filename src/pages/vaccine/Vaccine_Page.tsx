@@ -11,10 +11,10 @@ import Column from "@components/Column";
 import FadeIn from "@components/FadeIn";
 
 import VaccineSkeleton from "./Vaccine_PageSkeleton";
-import VaccineInfoSection from "../../features/vaccine/components/sections/Vaccine_InfoSection";
-import VaccineStatSection from "../../features/vaccine/components/sections/Vaccine_StatSection";
-import VaccineChartSection from "../../features/vaccine/components/sections/Vaccine_ChartSection";
-import VaccineRatioSection from "../../features/vaccine/components/sections/Vaccine_RatesSection";
+import { VaccineStatSection } from "@features/vaccine/components/sections/Vaccine_StatSection";
+import { VaccineInfoSection } from "@features/vaccine/components/sections/Vaccine_InfoSection";
+import { VaccineChartSection } from "@features/vaccine/components/sections/Vaccine_ChartSection";
+import { VaccineRatesSection } from "@features/vaccine/components/sections/Vaccine_RatesSection";
 
 const VaccinePage: React.FC = () => {
   const { data: stat } = useApi(VaccinApi.stat);
@@ -34,7 +34,7 @@ const VaccinePage: React.FC = () => {
       >
         <Column>
           <VaccineStatSection />
-          <VaccineRatioSection />
+          <VaccineRatesSection />
           <VaccineChartSection />
           <VaccineInfoSection />
         </Column>

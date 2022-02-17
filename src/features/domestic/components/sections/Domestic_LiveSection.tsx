@@ -1,17 +1,19 @@
 import React, { useMemo } from "react";
 
-import useApi from "@hooks/useApi";
-import LiveBoard, {
-  LiveBoardComparedValue,
-  LiveBoardSkeleton,
-} from "@components/LiveBoard";
-import DomesticUpdatesModalTrigger from "../Domestic_LiveUpdatesModal";
-import DomesticApi from "@features/domestic/domestic-api";
-import { transformDomesticUpdates } from "@utils/domestic-util";
-import Section from "@components/Section";
 import { useTranslation } from "react-i18next";
 
-const DomesticLive: React.FC = () => {
+import useApi from "@hooks/useApi";
+
+import Section from "@components/Section";
+import { LiveBoard, LiveBoardSkeleton } from "@components/LiveBoard";
+
+import DomesticApi from "@features/domestic/domestic-api";
+import { transformDomesticUpdates } from "@features/domestic/domestic-util";
+import DomesticUpdatesModalTrigger from "@features/domestic/components/Domestic_LiveUpdatesModal";
+
+import type { LiveBoardComparedValue } from "@components/LiveBoard";
+
+export const DomesticLiveSection: React.FC = () => {
   const { data } = useApi(DomesticApi.live);
 
   const { t, i18n } = useTranslation();
@@ -31,7 +33,7 @@ const DomesticLive: React.FC = () => {
         delta: data.live.today - data.live.twoWeeksAgo,
       },
       {
-        label: t("live.one_month_ago"),
+        label: t("live.four_weeks_ago"),
         delta: data.live.today - data.live.monthAgo,
       },
     ],
@@ -56,12 +58,10 @@ const DomesticLive: React.FC = () => {
   );
 };
 
-export const DomesticLiveSkeleton: React.FC = () => {
+export const DomesticLiveSectionSkeleton: React.FC = () => {
   return (
     <Section>
       <LiveBoardSkeleton columns={2} />
     </Section>
   );
 };
-
-export default DomesticLive;

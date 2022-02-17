@@ -3,10 +3,11 @@ import React, { useEffect, useRef } from "react";
 import { SWRConfiguration } from "swr";
 
 import useApi from "@hooks/useApi";
-import WorldApi from "@apis/world-api";
 import CommonApi from "@apis/common-api";
-import DomesticApi from "@apis/domestic-api";
-import { useDomesticChartForceUpdateStore } from "@pages/domestic/sections/Domestic_ChartSection";
+
+import WorldApi from "@features/world/world-api";
+import DomesticApi from "@features/domestic/domestic-api";
+import { useDomesticChartForceUpdateStore } from "@features/domestic/components/sections/Domestic_ChartSection";
 
 const configs: SWRConfiguration = {
   suspense: false,

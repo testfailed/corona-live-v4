@@ -1,18 +1,18 @@
 import React from "react";
 
 import Column from "@components/Column";
-import { VaccineInfoSkeleton } from "../../features/vaccine/components/sections/Vaccine_InfoSection";
-import { VaccineStatSkeleton } from "../../features/vaccine/components/sections/Vaccine_StatSection";
-import { VaccineChartSectionSkeleton } from "../../features/vaccine/components/sections/Vaccine_ChartSection";
-import { VaccineRatesSectionSkeleton } from "../../features/vaccine/components/sections/Vaccine_RatesSection";
+import { VaccineInfoSectionSkeleton } from "@features/vaccine/components/sections/Vaccine_InfoSection";
+import { VaccineStatSectionSkeleton } from "@features/vaccine/components/sections/Vaccine_StatSection";
+import { VaccineChartSectionSkeleton } from "@features/vaccine/components/sections/Vaccine_ChartSection";
+import { VaccineRatesSectionSkeleton } from "@features/vaccine/components/sections/Vaccine_RatesSection";
 
-const VaccinePageSkeleton: React.FC = (props) => {
+const VaccinePageSkeleton: React.FC = () => {
   return (
     <Column>
-      <VaccineStatSkeleton />
+      <VaccineStatSectionSkeleton />
       <VaccineRatesSectionSkeleton />
       <VaccineChartSectionSkeleton />
-      <VaccineInfoSkeleton />
+      <VaccineInfoSectionSkeleton />
     </Column>
   );
 };

@@ -20,7 +20,12 @@ interface Props extends ILiveUpdatesRow {
   fadeInUp?: boolean;
 }
 
-const LiveUpdatesRow: React.FC<Props> = ({ type, date, update, fadeInUp }) => {
+export const LiveUpdatesRow: React.FC<Props> = ({
+  type,
+  date,
+  update,
+  fadeInUp,
+}) => {
   return (
     <Wrapper fadeInUp={fadeInUp} preview={type === "preview"}>
       <UpdatesTimeDisplay date={date} />
@@ -85,5 +90,3 @@ const Value = styled("div", {
     marginRight: rem(4),
   },
 });
-
-export default LiveUpdatesRow;

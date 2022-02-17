@@ -200,16 +200,16 @@ export const { styled, css, theme, createTheme, globalCss, config, keyframes } =
       /**
        * animation
        */
-      fadeIn: () => ({
-        animation: `${fadeIn} 400ms`,
+      fadeIn: (ms?: number) => ({
+        animation: `${fadeIn} ${ms ?? 400}ms`,
       }),
 
-      fadeInUp: () => ({
-        animation: `${fadeInUp} 400ms`,
+      fadeInUp: (ms?: number) => ({
+        animation: `${fadeInUp} ${ms ?? 400}ms`,
       }),
 
-      fadeInUpCentered: () => ({
-        animation: `${fadeInUpCentered} 400ms`,
+      fadeInUpCentered: (ms?: number) => ({
+        animation: `${fadeInUpCentered} ${ms ?? 400}ms`,
       }),
 
       /**

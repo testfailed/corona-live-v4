@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useRef, useState } from "react";
+import React, { useMemo, useRef, useState } from "react";
 
 import { rem } from "polished";
 import { useTranslation } from "react-i18next";
@@ -11,13 +11,12 @@ import { css, styled } from "@styles/stitches.config";
 
 import { Modal } from "@components/Modal";
 import { InstagramIconBox, TwitterIconBox } from "@components/SnsIconBox";
+import { useInterval } from "@hooks/useInterval";
 
 const ConfirmedCasesModal: React.FC = () => {
   const [openModal, setOpenModal] = useState(false);
   const { data } = useApi(DomesticApi.live, { suspense: false });
-
   const skipInterval = useRef(false);
-  const intervalId = useRef<ReturnType<typeof setInterval>>();
 
   const { t } = useTranslation();
 
@@ -26,9 +25,9 @@ const ConfirmedCasesModal: React.FC = () => {
     return date.format("M월 D일");
   }, []);
 
-  useEffect(() => {
-    const intervalFunc = () => {
-      if (isInTimeRange("09:00:00", "23:00:00")) {
+  useInterval(
+    () => {
+      if (isInTimeRange("09:00:00", "22:00:00")) {
         if (openModal === true) setOpenModal(false);
       } else {
         if (openModal === false) {
@@ -38,15 +37,10 @@ const ConfirmedCasesModal: React.FC = () => {
           }
         }
       }
-    };
-
-    intervalFunc();
-    intervalId.current = setInterval(intervalFunc, 5000);
-
-    return () => {
-      clearInterval(intervalId.current);
-    };
-  }, []);
+    },
+    5000,
+    []
+  );
 
   if (!data) return <></>;
 
@@ -70,6 +64,7 @@ const ConfirmedCasesModal: React.FC = () => {
           {numberWithCommas(data.live.today)}
           <span>{t("stat.unit")}</span>
         </Cases>
+
         <SnsContainer>
           <SnsIcons>
             <TwitterIconBox type="profile" />
