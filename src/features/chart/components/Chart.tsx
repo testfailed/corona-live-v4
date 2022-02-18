@@ -19,6 +19,7 @@ import Space from "@components/Space";
 import Column from "@components/Column";
 import Loader from "@components/Loader";
 import Render from "@components/Render";
+import Gradient from "@components/Gradient";
 import Skeleton from "@components/Skeleton";
 import { SubSection } from "@components/Section";
 import ExpandIcon from "@components/icon/Icon_Expand";
@@ -139,6 +140,9 @@ const Chart = <MainOption extends string, SubOption extends string>(
                 />
               </Row>
             </Render>
+            <ChartHeadingOptionsOverflowGradient show={mode === "DEFAULT"}>
+              <Gradient color={theme.colors.white.computedValue} />
+            </ChartHeadingOptionsOverflowGradient>
           </ChartHeadingOptionsContainer>
 
           {enableExpandMode && (
@@ -203,6 +207,23 @@ const ChartHeadingOptionsContainer = styled("div", {
   position: "relative",
   rowCenteredY: true,
   flex: 1,
+});
+
+const ChartHeadingOptionsOverflowGradient = styled("div", {
+  position: "absolute",
+  right: 0,
+  top: "50%",
+  transform: "translateY(-50%)",
+  zIndex: 1,
+  display: "none",
+
+  variants: {
+    show: {
+      true: {
+        display: "block",
+      },
+    },
+  },
 });
 
 const ChartModeButtonContainer = styled("div", {
