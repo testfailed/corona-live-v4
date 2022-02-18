@@ -136,38 +136,42 @@ const Table = <T extends string>(props: Props<T>) => {
             <tr key={index}>
               {columns.map(({ id, width, deltaPosition }, index) => {
                 const children = (
-                  <Link to={row?.link?.text ?? ""}>
-                    <Cell
-                      ref={inViewRef}
-                      css={
-                        index !== 0 && deltaPosition === "bottom"
-                          ? {
-                              justifyContent: "flex-end",
-                            }
-                          : null
-                      }
-                    >
-                      {!!row[id]?.image && (
-                        <img src={row[id]?.image} alt={""}></img>
-                      )}
+                  <Cell
+                    ref={inViewRef}
+                    css={
+                      index !== 0 && deltaPosition === "bottom"
+                        ? {
+                            justifyContent: "flex-end",
+                          }
+                        : null
+                    }
+                  >
+                    {!!row[id]?.image && (
+                      <img src={row[id]?.image} alt={""}></img>
+                    )}
 
-                      {!!row[id]?.text && <Text>{row[id].text}</Text>}
-                      <StatContainer column={deltaPosition === "bottom"}>
-                        {row[id]?.stat !== undefined && (
-                          <>
-                            <Stat>{numberWithCommas(row[id].stat)}</Stat>
-                            {statUnit && <StatUnit>{statUnit}</StatUnit>}
-                          </>
-                        )}
-                        {!!row[id]?.delta && (
-                          <>
-                            <Space w={6} />
-                            <DeltaTag delta={Number(row[id].delta)} small />
-                          </>
-                        )}
-                      </StatContainer>
-                    </Cell>
-                  </Link>
+                    {!!row[id]?.text && <Text>{row[id].text}</Text>}
+                    <StatContainer column={deltaPosition === "bottom"}>
+                      {row[id]?.stat !== undefined && (
+                        <>
+                          <Stat>{numberWithCommas(row[id].stat)}</Stat>
+                          {statUnit && <StatUnit>{statUnit}</StatUnit>}
+                        </>
+                      )}
+                      {!!row[id]?.delta && (
+                        <>
+                          <Space w={6} />
+                          <DeltaTag delta={Number(row[id].delta)} small />
+                        </>
+                      )}
+                    </StatContainer>
+                  </Cell>
+                );
+
+                const linkChildren = row?.link?.text ? (
+                  <Link to={row?.link?.text}>{children}</Link>
+                ) : (
+                  <>{children}</>
                 );
 
                 const stickyLeft = rem(
@@ -185,18 +189,18 @@ const Table = <T extends string>(props: Props<T>) => {
 
                 return isSticky ? (
                   <th
-                    key={index}
+                    key={`${id}/${index}`}
                     style={{
                       ...style,
                       left: stickyLeft,
                       zIndex: stickyColumnIndex.length - index,
                     }}
                   >
-                    {children}
+                    {linkChildren}
                   </th>
                 ) : (
-                  <td key={index} style={style}>
-                    {children}
+                  <td key={`${id}/${index}`} style={style}>
+                    {linkChildren}
                   </td>
                 );
               })}
@@ -228,6 +232,7 @@ const Cell = styled("div", {
   paddingX: rem(8),
   borderRadius: rem(8),
   flexShrink: 0,
+  textAlign: "left",
 
   "& img": {
     width: rem(20),
