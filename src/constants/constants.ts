@@ -33,7 +33,7 @@ export const TWITTER_SNS_URL = `https://twitter.com/corona__live`;
 export const INSTA_SNS_URL = `https://www.instagram.com/corona_live_official/`;
 
 export const KDCA_DATA_SOURCE = () => ({
-  text: t("data_source.kdca"),
+  text: t("chart.data_source.kdca"),
   url: "https://www.kdca.go.kr",
 });
 

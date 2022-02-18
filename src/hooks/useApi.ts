@@ -2,7 +2,7 @@ import { dayjs } from "@utils/date-util";
 import axios from "axios";
 import useSWR, { SWRConfiguration, SWRResponse } from "swr";
 
-const fetcher = (url: string) =>
+export const fetcher = (url: string) =>
   axios
     .get(`${url}.json?timestamp=${dayjs().valueOf()}`)
     .then(async ({ data }) => {

@@ -17,7 +17,7 @@ const Tooltip: React.FC<Props> = ({ children, content, show, onChange }) => {
       onOpenChange={onChange}
     >
       <TooltipPrimitive.Trigger>{children}</TooltipPrimitive.Trigger>
-      <Content sideOffset={5} side="top" align="end">
+      <Content sideOffset={5} side="top" align="end" style={{ zIndex: 10 }}>
         {content}
         <Arrow />
       </Content>

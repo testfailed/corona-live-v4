@@ -1,6 +1,7 @@
 import React, { useEffect, useRef, useState } from "react";
 
 import { rem } from "polished";
+import { useTranslation } from "react-i18next";
 import { CSSProperties } from "@stitches/react";
 
 import useMounted from "@hooks/useMounted";
@@ -9,7 +10,6 @@ import { css, styled } from "@styles/stitches.config";
 import Child from "./Child";
 
 import type { CssComponent } from "@stitches/react/types/styled-component";
-import { useTranslation } from "react-i18next";
 
 interface TabsProps<T extends any> {
   value: T;
@@ -18,9 +18,8 @@ interface TabsProps<T extends any> {
   css?: CssComponent;
   tabCss?: CssComponent;
   tabTextCss?: CssComponent;
-  activeTabTextCss?: CssComponent;
   tabIndicatorCss?: CssComponent;
-  activeTabIndicatorCss?: CssComponent;
+  activeTabTextCss?: CssComponent;
   tabIndicatorType?: "underline" | "contained";
   tabIndicatorLengthType?: "tab" | "text";
   tabIndicatorTransform?: string;
@@ -262,7 +261,7 @@ const TabsContainer = styled("div", {
   },
 });
 
-const TabIndicator = styled("span", {
+const TabIndicator = styled("div", {
   position: "absolute",
 
   willChange: "transform, width, height",
