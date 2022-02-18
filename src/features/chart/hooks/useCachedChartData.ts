@@ -1,10 +1,11 @@
 import { useCallback, useEffect, useMemo, useRef } from "react";
 
-import axios from "axios";
 import create from "zustand";
 
-import { dayjs } from "@utils/date-util";
+import { fetcher } from "@hooks/useApi";
+
 import {
+  CompressedChartData,
   getChartRangeLength,
   getChartRangeSlug,
   parseCompressedChartData,
@@ -12,35 +13,26 @@ import {
 
 import type { ChartRangeOptionValue } from "@features/chart/chart-type";
 
-interface State {
+const useCachedChartDataStore = create<{
   data: any;
   setData: (data: any) => void;
-}
-
-const useStore = create<State>((set) => ({
+}>((set) => ({
   data: {},
   setData: (value) => {
     set((state) => ({ data: { ...state.data, ...value } }));
   },
 }));
 
-const fetcher = (url: string): any =>
-  axios
-    .get(`${url}.json?timestamp=${dayjs().valueOf()}`)
-    .then(async ({ data }) => {
-      return data;
-    });
-
-const useCachedChartData = (slug: string) => {
-  const { data, setData } = useStore(({ data, setData }) => ({
+const useCachedChartData = <MainOption extends string>(slug: string) => {
+  const { data, setData } = useCachedChartDataStore(({ data, setData }) => ({
     data,
     setData,
   }));
 
-  const cachedRef = useRef({});
+  const cachedRef = useRef<Partial<Record<MainOption, any>>>({});
 
   useEffect(() => {
-    if (data[slug]) cachedRef.current = data[slug];
+    cachedRef.current = data[slug] ?? cachedRef.current;
     return () => {
       setData({ [slug]: cachedRef.current });
     };
@@ -48,49 +40,53 @@ const useCachedChartData = (slug: string) => {
 
   const getCachedChartData = useCallback(
     async ({
-      stat,
+      mainOptions,
       range,
-      apiName,
+      apiName = mainOptions?.[0],
       isCompressed = false,
       shouldInvalidate = false,
     }: {
-      stat: Array<string>;
+      mainOptions: Array<MainOption>;
       apiName?: string;
       range: ChartRangeOptionValue;
       isCompressed?: boolean;
-      isSingle?: boolean;
       shouldInvalidate?: boolean;
     }) => {
+      if (Object.keys(cachedRef.current).length === 0)
+        cachedRef.current = data[slug] ?? cachedRef.current;
+      let cachedData = cachedRef.current;
+
       let rangeSlug = getChartRangeSlug(range);
-      const rangeLength = getChartRangeLength(range);
+      let rangeLength = getChartRangeLength(range);
 
       if (slug.split("/").length > 1 && rangeSlug === 90) {
         rangeSlug = "all";
       }
 
-      let cachedData = cachedRef.current;
-
       const cacheData = async () => {
         if (!rangeSlug) return;
-        const data = await fetcher(
-          `${slug}/ts/${apiName ?? stat[0]}/${rangeSlug}${
-            isCompressed ? "/compressed" : ""
-          }`
-        ).then((d) => (isCompressed ? parseCompressedChartData(d) : d));
 
-        if (stat.length === 1) {
-          cachedData[stat[0]] = data;
+        const apiPath = `${slug}/ts/${apiName}/${rangeSlug}${
+          isCompressed ? "/compressed" : ""
+        }`;
+
+        const data = (await fetcher(apiPath).then((d) =>
+          isCompressed ? parseCompressedChartData(d as CompressedChartData) : d
+        )) as Record<MainOption, any>;
+
+        if (mainOptions.length === 1) {
+          cachedData[mainOptions[0]] = data;
         } else {
           cachedData = { ...cachedData, ...data };
         }
       };
 
       const isNotCached = () => {
-        return stat.some((k) => !cachedData[k]);
+        return mainOptions.some((k) => !cachedData[k]);
       };
 
       const shouldFetchLargerDataset = () => {
-        return stat.every((k) => {
+        return mainOptions.every((k) => {
           const cachedDataLength = Object.keys(cachedData[k]).length;
           return rangeLength > cachedDataLength;
         });
@@ -108,17 +104,14 @@ const useCachedChartData = (slug: string) => {
 
       cachedRef.current = cachedData;
 
-      return stat.length === 1
-        ? cachedData[stat[0]]
-        : stat.reduce((o, k) => ({ ...o, [k]: cachedData[k] }), {});
+      return mainOptions.length === 1
+        ? cachedData[mainOptions[0]]
+        : mainOptions.reduce((o, k) => ({ ...o, [k]: cachedData[k] }), {});
     },
     []
   );
 
-  return useMemo(
-    () => ({ getCachedChartData, cached: cachedRef.current }),
-    [getCachedChartData, cachedRef]
-  );
+  return useMemo(() => ({ getCachedChartData }), [getCachedChartData]);
 };
 
 export default useCachedChartData;

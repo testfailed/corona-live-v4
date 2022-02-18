@@ -6,30 +6,28 @@ import useCachedChartData from "@features/chart/hooks/useCachedChartData";
 import Section from "@components/Section";
 import Chart, { ChartSkeleton } from "@features/chart/components/Chart";
 import {
-  chartRangeOptions,
   chartTypeOptions,
+  chartRangeOptions,
   createChartOptions,
-  getDefaultChartConfig,
-  getDefaultChartXAxis,
-  getDefaultChartYAxis,
   transformChartData,
+  getDefaultChartYAxis,
+  getDefaultChartXAxis,
+  getDefaultChartConfig,
 } from "@features/chart/chart-util";
 
 import type {
-  ChartData,
-  ChartVisualiserData,
-} from "@features/chart/components/Chart_Visualiser";
-import type {
-  ChartDefaultOptionKey,
-  ChartRangeOptionValue,
-  ChartTypeOptionValue,
+  ChartProps,
+  ChartDefaultSubOptionValues,
 } from "@features/chart/chart-type";
+import type { ChartData } from "@features/chart/components/Chart_Visualiser";
 
-export type VaccineStat = "pfizer" | "jansen" | "moderna" | "all";
+export type VaccineMainOption = "pfizer" | "jansen" | "moderna" | "all";
 
-type VaccineOption = ChartDefaultOptionKey;
+interface VaccineSubOptionValues extends ChartDefaultSubOptionValues {}
 
-const chartOptions = createChartOptions<VaccineStat, VaccineOption>()({
+type VaccineSubOption = keyof VaccineSubOptionValues;
+
+const chartOptions = createChartOptions<VaccineMainOption, VaccineSubOption>()({
   all: {
     label: "전체",
 
@@ -76,30 +74,26 @@ const chartOptions = createChartOptions<VaccineStat, VaccineOption>()({
 export const VaccineChartSection: React.FC = () => {
   const { getCachedChartData } = useCachedChartData("vaccine");
 
-  const getChartData = async (
-    stat: VaccineStat,
-    option: Record<VaccineOption, string>
-  ): Promise<Array<ChartVisualiserData>> => {
+  const getChartData: ChartProps<
+    VaccineMainOption,
+    VaccineSubOption
+  >["getChartData"] = async (selectedMainOption, selectedSubOptions) => {
     let dataSet: ChartData[] = [];
 
-    const type = option?.type as ChartTypeOptionValue;
-    const range = option?.range as ChartRangeOptionValue;
+    const { range, type } = selectedSubOptions;
 
     const xAxis = getDefaultChartXAxis({ type, range });
-    const yAxis = getDefaultChartYAxis(
-      { type, range },
-      { right: { id: stat } }
-    );
+    const yAxis = getDefaultChartYAxis({ type, range });
 
-    if (stat === "all") {
+    if (selectedMainOption === "all") {
       const data = await getCachedChartData({
-        stat: ["first-and-second"],
+        mainOptions: ["first-and-second"],
         range,
       });
 
       dataSet = [
         {
-          data: data.booster,
+          data: transformChartData(data.booster, { type, range }),
           config: getDefaultChartConfig(
             { type, range },
             {
@@ -114,8 +108,7 @@ export const VaccineChartSection: React.FC = () => {
           ),
         },
         {
-          data: data.second,
-
+          data: transformChartData(data.second, { type, range }),
           config: getDefaultChartConfig(
             { type, range },
             {
@@ -130,7 +123,7 @@ export const VaccineChartSection: React.FC = () => {
           ),
         },
         {
-          data: data.first,
+          data: transformChartData(data.first, { type, range }),
 
           config: getDefaultChartConfig(
             { type, range },
@@ -147,20 +140,23 @@ export const VaccineChartSection: React.FC = () => {
         },
       ];
     } else {
-      const data = await getCachedChartData({ stat: [stat], range });
-      dataSet = [{ data, config: getDefaultChartConfig({ type, range }) }];
+      const data = await getCachedChartData({
+        mainOptions: [selectedMainOption],
+        range,
+      });
+      dataSet = [
+        {
+          data: transformChartData(data, { type, range }),
+          config: getDefaultChartConfig({ type, range }),
+        },
+      ];
     }
 
-    return [
-      {
-        dataSet: dataSet.map(({ data, config }) => ({
-          config,
-          data: transformChartData(data, { type, range }),
-        })),
-        xAxis,
-        yAxis,
-      },
-    ];
+    return {
+      dataSet,
+      xAxis,
+      yAxis,
+    };
   };
 
   return (

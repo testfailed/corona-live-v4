@@ -17,6 +17,7 @@ import { styled, theme } from "@styles/stitches.config";
 import Row from "@components/Row";
 
 import type { ChartMode } from "@features/chart/chart-type";
+import Render from "@components/Render";
 
 export type ChartType = "line" | "bar";
 export type YAxisPosition = "left" | "right";
@@ -30,29 +31,25 @@ export interface ChartConfig {
   lineType?: ChartLineType;
 
   barColor?: string;
-  activeBarColor?: string;
   barThickness?: number;
+  activeBarColor?: string;
 
   showPoints?: boolean;
   pointColor?: string;
   pointRadius?: number;
 
-  legendColor: string;
-
   showLabel?: boolean;
   labelFormat?: (value: number) => string;
 
-  yAxisPosition: YAxisPosition;
-
-  isStack?: boolean;
-
   tooltipLabel: string;
-  tooltipFormat: (value: number) => string;
   tooltipUnit?: string;
-
-  statLabel?: string;
+  tooltipFormat: (value: number) => string;
 
   zIndex?: number;
+  isStack?: boolean;
+  statLabel?: string;
+  legendColor: string;
+  yAxisPosition: YAxisPosition;
   info?: string | React.ReactNode;
 }
 
@@ -135,11 +132,11 @@ const getYAxisTickValues = (
 };
 
 const getXAxisTickValues = (range, xParser) => {
-  let ticksInterval =
+  const ticksInterval =
     range.length < 20
       ? Math.ceil(range.length / (range.length > 8 ? 6 : 8))
       : Math.floor(range.length / (range.length > 8 ? 6 : 8));
-  let R = range.length;
+  const R = range.length;
   return range.reduce((arr, val, i) => {
     if ((R - i - 1) % ticksInterval === 0) arr.push(xParser(val));
     return arr;
@@ -164,9 +161,9 @@ const ChartVisualiser: React.FC<Props> = ({
   lastIndex,
 }) => {
   const { t } = useTranslation();
+
   const svgRef = useRef<SVGSVGElement>(null);
   const containerRef = useRef<HTMLDivElement>(null);
-
   const prevChartTypes = useRef<Array<ChartType>>([]);
 
   const { width, height } = useChartSize({ mode });
@@ -792,17 +789,20 @@ const ChartVisualiser: React.FC<Props> = ({
       : xParser(selectedX)
   );
 
-  const isExpanded = mode === "EXPANDED";
+  console.log({ xValue, xLabelValue, dataSet });
 
   return (
     <div ref={containerRef}>
-      <Wrapper borderBottom={isExpanded && !lastIndex} last={lastIndex}>
-        {mode === "EXPANDED" && xValue !== undefined && (
-          <TitleContainer alignment={titleAlignment} key={titleAlignment}>
+      <Wrapper
+        last={lastIndex}
+        borderBottom={mode === "EXPANDED" && lastIndex === false}
+      >
+        {mode === "EXPANDED" && xValue !== undefined && dataSet !== undefined && (
+          <ChartTitleContainer key={titleAlignment} alignment={titleAlignment}>
             <Row centeredY>
-              <TitleText>{dataSet[0].config.statLabel}</TitleText>
+              <ChartTitleText>{dataSet[0].config.statLabel}</ChartTitleText>
               {dataSet[0].config.info && titleAlignment === "left" && (
-                <TitleInfo>{dataSet[0].config.info}</TitleInfo>
+                <ChartTitleInfo>{dataSet[0].config.info}</ChartTitleInfo>
               )}
             </Row>
             {dataSource && (
@@ -810,45 +810,48 @@ const ChartVisualiser: React.FC<Props> = ({
                 {t("chart.data_source")} - {dataSource.text}
               </DataSource>
             )}
-          </TitleContainer>
+          </ChartTitleContainer>
         )}
 
-        {mode === "DEFAULT" && dataSource && (
+        <Render if={mode === "DEFAULT" && !!dataSource}>
           <DataSource absolute={true}>
-            {t("chart.data_source")} - {dataSource.text}
+            {t("chart.data_source")} - {dataSource?.text}
           </DataSource>
-        )}
+        </Render>
 
         <ChartTooltipPosition>
           <ChartTooltip
-            expanded={isExpanded}
+            expanded={mode === "EXPANDED"}
             className="chart-tooltip-container"
-            css={{
+            style={{
               visibility: xValue === undefined ? "hidden" : "visible",
             }}
           >
-            {!isExpanded && <TooltipXLabel>{xLabelValue}</TooltipXLabel>}
+            <Render if={mode === "DEFAULT"}>
+              <TooltipXLabel>{xLabelValue}</TooltipXLabel>
+            </Render>
+
             <Row>
               {dataSet &&
-                dataSet.map(({ config, data }, index) =>
-                  config.tooltipLabel !== null ? (
-                    <TooltipContainer key={index}>
-                      <TooltipLegend
-                        css={{
-                          background: config.barColor ?? config.lineColor,
-                        }}
-                      />
-                      {!isExpanded && (
-                        <TooltipLabel>{config.tooltipLabel}</TooltipLabel>
-                      )}
-                      <TooltipValue>
-                        {config.tooltipFormat(data[selectedX])}
-                        <span>{config?.tooltipUnit}</span>
-                      </TooltipValue>
-                    </TooltipContainer>
-                  ) : (
-                    <></>
-                  )
+                dataSet.map(
+                  ({ config, data }, index) =>
+                    config.tooltipLabel !== null && (
+                      <TooltipContainer key={index}>
+                        <TooltipLegend
+                          css={{
+                            background: config.barColor ?? config.lineColor,
+                          }}
+                        />
+                        <Render if={mode === "DEFAULT"}>
+                          <TooltipLabel>{config.tooltipLabel}</TooltipLabel>
+                        </Render>
+
+                        <TooltipValue>
+                          {config.tooltipFormat(data[selectedX])}
+                          <span>{config?.tooltipUnit}</span>
+                        </TooltipValue>
+                      </TooltipContainer>
+                    )
                 )}
             </Row>
           </ChartTooltip>
@@ -992,7 +995,7 @@ const Svg = styled("svg", {
   },
 });
 
-const TitleContainer = styled("div", {
+const ChartTitleContainer = styled("div", {
   column: true,
   fadeIn: 300,
   position: "absolute",
@@ -1014,7 +1017,7 @@ const TitleContainer = styled("div", {
   },
 });
 
-const TitleText = styled("div", {
+const ChartTitleText = styled("div", {
   position: "relative",
 
   heading3: true,
@@ -1031,7 +1034,7 @@ const TitleText = styled("div", {
   },
 });
 
-const TitleInfo = styled("div", {
+const ChartTitleInfo = styled("div", {
   body3: true,
   marginLeft: rem(6),
   color: "$gray700",
@@ -1148,6 +1151,7 @@ const DataSource = styled("div", {
   textDecoration: "none",
   wordBreak: "keep-all",
   color: "$gray700",
+  whiteSpace: "nowrap",
 
   "@md": {
     left: rem(8),

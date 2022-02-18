@@ -24,13 +24,17 @@ import Chart, { ChartSkeleton } from "@features/chart/components/Chart";
 import useCachedChartData from "@features/chart/hooks/useCachedChartData";
 
 import DomesticApi from "@features/domestic/domestic-api";
-
-import type { ChartDefaultOption, ChartMode } from "@features/chart/chart-type";
-import type {
-  ChartData,
-  ChartVisualiserData,
-} from "@features/chart/components/Chart_Visualiser";
 import { useShowDomesticLiveChart } from "@features/domestic/hooks/useShowDomesticLiveChart";
+
+import type {
+  ChartDefaultSubOptionValues,
+  ChartMode,
+  ChartProps,
+} from "@features/chart/chart-type";
+import type {
+  ChartConfig,
+  ChartData,
+} from "@features/chart/components/Chart_Visualiser";
 
 type DomesticMainOption =
   | "confirmed"
@@ -45,11 +49,11 @@ type ChartCompareOptionValue =
   | "monthAgo"
   | "twoWeeksAgo";
 
-interface DomesticSubOptionObject extends ChartDefaultOption {
+interface DomesticSubOptionValues extends ChartDefaultSubOptionValues {
   compare: ChartCompareOptionValue;
 }
 
-type DomesticSubOption = keyof DomesticSubOptionObject;
+type DomesticSubOption = keyof DomesticSubOptionValues;
 
 interface State {
   shoulUpdate: number;
@@ -64,7 +68,8 @@ export const useDomesticChartForceUpdateStore = create<State>((set) => ({
 }));
 
 export const DomesticChartSection: React.FC = () => {
-  const { getCachedChartData } = useCachedChartData("domestic");
+  const { getCachedChartData } =
+    useCachedChartData<DomesticMainOption>("domestic");
   const { data: domesticLiveData } = useApi(DomesticApi.live);
   const { forceUpdate, shoulUpdate } = useDomesticChartForceUpdateStore(
     ({ forceUpdate, shoulUpdate }) => ({ forceUpdate, shoulUpdate })
@@ -146,59 +151,71 @@ export const DomesticChartSection: React.FC = () => {
     [shoulUpdate, i18n.language, showDomesticLiveChart]
   );
 
-  const getChartData = async (
-    mainOption: DomesticMainOption,
-    subOptions: DomesticSubOptionObject,
-    { mode, shouldInvalidate }: { mode: ChartMode; shouldInvalidate: boolean }
-  ): Promise<Array<ChartVisualiserData>> => {
+  const statLabel: Partial<Record<DomesticMainOption, string>> = useMemo(
+    () => ({
+      tested: t("stat.tested"),
+      deceased: t("stat.deceased"),
+      confirmed: t("stat.confirmed"),
+      "confirmed-critical": t("stat.confirmed_critical"),
+      "tested-positive-rates": t("stat.tested_positive_rates"),
+    }),
+    [t]
+  );
+
+  const getChartData: ChartProps<
+    DomesticMainOption,
+    DomesticSubOption
+  >["getChartData"] = async (
+    mainOption,
+    subOptions,
+    { mode, shouldInvalidate }
+  ) => {
     let dataSet: ChartData[] = [];
 
+    const { range, type, compare } = subOptions as DomesticSubOptionValues;
+
+    const xAxis = getDefaultChartXAxis({ range, type });
+    const yAxis = getDefaultChartYAxis({ range, type });
+
+    const testedPositiveRatesChartConfig = getDefaultChartConfig(subOptions, {
+      tooltipUnit: "%",
+      tooltipLabel: "",
+      info: " = 확진자수 / 전일 검사건수",
+      statLabel: "확진율",
+    });
+
     if (mode === "EXPANDED") {
+      const mainOptions = [
+        "confirmed",
+        "confirmed-critical",
+        "deceased",
+        "tested-positive-rates",
+        "tested",
+      ] as Array<DomesticMainOption>;
+
       const data = await getCachedChartData({
-        stat: [
-          "confirmed",
-          "confirmed-critical",
-          "deceased",
-          "tested-positive-rates",
-          "tested",
-        ] as Array<DomesticMainOption>,
+        mainOptions,
         apiName: "all",
         range: "oneMonth",
         isCompressed: true,
-        isSingle: false,
         shouldInvalidate,
       });
 
-      const xAxis = getDefaultChartXAxis(subOptions);
-      const yAxis = getDefaultChartYAxis(subOptions, {
-        right: { id: mainOption },
-      });
-
-      const statLabel: Partial<Record<DomesticMainOption, string>> = {
-        confirmed: t("stat.confirmed"),
-        deceased: t("stat.deceased"),
-        "confirmed-critical": t("stat.confirmed_critical"),
-        tested: t("stat.tested"),
-      };
-
-      return Object.keys(data).map((key) => ({
+      return mainOptions.map((chartMainOption) => ({
         dataSet: [
           {
-            data: transformChartData(data[key], {
-              type: subOptions.type,
-              range: subOptions.range,
-              fractionDigits: mainOption === "tested-positive-rates" ? 2 : 0,
+            data: transformChartData(data[chartMainOption], {
+              type,
+              range,
+              fractionDigits:
+                chartMainOption === "tested-positive-rates" ? 2 : 0,
             }),
             config: getDefaultChartConfig(
               subOptions,
-              key === "tested-positive-rates"
-                ? {
-                    tooltipUnit: "%",
-                    statLabel: t("stat.tested_positive_rates"),
-                    info: " = 확진자수 / 전일 검사건수",
-                  }
+              chartMainOption === "tested-positive-rates"
+                ? testedPositiveRatesChartConfig
                 : {
-                    statLabel: statLabel[key],
+                    statLabel: statLabel[chartMainOption],
                   }
             ),
           },
@@ -208,14 +225,9 @@ export const DomesticChartSection: React.FC = () => {
         dataSource: KDCA_DATA_SOURCE(),
       }));
     } else {
-      const xAxis = getDefaultChartXAxis(subOptions);
-      const yAxis = getDefaultChartYAxis(subOptions, {
-        right: { id: mainOption },
-      });
-
-      if (mainOption === "confirmed" && subOptions.type === "live") {
+      if (mainOption === "confirmed" && type === "live") {
         const today = domesticLiveData.hourlyLive["today"];
-        const compared = domesticLiveData.hourlyLive[subOptions.compare];
+        const compared = domesticLiveData.hourlyLive[compare];
 
         const liveLabel: Record<ChartCompareOptionValue, string> = {
           yesterday: t("live.yesterday"),
@@ -229,7 +241,7 @@ export const DomesticChartSection: React.FC = () => {
             data: compared,
             config: getDefaultChartConfig(subOptions, {
               color: theme.colors.gray400,
-              tooltipLabel: liveLabel[subOptions.compare],
+              tooltipLabel: liveLabel[compare],
               chartType: "line",
               showPoints: true,
             }),
@@ -246,53 +258,46 @@ export const DomesticChartSection: React.FC = () => {
         ];
       } else {
         const data = await getCachedChartData({
-          stat: [mainOption],
-          range: subOptions.range,
-          isCompressed: subOptions.range === "all",
+          mainOptions: [mainOption],
+          range,
+          isCompressed: range === "all",
           shouldInvalidate,
         });
+
         dataSet = [
           {
             data: transformChartData(data, {
-              type: subOptions.type,
-              range: subOptions.range,
+              type,
+              range,
               fractionDigits: mainOption === "tested-positive-rates" ? 2 : 0,
             }),
             config: getDefaultChartConfig(
               subOptions,
-              mainOption === "tested-positive-rates"
-                ? {
-                    tooltipUnit: "%",
-                    tooltipLabel: "",
-                    info:
-                      mainOption === "tested-positive-rates"
-                        ? " = 확진자수 / 전일 검사건수"
-                        : undefined,
-                  }
-                : {}
+              mainOption === "tested-positive-rates" &&
+                testedPositiveRatesChartConfig
             ),
           },
         ];
       }
 
-      return [
-        {
-          dataSet,
-          xAxis,
-          yAxis,
-          dataSource: subOptions?.type === "live" ? null : KDCA_DATA_SOURCE(),
-        },
-      ];
+      return {
+        dataSet,
+        xAxis,
+        yAxis,
+        dataSource: type !== "live" && KDCA_DATA_SOURCE(),
+      };
     }
   };
 
-  const chartMode: ChartMode = showDomesticLiveChart ? "DEFAULT" : "EXPANDED";
+  const defaultChartMode: ChartMode = showDomesticLiveChart
+    ? "DEFAULT"
+    : "EXPANDED";
 
   return (
     <Section>
       <Chart
         enableExpandMode
-        defaultMode={chartMode}
+        defaultMode={defaultChartMode}
         {...{ chartOptions, getChartData, forceUpdate: shoulUpdate }}
       />
     </Section>

@@ -7,7 +7,7 @@ import {
   OptionValue,
 } from "../chart-type";
 import { chartRangeOptions, chartTypeOptions } from "../chart-util";
-import { ChartReducerState } from "./useChartReducer.types";
+import { ChartReducerState } from "./useChartReducer.type";
 
 export const getInitialSelectedSubOptions = <
   MainOption extends string,
@@ -68,25 +68,6 @@ export const parseSubOptionsList = <SubOption extends string>(options) => {
       })) as Array<TabProps>;
     }
   ) as Record<SubOption, Array<TabProps>>;
-};
-
-export const seleectedSubOptionsV2 = <
-  MainOption extends string,
-  SubOption extends string
->(
-  state: ChartReducerState<MainOption, SubOption>,
-  {
-    selectedMainOption = state.selectedMainOption,
-    selectedSubOptions = state.selectedSubOptions,
-  }: {
-    selectedMainOption?: MainOption;
-    selectedSubOptions?: Record<SubOption, string>;
-  }
-) => {
-  const newOptionsList = v2getSubOptions(state, {
-    selectedMainOption,
-    selectedSubOptions,
-  });
 };
 
 export const getValidSelectedSubOptions = <
@@ -161,67 +142,6 @@ export const getValidSelectedSubOptions = <
       );
     }
   }) as Record<SubOption, string>;
-};
-
-export const v2getSubOptions = <
-  MainOption extends string,
-  SubOption extends string
->(
-  state: ChartReducerState<MainOption, SubOption>,
-  {
-    selectedMainOption = state.selectedMainOption,
-    selectedSubOptions = state.selectedSubOptions,
-  }: {
-    selectedMainOption?: MainOption;
-    selectedSubOptions?: Record<SubOption, string>;
-  },
-  config?: {
-    mode?: ChartMode;
-  }
-) => {
-  const transformOptionsList = (options) => {
-    return formatObjectValues(
-      removeNullFromObject(options),
-      (optionValuesObj) => {
-        return Object.keys(optionValuesObj).map((optionValue) => ({
-          value: optionValue,
-          text: optionValuesObj[optionValue].label,
-          disabled: !!optionValuesObj[optionValue].disabled,
-        })) as Array<TabProps>;
-      }
-    ) as Record<SubOption, Array<TabProps>>;
-  };
-
-  if ((config?.mode ?? state?.mode) === "EXPANDED") {
-    return transformOptionsList({
-      type: chartTypeOptions({ omit: ["accumulated", "live", "monthly"] }),
-      range: chartRangeOptions({ omit: ["all"] }),
-    });
-  }
-
-  const { options, overrideOptionsIf } =
-    state.props.chartOptions[selectedMainOption];
-
-  const defaultOptions =
-    state.props.chartOptions[selectedMainOption]?.defaultOptions ?? {};
-
-  const overriddenOptions = {
-    ...options,
-    ...(Object.keys(defaultOptions).length > 0
-      ? overrideOptionsIf.find(({ options, equal = true, ...conditions }) => {
-          return Object.keys(conditions).every((optionName) => {
-            return (
-              (conditions[optionName] ===
-                (selectedSubOptions[optionName] ??
-                  defaultOptions[optionName])) ===
-              equal
-            );
-          });
-        })?.options ?? {}
-      : {}),
-  };
-
-  return transformOptionsList(overriddenOptions);
 };
 
 export const getSubOptions = <

@@ -11,18 +11,17 @@ export type ChartTypeOptionValue =
 
 export type ChartRangeOptionValue =
   | "oneWeek"
-  | "oneWeekExtra"
   | "twoWeeks"
   | "oneMonth"
   | "threeMonths"
   | "all";
 
-export interface ChartDefaultOption {
+export interface ChartDefaultSubOptionValues {
   range: ChartRangeOptionValue;
   type: ChartTypeOptionValue;
 }
 
-export type ChartDefaultOptionKey = keyof ChartDefaultOption;
+export type ChartDefaultSubOption = keyof ChartDefaultSubOptionValues;
 
 export interface OptionValue {
   label: string;
@@ -61,7 +60,7 @@ export type ChartOptions<
   Stat extends string = string,
   Option extends string = string,
   Config extends {} = {},
-  ComposedOption extends string = Option | ChartDefaultOptionKey
+  ComposedOption extends string = Option | ChartDefaultSubOption
 > = Record<
   Stat,
   Config & {
@@ -100,12 +99,12 @@ export interface ChartProps<
   chartOptions: ChartOptions<MainOption, SubOption>;
   getChartData: (
     selectedMainOption: MainOption,
-    selectedSubOptions: Record<SubOption, string>,
+    selectedSubOptions: any,
     config: {
       mode: ChartMode;
       shouldInvalidate: boolean;
     }
-  ) => Promise<Array<ChartVisualiserData>>;
+  ) => Promise<Array<ChartVisualiserData> | ChartVisualiserData>;
   forceUpdate?: any;
   enableExpandMode?: boolean;
   defaultMode?: ChartMode;

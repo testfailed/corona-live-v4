@@ -1,13 +1,11 @@
 import { useMemo, useReducer } from "react";
 
 import type { ChartProps } from "@features/chart/chart-type";
-import { ChartReducerAction, ChartReducerState } from "./useChartReducer.types";
+import { ChartReducerAction, ChartReducerState } from "./useChartReducer.type";
 import {
-  getInitialSelectedSubOptions,
   getSubOptions,
+  getInitialSelectedSubOptions,
   getValidSelectedSubOptions,
-  parseSubOptionsList,
-  v2getSubOptions,
 } from "./useChartReducer.utils";
 
 const createReducer =

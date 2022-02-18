@@ -22,7 +22,7 @@ import type {
   ChartOptions,
   ChartRangeOptionValue,
   ChartTypeOptionValue,
-  ChartDefaultOptionKey,
+  ChartDefaultSubOption,
 } from "@features/chart/chart-type";
 import type { Dayjs } from "dayjs";
 
@@ -158,7 +158,7 @@ export const createChartOptions = <
                         ),
                       }),
                     },
-                  } as ChartCondition<{}, ChartDefaultOptionKey>;
+                  } as ChartCondition<{}, ChartDefaultSubOption>;
                 })
             : []),
         ],
@@ -335,8 +335,6 @@ export const getChartRangeLength = (value: ChartRangeOptionValue) => {
   switch (value) {
     case "oneWeek":
       return 7;
-    case "oneWeekExtra":
-      return 8;
     case "twoWeeks":
       return 14;
     case "oneMonth":
@@ -441,7 +439,7 @@ export const transformChartData = (
   }
 };
 
-interface CompressedChartData {
+export interface CompressedChartData {
   from: string;
   to: string;
   data: Array<string | number>;

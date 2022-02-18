@@ -1,4 +1,4 @@
-import React, { useEffect, useReducer, useRef, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 
 import { rem } from "polished";
 import { Presence } from "@radix-ui/react-presence";
@@ -9,7 +9,6 @@ import { fadeIn, fadeOut } from "@styles/animations/fade-animation";
 import useChartSize from "@hooks/useChartSize";
 import useUpdateEffect from "@hooks/useUpdatedEffect";
 import useDebounceState from "@hooks/useDebounceState";
-import { useLocalStorage } from "@hooks/useLocalStorage";
 
 import ChartVisualiser from "./Chart_Visualiser";
 import ChartSubOptions from "./Chart_SubOptions";
@@ -17,26 +16,20 @@ import ChartMainOptions from "./Chart_MainOptions";
 
 import Row from "@components/Row";
 import Space from "@components/Space";
+import Column from "@components/Column";
 import Loader from "@components/Loader";
-import RenderIf from "@components/RenderIf";
+import Render from "@components/Render";
 import Skeleton from "@components/Skeleton";
 import { SubSection } from "@components/Section";
-import RenderSwitch from "@components/RenderSwitch";
 import ExpandIcon from "@components/icon/Icon_Expand";
 
+import useChartReducer from "@features/chart/hooks/useChartReducer";
 import type { ChartMode, ChartProps } from "@features/chart/chart-type";
-import useChartReducer from "../hooks/useChartReducer";
-import Column from "@components/Column";
 
 const Chart = <MainOption extends string, SubOption extends string>(
   props: ChartProps<MainOption, SubOption>
 ) => {
-  const {
-    chartOptions,
-    getChartData,
-    forceUpdate,
-    enableExpandMode = false,
-  } = props;
+  const { getChartData, forceUpdate, enableExpandMode = false } = props;
 
   const [
     {
@@ -120,11 +113,7 @@ const Chart = <MainOption extends string, SubOption extends string>(
   const chartVisualiserProps = { mode, selectedX, setSelectedX };
 
   return (
-    <Wrapper
-      style={{
-        height: wrapperHeight,
-      }}
-    >
+    <Wrapper style={{ height: wrapperHeight }}>
       <Content ref={contentRef}>
         <Presence present={isLoading}>
           <LoadingContainer data-state={isLoading ? "show" : "hide"}>
@@ -133,35 +122,27 @@ const Chart = <MainOption extends string, SubOption extends string>(
         </Presence>
 
         <ChartHeadingContainer>
-          <Row centeredY css={{ flex: 1 }}>
-            <RenderSwitch
-              value={mode}
-              cases={{
-                DEFAULT: (
-                  <ChartMainOptions
-                    value={selectedMainOption as any}
-                    onChange={onStatChange}
-                    mainOptions={mainOptions}
-                  />
-                ),
-                EXPANDED: (
-                  <Row css={{ paddingY: rem(8), paddingX: rem(8), flex: 1 }}>
-                    <ChartSubOptions
-                      values={selectedSubOptions}
-                      onChange={onOptionChange}
-                      subOptions={subOptions}
-                    />
-                  </Row>
-                ),
-              }}
-            />
-          </Row>
+          <ChartHeadingOptionsContainer>
+            <Render if={mode === "DEFAULT"}>
+              <ChartMainOptions
+                value={selectedMainOption as any}
+                onChange={onStatChange}
+                mainOptions={mainOptions}
+              />
+            </Render>
+            <Render if={mode === "EXPANDED"}>
+              <Row css={{ paddingY: rem(8), paddingX: rem(8), flex: 1 }}>
+                <ChartSubOptions
+                  values={selectedSubOptions}
+                  onChange={onOptionChange}
+                  subOptions={subOptions}
+                />
+              </Row>
+            </Render>
+          </ChartHeadingOptionsContainer>
 
           {enableExpandMode && (
             <ChartModeButtonContainer>
-              <RenderIf condition={_mode === "DEFAULT"}>
-                <ChartHeadingDivider />
-              </RenderIf>
               <ChartModeButton onClick={toggleChartMode}>
                 <ExpandIcon
                   stroke={theme.colors.gray900}
@@ -173,37 +154,33 @@ const Chart = <MainOption extends string, SubOption extends string>(
         </ChartHeadingContainer>
 
         <ChartVisualiserContainer>
-          <RenderIf condition={mode === "DEFAULT"}>
+          <Render if={mode === "DEFAULT"}>
             <Space h={{ _: 12, md: 16 }} />
             <ChartSubOptions
               values={selectedSubOptions}
               onChange={onOptionChange}
               subOptions={subOptions}
             />
-          </RenderIf>
+          </Render>
 
           <FadeInAnimationContainer key={mode}>
-            {mode === "DEFAULT" && (
+            <Render if={mode === "DEFAULT"}>
               <ChartVisualiser {...chartData[0]} {...chartVisualiserProps} />
-            )}
-            {mode === "EXPANDED" && (
-              <>
-                {chartData.length > 1 ? (
-                  chartData.map((data, index) => (
-                    <ChartVisualiser
-                      key={index}
-                      {...data}
-                      {...chartVisualiserProps}
-                      lastIndex={index === chartData.length - 1}
-                    />
-                  ))
-                ) : (
-                  <>
-                    <div style={{ height: rem(500) }}></div>
-                  </>
-                )}
-              </>
-            )}
+            </Render>
+            <Render if={mode === "EXPANDED"}>
+              {chartData.length > 1 ? (
+                chartData.map((data, index) => (
+                  <ChartVisualiser
+                    key={index}
+                    {...data}
+                    {...chartVisualiserProps}
+                    lastIndex={index === chartData.length - 1}
+                  />
+                ))
+              ) : (
+                <div style={{ height: rem(500) }}></div>
+              )}
+            </Render>
           </FadeInAnimationContainer>
         </ChartVisualiserContainer>
       </Content>
@@ -222,18 +199,10 @@ const ChartHeadingContainer = styled(SubSection, {
   rowCenteredY: true,
 });
 
-const ChartHeadingDivider = styled("div", {
-  height: "100%",
-  position: "absolute",
-  right: "101%",
-  bottom: 0,
-  top: 0,
-  width: rem(36),
-  background: `linear-gradient(to left, $whiteA100 25%, $whiteA000)`,
-  "&": {
-    backgroundImage: `-webkit-linear-gradient(to left, $whiteA100 25%, $whiteA000)`,
-  },
-  zIndex: 1,
+const ChartHeadingOptionsContainer = styled("div", {
+  position: "relative",
+  rowCenteredY: true,
+  flex: 1,
 });
 
 const ChartModeButtonContainer = styled("div", {
@@ -244,24 +213,6 @@ const ChartModeButtonContainer = styled("div", {
 
   "& path": {
     stroke: "$gray900",
-  },
-
-  variants: {
-    leftFadeOut: {
-      true: {
-        "&:before": {
-          content: "",
-          height: "100%",
-          position: "absolute",
-          right: "101%",
-          bottom: 0,
-          top: 0,
-          width: rem(36),
-          background: `linear-gradient(to left, ${theme.colors.white.computedValue} 25%, transparent)`,
-          zIndex: 1,
-        },
-      },
-    },
   },
 });
 

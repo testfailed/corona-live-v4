@@ -14,7 +14,7 @@ export interface ChartReducerState<
   selectedSubOptions: Record<SubOption, string>;
   subOptions: Record<SubOption, Array<TabProps>>;
   mainOptions: Array<TabProps>;
-  selectedX: string | number | null;
+  selectedX: string | null;
 }
 
 export type ChartReducerAction<

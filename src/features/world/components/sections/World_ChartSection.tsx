@@ -2,9 +2,6 @@ import React, { useMemo } from "react";
 
 import { useTranslation } from "react-i18next";
 
-import useApi from "@hooks/useApi";
-import { theme } from "@styles/stitches.config";
-
 import Section from "@components/Section";
 
 import {
@@ -19,42 +16,26 @@ import {
 import Chart, { ChartSkeleton } from "@features/chart/components/Chart";
 import useCachedChartData from "@features/chart/hooks/useCachedChartData";
 
-import WorldApi from "@features/world/world-api";
-
+import type { ChartData } from "@features/chart/components/Chart_Visualiser";
 import type {
-  ChartData,
-  ChartVisualiserData,
-} from "@features/chart/components/Chart_Visualiser";
-import type {
-  ChartDefaultOption,
-  ChartMode,
-  ChartRangeOptionValue,
-  ChartTypeOptionValue,
+  ChartDefaultSubOptionValues,
+  ChartProps,
 } from "@features/chart/chart-type";
 
-export type WorldStat = "confirmed" | "deceased";
+export type WorldMainOption = "confirmed" | "deceased";
 
-type ChartCompareOptionValue =
-  | "yesterday"
-  | "weekAgo"
-  | "monthAgo"
-  | "twoWeeksAgo";
+interface WorldSubOptionValues extends ChartDefaultSubOptionValues {}
 
-interface WorldOption extends ChartDefaultOption {
-  compare: ChartCompareOptionValue;
-}
-
-type WorldOptionKey = keyof WorldOption;
+type WorldSubOption = keyof WorldSubOptionValues;
 
 const WorldChartSection: React.FC = () => {
   const { t, i18n } = useTranslation();
 
-  const { getCachedChartData } = useCachedChartData("world");
-  const { data: liveData } = useApi(WorldApi.live);
+  const { getCachedChartData } = useCachedChartData<WorldMainOption>("world");
 
   const chartOptions = useMemo(
     () =>
-      createChartOptions<WorldStat, WorldOptionKey>()({
+      createChartOptions<WorldMainOption, WorldSubOption>()({
         confirmed: {
           label: t("stat.confirmed"),
           options: {
@@ -62,23 +43,6 @@ const WorldChartSection: React.FC = () => {
             range: chartRangeOptions(),
             compare: null,
           },
-
-          overrideOptionsIf: [
-            {
-              type: "live",
-              options: {
-                compare: {
-                  yesterday: {
-                    label: t("live.yesterday"),
-                  },
-                  weekAgo: {
-                    label: t("live.one_week_ago"),
-                  },
-                },
-                range: null,
-              },
-            },
-          ],
         },
         deceased: {
           label: t("stat.deceased"),
@@ -92,26 +56,26 @@ const WorldChartSection: React.FC = () => {
     [t, i18n.language]
   );
 
-  const getChartData = async (
-    stat: WorldStat,
-    option: WorldOption,
-    { mode, shouldInvalidate }: { mode: ChartMode; shouldInvalidate: boolean }
-  ): Promise<Array<ChartVisualiserData>> => {
+  const getChartData: ChartProps<
+    WorldMainOption,
+    WorldSubOption
+  >["getChartData"] = async (mainOption, subOptions, { mode }) => {
     let dataSet: ChartData[] = [];
+
+    const { range, type } = subOptions as WorldSubOptionValues;
+
+    const xAxis = getDefaultChartXAxis({ type, range });
+    const yAxis = getDefaultChartYAxis({ type, range });
 
     if (mode === "EXPANDED") {
       const data = await getCachedChartData({
-        stat: ["confirmed", "deceased"] as Array<WorldStat>,
+        mainOptions: ["confirmed", "deceased"],
         apiName: "all",
         range: "oneMonth",
         isCompressed: true,
-        isSingle: false,
       });
 
-      const xAxis = getDefaultChartXAxis(option);
-      const yAxis = getDefaultChartYAxis(option, { right: { id: stat } });
-
-      const statLabel: Partial<Record<WorldStat, string>> = {
+      const statLabel: Partial<Record<WorldMainOption, string>> = {
         confirmed: "확진자",
         deceased: "사망자",
       };
@@ -119,92 +83,38 @@ const WorldChartSection: React.FC = () => {
       return Object.keys(data).map((key) => ({
         dataSet: [
           {
-            data: transformChartData(data[key], {
-              type: option.type,
-              range: option.range,
-            }),
-            config: getDefaultChartConfig(option, {
-              statLabel: statLabel[key],
-            }),
+            data: transformChartData(data[key], { type, range }),
+            config: getDefaultChartConfig(
+              { type, range },
+              {
+                statLabel: statLabel[key],
+              }
+            ),
           },
         ],
         xAxis,
         yAxis,
       }));
     } else {
-      const type = option?.type as ChartTypeOptionValue;
-      const range = option?.range as ChartRangeOptionValue;
-      const compare = option?.compare;
-
       const xAxis = getDefaultChartXAxis({ type, range });
-      const yAxis = getDefaultChartYAxis(
-        { type, range },
-        { right: { id: stat } }
-      );
+      const yAxis = getDefaultChartYAxis({ type, range });
 
-      if (stat === "confirmed" && type === "live") {
-        const today = liveData.hourlyLive["today"];
-        const compared = liveData.hourlyLive[compare];
-
-        const liveLabel: Record<string, string> = {
-          yesterday: "어제",
-          weekAgo: "1주전",
-          twoWeeksAgo: "2주전",
-          monthAgo: "한달전",
-        };
-
-        dataSet = [
-          {
-            data: compared,
-            config: getDefaultChartConfig(
-              {
-                type,
-                range,
-              },
-              {
-                color: theme.colors.gray400,
-                tooltipLabel: liveLabel[compare],
-                chartType: "line",
-                showPoints: true,
-              }
-            ),
-          },
-          {
-            data: today,
-            config: getDefaultChartConfig(
-              {
-                type,
-                range,
-              },
-              {
-                color: theme.colors.blue500,
-                tooltipLabel: "오늘",
-                chartType: "line",
-                showPoints: true,
-              }
-            ),
-          },
-        ];
-      } else {
-        const data = await getCachedChartData({ stat: [stat], range });
-        dataSet = [
-          {
-            data: transformChartData(data, {
-              type: option.type,
-              range: option.range,
-            }),
-            config: getDefaultChartConfig({ type, range }),
-          },
-        ];
-      }
-
-      return [
+      const data = await getCachedChartData({
+        mainOptions: [mainOption],
+        range,
+      });
+      dataSet = [
         {
-          dataSet,
-          xAxis,
-          yAxis,
+          data: transformChartData(data, subOptions),
+          config: getDefaultChartConfig(subOptions),
         },
       ];
+
+      return {
+        dataSet,
+        xAxis,
+        yAxis,
+      };
     }
   };
 

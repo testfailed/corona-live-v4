@@ -16,19 +16,19 @@ import {
 import Chart, { ChartSkeleton } from "@features/chart/components/Chart";
 import useCachedChartData from "@features/chart/hooks/useCachedChartData";
 
-import type { ChartDefaultOption } from "@features/chart/chart-type";
 import type {
-  ChartData,
-  ChartVisualiserData,
-} from "@features/chart/components/Chart_Visualiser";
+  ChartDefaultSubOptionValues,
+  ChartProps,
+} from "@features/chart/chart-type";
+import type { ChartData } from "@features/chart/components/Chart_Visualiser";
 
-type CityStat = "confirmed";
+type CityMainOption = "confirmed";
 
-interface CityOption extends ChartDefaultOption {}
+interface CitySubOptionValues extends ChartDefaultSubOptionValues {}
 
-type CityOptionKey = keyof CityOption;
+type CitySubOption = keyof CitySubOptionValues;
 
-const chartOptions = createChartOptions<CityStat, CityOptionKey>()({
+const chartOptions = createChartOptions<CityMainOption, CitySubOption>()({
   confirmed: {
     label: "확진자",
     options: {
@@ -45,37 +45,34 @@ export const CityChartSection: React.FC = () => {
     `domestic/${params.cityId}`
   );
 
-  const getChartData = async (
-    stat: CityStat,
-    option: CityOption
-  ): Promise<ChartVisualiserData> => {
+  const getChartData: ChartProps<
+    CityMainOption,
+    CitySubOption
+  >["getChartData"] = async (mainOption, subOptions) => {
     let dataSet: ChartData[] = [];
 
-    const xAxis = getDefaultChartXAxis(option);
-    const yAxis = getDefaultChartYAxis(option, { right: { id: stat } });
+    const { range, type } = subOptions as CitySubOptionValues;
+
+    const xAxis = getDefaultChartXAxis({ range, type });
+    const yAxis = getDefaultChartYAxis({ range, type });
 
     const data = await getCachedChartData({
-      stat: [stat],
-      range: option.range,
+      mainOptions: [mainOption],
+      range,
     });
+
     dataSet = [
       {
-        data,
-        config: getDefaultChartConfig(option),
+        data: transformChartData(data, {
+          type,
+          range,
+        }),
+        config: getDefaultChartConfig(subOptions),
       },
     ];
 
     return {
-      dataSet: dataSet.map(({ data, config }) => ({
-        config,
-        data: transformChartData(data, {
-          type: option.type,
-          range:
-            stat === "confirmed" && option.range === "oneWeek"
-              ? "oneWeekExtra"
-              : option.range,
-        }),
-      })),
+      dataSet,
       xAxis,
       yAxis,
     };
