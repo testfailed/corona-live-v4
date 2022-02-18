@@ -10,8 +10,7 @@ export interface DomesticUpdate {
 export interface DomesticStat {
   overview: {
     confirmed: Stat;
-    confirmedSevereSymptoms: Stat;
-    confirmedOmicron: Stat;
+    confirmedCritical: Stat;
     deceased: Stat;
     tested: Stat;
     recovered: Stat;
