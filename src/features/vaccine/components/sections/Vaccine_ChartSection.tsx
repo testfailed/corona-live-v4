@@ -1,19 +1,22 @@
-import React from "react";
+import React, { useMemo } from "react";
+
+import { useTranslation } from "react-i18next";
 
 import { theme } from "@styles/stitches.config";
-import useCachedChartData from "@features/chart/hooks/useCachedChartData";
 
 import Section from "@components/Section";
-import Chart, { ChartSkeleton } from "@features/chart/components/Chart";
+
 import {
-  chartTypeOptions,
-  chartRangeOptions,
+  generateChartTypeSubOptions,
+  generateChartRangeSubOptions,
   createChartOptions,
   transformChartData,
   getDefaultChartYAxis,
   getDefaultChartXAxis,
   getDefaultChartConfig,
 } from "@features/chart/chart-util";
+import Chart, { ChartSkeleton } from "@features/chart/components/Chart";
+import useCachedChartData from "@features/chart/hooks/useCachedChartData";
 
 import type {
   ChartProps,
@@ -27,52 +30,54 @@ interface VaccineSubOptionValues extends ChartDefaultSubOptionValues {}
 
 type VaccineSubOption = keyof VaccineSubOptionValues;
 
-const chartOptions = createChartOptions<VaccineMainOption, VaccineSubOption>()({
-  all: {
-    label: "전체",
-
-    options: {
-      type: chartTypeOptions({
-        omit: ["live", "accumulated"],
-      }),
-      range: chartRangeOptions(),
-    },
-  },
-
-  pfizer: {
-    label: "화이자",
-
-    options: {
-      type: chartTypeOptions({
-        omit: ["live", "accumulated"],
-      }),
-      range: chartRangeOptions(),
-    },
-  },
-  moderna: {
-    label: "모더나",
-
-    options: {
-      type: chartTypeOptions({
-        omit: ["live", "accumulated"],
-      }),
-      range: chartRangeOptions(),
-    },
-  },
-  jansen: {
-    label: "얀센",
-
-    options: {
-      type: chartTypeOptions({
-        omit: ["live", "accumulated"],
-      }),
-      range: chartRangeOptions(),
-    },
-  },
-});
-
 export const VaccineChartSection: React.FC = () => {
+  const { t, i18n } = useTranslation();
+
   const { getCachedChartData } = useCachedChartData("vaccine");
+
+  const chartOptions = useMemo(
+    () =>
+      createChartOptions<VaccineMainOption, VaccineSubOption>()({
+        all: {
+          label: t("stat.vaccine.all"),
+          options: {
+            type: generateChartTypeSubOptions({
+              omit: ["live", "accumulated"],
+            }),
+            range: generateChartRangeSubOptions(),
+          },
+        },
+
+        pfizer: {
+          label: t("stat.vaccine.pfizer"),
+          options: {
+            type: generateChartTypeSubOptions({
+              omit: ["live", "accumulated"],
+            }),
+            range: generateChartRangeSubOptions(),
+          },
+        },
+        moderna: {
+          label: t("stat.vaccine.moderna"),
+          options: {
+            type: generateChartTypeSubOptions({
+              omit: ["live", "accumulated"],
+            }),
+            range: generateChartRangeSubOptions(),
+          },
+        },
+        jansen: {
+          label: t("stat.vaccine.jansen"),
+          options: {
+            type: generateChartTypeSubOptions({
+              omit: ["live", "accumulated"],
+            }),
+            range: generateChartRangeSubOptions(),
+          },
+        },
+      }),
+    [i18n.language]
+  );
 
   const getChartData: ChartProps<
     VaccineMainOption,
@@ -100,7 +105,7 @@ export const VaccineChartSection: React.FC = () => {
               isStack: true,
               chartType: "bar",
               zIndex: 100,
-              tooltipLabel: "3차",
+              tooltipLabel: t("stat.vaccine.third_dose.shortened"),
               color: theme.colors.blue500,
               showLabel: range === "oneWeek",
               tooltipUnit: "",
@@ -115,7 +120,7 @@ export const VaccineChartSection: React.FC = () => {
               isStack: true,
               chartType: "bar",
               zIndex: 100,
-              tooltipLabel: "2차",
+              tooltipLabel: t("stat.vaccine.second_dose.shortened"),
               color: theme.colors.blue400,
               showLabel: range === "oneWeek",
               tooltipUnit: "",
@@ -131,7 +136,7 @@ export const VaccineChartSection: React.FC = () => {
               isStack: true,
               chartType: "bar",
               zIndex: 100,
-              tooltipLabel: "1차",
+              tooltipLabel: t("stat.vaccine.first_dose.shortened"),
               color: theme.colors.blue200,
               showLabel: range === "oneWeek",
               tooltipUnit: "",

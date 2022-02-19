@@ -1,14 +1,13 @@
 import React, { useEffect, useState } from "react";
 
 import { rem } from "polished";
+import { useTranslation } from "react-i18next";
 
 import { styled } from "@styles/stitches.config";
 
 import Space from "@components/Space";
 import Column from "@components/Column";
 import Skeleton from "@components/Skeleton";
-import Row from "@components/Row";
-import { useTranslation } from "react-i18next";
 
 interface VaccineRatesProps {
   first: number;
@@ -31,13 +30,13 @@ const VaccineRates: React.FC<VaccineRatesProps> = ({
   labelAlignment,
   labelPosition = "bottom",
 }) => {
+  const { t } = useTranslation();
+
   const [barWidth, setBarWidth] = useState({
     first: 0,
     second: 0,
     third: 0,
   });
-
-  const { t } = useTranslation();
 
   useEffect(() => {
     setTimeout(() => {
@@ -62,7 +61,7 @@ const VaccineRates: React.FC<VaccineRatesProps> = ({
       )}
       <Column
         css={{
-          width: "100%",
+          flex: 1,
           flexDirection: labelPosition === "top" ? "column-reverse" : "column",
         }}
       >
@@ -176,6 +175,7 @@ const Label = styled("div", {
 
   wordBreak: "keep-all",
   flexShrink: 0,
+  whiteSpace: "nowrap",
 
   "& >b": {
     body3: true,
@@ -296,7 +296,7 @@ const FilledBar = styled("div", {
 
 const Container = styled("div", {
   rowCenteredY: true,
-
+  width: "100%",
   paddingY: rem(10),
   paddingX: rem(16),
 

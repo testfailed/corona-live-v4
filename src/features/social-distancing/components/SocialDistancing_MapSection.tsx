@@ -3,10 +3,11 @@ import React, { useMemo } from "react";
 import useApi from "@hooks/useApi";
 import { styled } from "@styles/stitches.config";
 import { formatObjectValues } from "@utils/object-util";
-import SocialDistancingApi from "@features/social-distancing/social-distancing-api";
 
 import Section from "@components/Section";
 import Map, { MapData, MapSkeleton } from "@components/Map";
+
+import SocialDistancingApi from "@features/social-distancing/social-distancing-api";
 
 const SocialDistancingMapSection: React.FC = () => {
   const { data } = useApi(SocialDistancingApi.init);

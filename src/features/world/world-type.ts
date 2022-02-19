@@ -1,7 +1,7 @@
 import { Stat, StatsLive } from "@_types/common-type";
 
 export interface WorldUpdate {
-  countryId: number;
+  countryId: string;
   datetime: string;
   cases: number;
 }

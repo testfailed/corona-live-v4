@@ -1,5 +1,7 @@
 import React from "react";
 
+import { useTranslation } from "react-i18next";
+
 import useApi from "@hooks/useApi";
 import VaccinApi from "@features/vaccine/vaccine-api";
 
@@ -8,11 +10,11 @@ import StatsBoard, {
   StatsBoardStat,
 } from "@components/StatsBoard";
 import Section from "@components/Section";
-import { useTranslation } from "react-i18next";
 
 export const VaccineStatSection: React.FC = () => {
-  const { data } = useApi(VaccinApi.stat);
   const { t } = useTranslation();
+
+  const { data } = useApi(VaccinApi.stat);
 
   const { partiallyVaccinated, fullyVaccinated, booster } = data.overview!;
 

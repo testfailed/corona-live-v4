@@ -10,9 +10,9 @@ import VaccineRates, { VaccineRatesSkeleton } from "../Vaccine_Rates";
 import { useTranslation } from "react-i18next";
 
 export const VaccineRatesSection: React.FC = () => {
-  const { data } = useApi(VaccinApi.stat);
-
   const { t } = useTranslation();
+
+  const { data } = useApi(VaccinApi.stat);
 
   const { partiallyVaccinated, fullyVaccinated, booster } = data!.overview;
 

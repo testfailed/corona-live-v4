@@ -1,12 +1,13 @@
 import { useMemo, useReducer } from "react";
 
-import type { ChartProps } from "@features/chart/chart-type";
 import { ChartReducerAction, ChartReducerState } from "./useChartReducer.type";
 import {
   getSubOptions,
   getInitialSelectedSubOptions,
   getValidSelectedSubOptions,
 } from "./useChartReducer.utils";
+
+import type { ChartProps } from "@features/chart/chart-type";
 
 const createReducer =
   <MainOption extends string, SubOption extends string>() =>
@@ -125,25 +126,25 @@ const initReducerState = <MainOption extends string, SubOption extends string>(
     SubOption
   >(props) as any;
 
+  const mode = defaultMode ?? "DEFAULT";
+
   const subOptions = getSubOptions({
     chartOptions,
-    mode: defaultMode ?? "DEFAULT",
+    mode,
     selectedMainOption,
     selectedSubOptions,
   });
 
   return {
     props,
-    chartData: [],
-    mode: props.defaultMode ?? "DEFAULT",
-
+    mode,
     subOptions,
     mainOptions,
-
     selectedMainOption,
     selectedSubOptions,
 
     selectedX: null,
+    chartData: [],
   };
 };
 

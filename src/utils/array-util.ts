@@ -16,6 +16,15 @@ export const createEmptyArray = (columns: number, rows?: number) => {
   return rows ? array.map(() => [...Array(rows)]) : array;
 };
 
+export const range = (fromOrToValue: number, toValue?: number) => {
+  const from = toValue === undefined ? 0 : fromOrToValue;
+  const to = toValue === undefined ? fromOrToValue : toValue;
+
+  if (from > to) return [];
+
+  return Array.from({ length: to - from + 1 }, (_, i) => i + from);
+};
+
 export const isArrayEqual = <T>(
   arrayA: Array<string | number>,
   arrayB: Array<string | number>

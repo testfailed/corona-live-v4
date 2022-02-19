@@ -1,3 +1,5 @@
+import { t } from "i18next";
+
 export const numberWithCommas = (number?: number) => {
   if (number === undefined) return;
   return number.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
@@ -26,15 +28,17 @@ export const koreanNumberFormat = (number: number) => {
   let unit = "";
   let value = number;
 
+  const isEnglish = t("language") === "en";
+
   if (number > MILLION) {
     value = number / MILLION;
-    unit = "백만";
+    unit = isEnglish ? "m" : "백만";
   } else if (number > GRAND) {
     value = number / GRAND;
-    unit = "만";
+    unit = isEnglish ? "0k" : "만";
   } else if (number > THOUSAND) {
     value = number / THOUSAND;
-    unit = "천";
+    unit = isEnglish ? "k" : "천";
   }
 
   if (value === 0) return "";

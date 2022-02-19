@@ -1,25 +1,31 @@
-import React, { FC } from "react";
+import React, { FC, useMemo } from "react";
+
+import { rem } from "polished";
+
+import { dayjs } from "@utils/date-util";
+import { styled } from "@styles/stitches.config";
 
 import NotificationIcon from "@components/icon/Icon_Notification";
-
-import { styled } from "@styles/stitches.config";
-import { getDateDistance } from "@utils/date-util";
-import { rem } from "polished";
 
 interface Props {
   date: string;
 }
 const UpdatesTimeDisplay: FC<Props> = ({ date }) => {
+  const displayData = useMemo(() => dayjs(date).fromNow(), [date]);
+
   return (
     <Wrapper>
       <NotificationIcon />
-      <Text>{getDateDistance(date)}</Text>
+      <Text>{displayData}</Text>
     </Wrapper>
   );
 };
 
 const Wrapper = styled("div", {
   rowCenteredY: true,
+  "& > *": {
+    whiteSpace: "nowrap",
+  },
 });
 
 const Text = styled("div", {

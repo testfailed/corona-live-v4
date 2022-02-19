@@ -12,6 +12,6 @@ export const formatObjectValues = <T extends {}>(
 
 export const removeNullFromObject = <T extends {}>(object: T) => {
   return Object.fromEntries(
-    Object.entries(object).filter(([key, value]) => !!value)
+    Object.entries(object).filter(([_, value]) => value !== null)
   );
 };

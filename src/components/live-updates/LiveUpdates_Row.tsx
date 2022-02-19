@@ -85,8 +85,9 @@ const Wrapper = styled("div", {
 const Value = styled("div", {
   rowCenteredY: true,
   body3: true,
+  whiteSpace: "nowrap",
 
-  "& > strong": {
+  "& > b": {
     marginRight: rem(4),
   },
 });

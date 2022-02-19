@@ -17,19 +17,24 @@ type ThemeContextValue = {
 };
 
 const getInitialColorMode = (): ColorMode => {
-  const persistedColorPreference = window.localStorage.getItem("color-mode");
+  const persistedColorPreference = window.localStorage.getItem(COLOR_MODE_KEY);
+
   const hasPersistedPreference = typeof persistedColorPreference === "string";
+
   if (hasPersistedPreference) {
     return persistedColorPreference as ColorMode;
-  }
+  } else {
+    let newColorMode: ColorMode = "dark";
 
-  const mql = window.matchMedia("(prefers-color-scheme: dark)");
-  const hasMediaQueryPreference = typeof mql.matches === "boolean";
-  if (hasMediaQueryPreference) {
-    return mql.matches ? "dark" : "light";
-  }
+    const mql = window.matchMedia("(prefers-color-scheme: dark)");
+    const hasMediaQueryPreference = typeof mql.matches === "boolean";
+    if (hasMediaQueryPreference) {
+      newColorMode = mql.matches ? "dark" : "light";
+    }
 
-  return "light";
+    window.localStorage.setItem(COLOR_MODE_KEY, newColorMode);
+    return newColorMode;
+  }
 };
 
 const themes = {
@@ -63,6 +68,8 @@ export const ThemeProvider: React.FC = ({ children }) => {
 
   useEffect(() => {
     const initialColorMode = getInitialColorMode();
+    const prevValue: ColorMode = initialColorMode === "dark" ? "light" : "dark";
+    document.documentElement.classList.remove(themes[prevValue]);
     document.documentElement.classList.add(themes[initialColorMode]);
     document.documentElement.style.setProperty(
       "color-scheme",

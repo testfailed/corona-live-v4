@@ -159,7 +159,7 @@ const CurrentValueContainer = styled("div", {
 });
 const CurrentValueLabel = styled("div", {
   body3: true,
-
+  whiteSpace: "nowrap",
   color: "$gray900",
   opacity: 0.8,
   paddingTop: rem(2),
@@ -168,6 +168,9 @@ const CurrentValueLabel = styled("div", {
     largeValue: {
       true: {
         paddingTop: rem(4),
+        "@md": {
+          padding: rem(2),
+        },
       },
     },
   },
@@ -187,6 +190,9 @@ const CurrentValue = styled("div", {
     largeValue: {
       true: {
         fontSize: rem(24),
+        "@md": {
+          heading1: true,
+        },
       },
     },
   },

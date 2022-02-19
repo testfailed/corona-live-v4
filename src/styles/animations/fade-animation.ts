@@ -1,5 +1,5 @@
-import { keyframes } from "@stitches/react";
 import { rem } from "polished";
+import { keyframes } from "@stitches/react";
 
 export const fadeIn = keyframes({
   "0%": { opacity: 0 },

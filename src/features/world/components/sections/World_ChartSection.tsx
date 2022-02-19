@@ -5,8 +5,8 @@ import { useTranslation } from "react-i18next";
 import Section from "@components/Section";
 
 import {
-  chartRangeOptions,
-  chartTypeOptions,
+  generateChartRangeSubOptions,
+  generateChartTypeSubOptions,
   createChartOptions,
   getDefaultChartConfig,
   getDefaultChartXAxis,
@@ -39,8 +39,10 @@ const WorldChartSection: React.FC = () => {
         confirmed: {
           label: t("stat.confirmed"),
           options: {
-            type: chartTypeOptions({ omit: ["live", "accumulated"] }),
-            range: chartRangeOptions(),
+            type: generateChartTypeSubOptions({
+              omit: ["live", "accumulated"],
+            }),
+            range: generateChartRangeSubOptions(),
             compare: null,
           },
         },
@@ -48,8 +50,10 @@ const WorldChartSection: React.FC = () => {
           label: t("stat.deceased"),
 
           options: {
-            type: chartTypeOptions({ omit: ["live", "accumulated"] }),
-            range: chartRangeOptions(),
+            type: generateChartTypeSubOptions({
+              omit: ["live", "accumulated"],
+            }),
+            range: generateChartRangeSubOptions(),
           },
         },
       }),

@@ -28,10 +28,10 @@ const statToTableRowValue = (value: Stat | string): TableRowValue => {
 };
 
 const DomesticCityTable: React.FC = () => {
+  const { t } = useTranslation();
+
   const { data: live } = useApi(DomesticApi.live);
   const { data: stat } = useApi(DomesticApi.stat);
-
-  const { t } = useTranslation();
 
   const columns: Array<TableColumn<DomesticTableKey | "cityName">> = [
     {

@@ -1,1 +1,1 @@
-export const boldify = (text: string) => `<strong>${text}</strong>`;
+export const boldify = (text: string) => `<b>${text}</b>`;

@@ -1,10 +1,10 @@
+import { t } from "i18next";
+
 import {
   ChartConfig,
   ChartData,
   ChartVisualiserData,
 } from "@features/chart/components/Chart_Visualiser";
-
-import { t } from "i18next";
 
 import { theme } from "@styles/stitches.config";
 
@@ -24,9 +24,10 @@ import type {
   ChartTypeOptionValue,
   ChartDefaultSubOption,
 } from "@features/chart/chart-type";
+
 import type { Dayjs } from "dayjs";
 
-export const chartTypeOptions = (config?: {
+export const generateChartTypeSubOptions = (config?: {
   omit?: Array<ChartTypeOptionValue>;
   pick?: Array<ChartTypeOptionValue>;
   disable?: Array<ChartTypeOptionValue>;
@@ -63,7 +64,7 @@ export const chartTypeOptions = (config?: {
   return options;
 };
 
-export const chartRangeOptions = (config?: {
+export const generateChartRangeSubOptions = (config?: {
   omit?: Array<ChartRangeOptionValue>;
   pick?: Array<ChartRangeOptionValue>;
   disable?: Array<ChartRangeOptionValue>;
@@ -97,7 +98,7 @@ export const chartRangeOptions = (config?: {
   return options;
 };
 
-export const getInvalidRangeOptionsByType = (
+export const getInvalidRangeSubOptionsByTypeSubOption = (
   type: ChartTypeOptionValue
 ): Array<ChartRangeOptionValue> => {
   switch (type) {
@@ -149,9 +150,11 @@ export const createChartOptions = <
                   return {
                     type,
                     options: {
-                      range: chartRangeOptions({
+                      range: generateChartRangeSubOptions({
                         pick: rangeOptions,
-                        disable: getInvalidRangeOptionsByType(type).concat(
+                        disable: getInvalidRangeSubOptionsByTypeSubOption(
+                          type
+                        ).concat(
                           rangeOptions?.filter(
                             (range) => options.range[range].disabled === true
                           ) || []
@@ -219,11 +222,10 @@ export const getDefaultChartConfig = (
     pointColor: color,
     pointRadius: 6,
 
-    legendColor: color,
-
     showLabel:
       range === "oneWeek" || (range === "oneMonth" && type === "weekly"),
     labelFormat: (value) => numberWithCommas(value),
+    legendColor: color,
 
     tooltipFormat: (value) => numberWithCommas(value),
     tooltipLabel: tooltipLabel ?? rangeTypeLabel[type],
@@ -317,7 +319,6 @@ export const getChartRangeSlug = (value: ChartRangeOptionValue) => {
   switch (value) {
     case "oneWeek":
       return 7;
-    // case "twoWeeks":
     case "oneMonth":
     case "threeMonths":
       return 90;
@@ -412,11 +413,8 @@ export const transformChartData = (
         (value, date: string) => {
           const [year, month] = date.split("-").map(Number);
           const daysInMonth = getDaysInMonth(year, month);
-
           const diff = today.diff(date, "day");
-
           const divider = Math.min(daysInMonth, diff + 1);
-
           return Number((value / divider).toFixed(fractionDigits ?? 0));
         }
       );
@@ -449,8 +447,6 @@ export const parseCompressedChartData = ({
   type,
   stats,
 }: CompressedChartData) => {
-  console.time("Parse Compressed Chart Data");
-
   const dates = generateDatesBetweenTwoDates(from, to);
 
   let result = {};
@@ -472,6 +468,5 @@ export const parseCompressedChartData = ({
     }
   }
 
-  console.timeEnd("Parse Compressed Chart Data");
   return result;
 };

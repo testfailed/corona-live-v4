@@ -15,18 +15,21 @@ interface TabsProps<T extends any> {
   value: T;
   onChange?: (value: T) => void;
   orientation?: "horizontal" | "vertical";
+
+  tabIndicatorType?: "underline" | "contained";
+  tabIndicatorLengthType?: "tab" | "text";
+  tabIndicatorTransform?: string;
+  children: React.ReactChild[];
+
+  delay?: boolean;
+  scrollable?: boolean;
+  animation?: boolean;
+
   css?: CssComponent;
   tabCss?: CssComponent;
   tabTextCss?: CssComponent;
   tabIndicatorCss?: CssComponent;
   activeTabTextCss?: CssComponent;
-  tabIndicatorType?: "underline" | "contained";
-  tabIndicatorLengthType?: "tab" | "text";
-  tabIndicatorTransform?: string;
-  children: React.ReactChild[];
-  scrollable?: boolean;
-  delay?: boolean;
-  animation?: boolean;
 }
 
 const defaultTabStyle: CSSProperties = {
@@ -110,41 +113,45 @@ export const Tabs = <T extends any>({
   }, [value]);
 
   const getTabsMeta = () => {
-    const tabs = tabsRef.current?.getBoundingClientRect();
+    const tabs = tabsRef.current;
+    const tabsDomRect = tabs?.getBoundingClientRect();
 
     const activeTabChild =
       tabValue !== undefined
         ? tabsRef.current?.children[tabValueToIndex.get(tabValue)]
         : undefined;
-
-    const activeTab = (
+    const activeTab =
       tabIndicatorLengthType === "tab"
         ? activeTabChild
-        : activeTabChild?.querySelector("div")
-    )?.getBoundingClientRect();
+        : activeTabChild?.querySelector("div");
+
+    const activeTabDomRect = activeTab?.getBoundingClientRect();
 
     return {
       tabs,
       activeTab,
+      tabsDomRect,
+      activeTabDomRect,
     };
   };
 
   const updateIndicatorStyle = (config?: { init: boolean }) => {
-    const { tabs, activeTab } = getTabsMeta();
+    const { tabsDomRect, activeTabDomRect, activeTab } = getTabsMeta();
 
-    if (activeTab === undefined) {
+    if (activeTabDomRect === undefined) {
       setIndicatorStyle({});
-    } else if (activeTab?.width && activeTab?.height) {
+    } else if (activeTabDomRect?.width && activeTabDomRect?.height) {
       const isHorizontal = orientation === "horizontal";
 
       const lengthProperty = isHorizontal ? "width" : "height";
-      const lengthValue = activeTab?.[lengthProperty];
+      const lengthValue = activeTabDomRect?.[lengthProperty];
 
       const thicknessProperty = isHorizontal ? "height" : "width";
       const thicknessValue = tabIndicatorType === "underline" ? 2 : "100%";
 
       const posProperty = isHorizontal ? "left" : "top";
-      const posValue = activeTab?.[posProperty] - (tabs?.[posProperty] ?? 0);
+      const posValue =
+        activeTabDomRect?.[posProperty] - (tabsDomRect?.[posProperty] ?? 0);
 
       const style: CSSProperties = {
         [lengthProperty]: lengthValue,

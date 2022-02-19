@@ -13,8 +13,11 @@ import DomesticLiveUpdatesModalTrigger from "@features/domestic/components/Domes
 import CityApi from "@features/city/city-api";
 
 import type { LiveBoardComparedValue } from "@components/LiveBoard";
+import { useTranslation } from "react-i18next";
 
 export const CityLiveSection: React.FC = () => {
+  const { t, i18n } = useTranslation();
+
   const params = useParams<{ cityId: string }>();
 
   const { data } = useApi(CityApi.live(params.cityId));
@@ -22,23 +25,23 @@ export const CityLiveSection: React.FC = () => {
   const comparedValues: Array<LiveBoardComparedValue> = useMemo(
     () => [
       {
-        label: "어제",
+        label: t("live.yesterday"),
         delta: data.live.today - data.live.yesterday,
       },
       {
-        label: "1주전",
+        label: t("live.one_week_ago"),
         delta: data.live.today - data.live.weekAgo,
       },
       {
-        label: "2주전",
+        label: t("live.two_weeks_ago"),
         delta: data.live.today - data.live.twoWeeksAgo,
       },
       {
-        label: "4주전",
+        label: t("live.four_weeks_ago"),
         delta: data.live.today - data.live.monthAgo,
       },
     ],
-    [data.live]
+    [data.live, i18n.language]
   );
 
   const updates = useMemo(
@@ -49,7 +52,7 @@ export const CityLiveSection: React.FC = () => {
   return (
     <Section>
       <LiveBoard
-        currentValueLabel="현재 확진자"
+        currentValueLabel={t("stat.confirmed_today")}
         currentValue={data.live.today}
         comparedValues={comparedValues}
         updates={updates}

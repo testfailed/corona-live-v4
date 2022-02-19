@@ -1,16 +1,17 @@
 import React, { useState } from "react";
 
 import { rem } from "polished";
+import { useTranslation } from "react-i18next";
 
+import { dayjs } from "@utils/date-util";
 import { css, styled } from "@styles/stitches.config";
 import { useObjectState } from "@hooks/useObjectState";
-import { CITY_GU_NAME_LIST, EMAIL, MINUTE } from "@constants/constants";
+import { useLocalStorage } from "@hooks/useLocalStorage";
+import { CITY_GU_NAME_LIST, EMAIL } from "@constants/constants";
 
 import { Modal } from "@components/Modal";
 import LoadingText from "@components/LoadingText";
 import DropdownInput from "@components/DropdownInput";
-import { useLocalStorage } from "@hooks/useLocalStorage";
-import { dayjs } from "@utils/date-util";
 
 interface Form {
   message: string;
@@ -44,6 +45,8 @@ const ReportModalTrigger: React.FC<Props> = ({
   reportTitle,
   children,
 }) => {
+  const { t } = useTranslation();
+
   const [isLoading, setIsLoading] = useState(false);
   const [{ email, title, cases, website }, setForm] = useObjectState<Form>({
     ...initialState,
@@ -103,8 +106,10 @@ const ReportModalTrigger: React.FC<Props> = ({
     <Modal
       modalId="report"
       triggerNode={children}
-      title="제보하기"
-      confirmText={<LoadingText isLoading={isLoading} text="제보하기" />}
+      title={t("report_form.title")}
+      confirmText={
+        <LoadingText isLoading={isLoading} text={t("report_form.button")} />
+      }
       onConfrim={onSumbit}
       className={css({
         width: "85%",
@@ -124,17 +129,17 @@ const ReportModalTrigger: React.FC<Props> = ({
               name="title"
               onChange={onChange}
               value={title}
-              placeholder={"지역"}
+              placeholder={t("report_form.input.region")}
             />
           </DropdownInput>
           <Input
-            placeholder="링크 (선택)"
+            placeholder={t("report_form.input.source_url")}
             value={website}
             onChange={onChange}
             name="website"
           />
           <Input
-            placeholder="확진자수 (필수)"
+            placeholder={t("report_form.input.confirmed_cases")}
             value={cases}
             onChange={onChange}
             name="cases"
@@ -142,7 +147,7 @@ const ReportModalTrigger: React.FC<Props> = ({
         </InputWrapper>
 
         <Info>
-          <div>개선사항이나 문의는 이메일로 보내주세요</div>
+          <div>{t("report_form.footer")}</div>
           <a href={`mailto: ${EMAIL}`}>{EMAIL}</a>
         </Info>
       </Wrapper>

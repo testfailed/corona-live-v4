@@ -30,6 +30,7 @@ const LayoutFooter: React.FC<Props> = ({ simplified }) => {
         <Text children={t("footer.donate_message")} />
       ) : (
         <Text
+          style={{ whiteSpace: "nowrap" }}
           dangerouslySetInnerHTML={{ __html: t("footer.donate_message.lb") }}
         />
       )}
@@ -55,6 +56,7 @@ const LayoutFooter: React.FC<Props> = ({ simplified }) => {
         <>
           <Space h={32} />
           <Text
+            style={simplified ? {} : { whiteSpace: "nowrap" }}
             dangerouslySetInnerHTML={{
               __html: t("footer.important_message.lb"),
             }}
@@ -82,6 +84,8 @@ const SubText = styled("div", {
   marginTop: rem(10),
   opacity: 0.9,
   fontWeight: 500,
+
+  whiteSpace: "nowrap",
 });
 
 const Text = styled("div", {

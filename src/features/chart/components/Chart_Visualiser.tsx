@@ -636,7 +636,7 @@ const ChartVisualiser: React.FC<Props> = ({
         const xValue = xAxis?.format(
           xAxis.scaleType === "linear" &&
             selectedX === xValues[xValues.length - 1]
-            ? "현재"
+            ? t("now")
             : xParser(selectedX)
         );
 
@@ -785,11 +785,9 @@ const ChartVisualiser: React.FC<Props> = ({
   const xValue = xParser ? xScale(xParser(selectedX)) : 0;
   const xLabelValue = xAxis?.tooltipFormat(
     xAxis.scaleType === "linear" && selectedX === xValues[xValues.length - 1]
-      ? "현재"
+      ? t("now")
       : xParser(selectedX)
   );
-
-  console.log({ xValue, xLabelValue, dataSet });
 
   return (
     <div ref={containerRef}>
@@ -1095,6 +1093,7 @@ const ChartTooltip = styled("div", {
 const TooltipXLabel = styled("div", {
   body3: true,
   color: "$gray800",
+  whiteSpace: "nowrap",
 
   fontWeight: 500,
 });

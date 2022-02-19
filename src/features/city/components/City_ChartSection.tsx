@@ -1,12 +1,12 @@
-import React from "react";
+import React, { useMemo } from "react";
 
 import { useParams } from "react-router-dom";
 
 import Section from "@components/Section";
 
 import {
-  chartRangeOptions,
-  chartTypeOptions,
+  generateChartRangeSubOptions,
+  generateChartTypeSubOptions,
   createChartOptions,
   getDefaultChartConfig,
   getDefaultChartXAxis,
@@ -21,6 +21,7 @@ import type {
   ChartProps,
 } from "@features/chart/chart-type";
 import type { ChartData } from "@features/chart/components/Chart_Visualiser";
+import { useTranslation } from "react-i18next";
 
 type CityMainOption = "confirmed";
 
@@ -28,21 +29,30 @@ interface CitySubOptionValues extends ChartDefaultSubOptionValues {}
 
 type CitySubOption = keyof CitySubOptionValues;
 
-const chartOptions = createChartOptions<CityMainOption, CitySubOption>()({
-  confirmed: {
-    label: "확진자",
-    options: {
-      type: chartTypeOptions({ omit: ["accumulated", "live"] }),
-      range: chartRangeOptions(),
-      compare: null,
-    },
-  },
-});
-
 export const CityChartSection: React.FC = () => {
+  const { t, i18n } = useTranslation();
+
   const params = useParams<{ cityId: string }>();
+
   const { getCachedChartData } = useCachedChartData(
     `domestic/${params.cityId}`
+  );
+
+  const chartOptions = useMemo(
+    () =>
+      createChartOptions<CityMainOption, CitySubOption>()({
+        confirmed: {
+          label: t("stat.confirmed"),
+          options: {
+            type: generateChartTypeSubOptions({
+              omit: ["accumulated", "live"],
+            }),
+            range: generateChartRangeSubOptions(),
+            compare: null,
+          },
+        },
+      }),
+    [i18n.language]
   );
 
   const getChartData: ChartProps<

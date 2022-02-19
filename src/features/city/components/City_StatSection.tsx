@@ -8,33 +8,35 @@ import StatsBoard, {
 } from "@components/StatsBoard";
 import CityApi from "@features/city/city-api";
 import Section from "@components/Section";
+import { useTranslation } from "react-i18next";
 
 export const CityStatSection: React.FC = () => {
   const params = useParams<{ cityId: string }>();
 
   const { data } = useApi(CityApi.stat(params.cityId));
+  const { t } = useTranslation();
 
   const stats: Array<StatsBoardStat> = [
     {
-      label: "확진자",
+      label: t("stat.confirmed"),
       color: "red",
       value: data.overview.confirmed[0],
       delta: data.overview.confirmed[1],
     },
     {
-      label: "사망자",
+      label: t("stat.deceased"),
       color: "grey",
       value: data.overview.deceased[0],
       delta: data.overview.deceased[1],
     },
     {
-      label: "완치자",
+      label: t("stat.recovered"),
       color: "blue",
       value: data.overview.recovered[0],
       delta: data.overview.recovered[1],
     },
     {
-      label: "10만명당 확진",
+      label: t("stat.confirmed_cases_per_100k"),
       color: "grey",
       value: data.overview.per100k[0],
       delta: data.overview.per100k[1],

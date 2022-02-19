@@ -63,6 +63,7 @@ const tabCss = css({
 
 const tabTextCss = css({
   body3: true,
+  whiteSpace: "nowrap",
 
   color: "$gray900",
   textAlign: "centre",
@@ -80,6 +81,7 @@ const activeTabTextCss = css({
   fontWeight: 700,
   opacity: 1,
   color: "$gray900",
+  whiteSpace: "nowrap",
 
   "@md": {
     subtitle2: true,

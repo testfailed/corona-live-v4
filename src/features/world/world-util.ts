@@ -1,10 +1,10 @@
 import { t } from "i18next";
 
 import { boldify } from "@utils/html-util";
-import { COUNTRY_NAMES } from "@constants/constants";
 import { ILiveUpdatesRow } from "@components/live-updates/LiveUpdates_Row";
 
 import { WorldUpdate } from "@features/world/world-type";
+import { numberWithCommas } from "@utils/number-util";
 
 export const transformWorldLiveUpdates = (
   updates: Array<WorldUpdate>
@@ -13,8 +13,10 @@ export const transformWorldLiveUpdates = (
 
   return updates.map(({ cases, datetime, countryId }) => ({
     date: datetime,
-    update: `${boldify(COUNTRY_NAMES[countryId] ?? "")} ${cases}${t(
-      "stat.unit"
-    )} ${t("updates.new_confirmed_cases")}`,
+    update: `${boldify(
+      t(countryId) === countryId ? "" : t(countryId)
+    )} ${numberWithCommas(cases)}${t("stat.unit")} ${t(
+      "updates.new_confirmed_cases"
+    )}`,
   }));
 };

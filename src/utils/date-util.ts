@@ -1,15 +1,17 @@
 import _dayjs, { Dayjs } from "dayjs";
-import relativeTime from "dayjs/plugin/relativeTime";
-import updateLocale from "dayjs/plugin/updateLocale";
+
 import "dayjs/locale/ko";
+import utc from "dayjs/plugin/utc";
+import timezone from "dayjs/plugin/timezone";
+import updateLocale from "dayjs/plugin/updateLocale";
+import relativeTime from "dayjs/plugin/relativeTime";
 
 _dayjs.extend(relativeTime);
 _dayjs.extend(updateLocale);
 
-const SECOND = 1000;
-const MINUTE = SECOND * 60;
-const HOUR = MINUTE * 60;
-const DAY = HOUR * 24;
+_dayjs.extend(utc);
+_dayjs.extend(timezone);
+_dayjs.tz.setDefault("Asia/Seoul");
 
 _dayjs.updateLocale("en", {
   relativeTime: {
@@ -32,6 +34,11 @@ _dayjs.updateLocale("ko", {
     hh: "%d시간",
   },
 });
+
+const SECOND = 1000;
+const MINUTE = SECOND * 60;
+const HOUR = MINUTE * 60;
+const DAY = HOUR * 24;
 
 export const dayjs = (date?: string | number | Date | Dayjs): Dayjs => {
   return _dayjs(date).tz("Asia/Seoul");

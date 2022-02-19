@@ -40,8 +40,8 @@ export interface DomesticLive {
   cities: {
     [cityId: string]: Stat;
   };
-  updates: DomesticUpdate[]; // only 5 previews
-  updatesPreview: DomesticUpdate[]; // only 5 previews
+  updates: DomesticUpdate[];
+  updatesPreview: DomesticUpdate[];
   live: StatsLive;
   hourlyLive: Record<DomestictTimeseriesType, Record<string, number>>;
 }

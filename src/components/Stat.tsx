@@ -54,6 +54,7 @@ const Label = styled("div", {
   marginBottom: rem(1),
   color: "$gray900",
   opacity: 0.8,
+  whiteSpace: "nowrap",
 
   "@md": {
     body2: true,

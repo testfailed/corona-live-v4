@@ -146,9 +146,7 @@ const Table = <T extends string>(props: Props<T>) => {
                         : null
                     }
                   >
-                    {!!row[id]?.image && (
-                      <img src={row[id]?.image} alt={""}></img>
-                    )}
+                    {!!row[id]?.image && <img src={row[id]?.image} alt={""} />}
 
                     {!!row[id]?.text && <Text>{row[id].text}</Text>}
                     <StatContainer column={deltaPosition === "bottom"}>
@@ -245,6 +243,10 @@ const StyledTable = styled("table", {
   overflowY: "auto",
   borderSpacing: `${rem(6)} ${rem(2)}`,
   tableLayout: "fixed",
+
+  "& thead th": {
+    whiteSpace: "nowrap",
+  },
 
   "& tbody": {
     "& tr": {

@@ -9,6 +9,7 @@ interface Props {
   show: boolean;
   fallback: React.ReactNode;
   children: React.ReactNode;
+  id?: string;
 }
 
 const FadeIn: React.FC<Props> = React.memo(
@@ -43,7 +44,7 @@ const FadeIn: React.FC<Props> = React.memo(
     );
   },
   (prev, next) => {
-    return prev.show === next.show;
+    return prev.show === next.show && prev.id === next.id;
   }
 );
 

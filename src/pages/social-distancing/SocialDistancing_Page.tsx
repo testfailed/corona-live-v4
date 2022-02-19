@@ -10,9 +10,9 @@ import Column from "@components/Column";
 import Suspense from "@components/FadeIn";
 
 import SocialDistancingPageSkeleton from "./SocialDistancing_PageSkeleton";
-import SocialDistancingMapSection from "../../features/social-distancing/components/sections/SocialDistancing_MapSection";
-import SocialDistancingInfoSection from "../../features/social-distancing/components/sections/SocialDistancing_InfoSection";
-import SocialDistancingBannerSection from "../../features/social-distancing/components/SocialDistancing_BannerSection";
+import SocialDistancingMapSection from "@features/social-distancing/components/SocialDistancing_MapSection";
+import SocialDistancingInfoSection from "@features/social-distancing/components/SocialDistancing_InfoSection";
+import SocialDistancingBannerSection from "@features/social-distancing/components/SocialDistancing_BannerSection";
 
 const SocialDistancingPage: React.FC = (props) => {
   const { data } = useApi(SocialDistancingApi.init);

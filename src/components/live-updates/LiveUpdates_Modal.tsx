@@ -1,6 +1,7 @@
 import React from "react";
 
 import { rem } from "polished";
+import { useTranslation } from "react-i18next";
 
 import { css } from "@styles/stitches.config";
 
@@ -12,11 +13,13 @@ const LiveUpdatesModal: React.FC<{
   title?: string;
   triggerNode?: React.ReactNode;
 }> = ({ children, title, triggerNode }) => {
+  const { t } = useTranslation();
+
   return (
     <Modal asChild={false} modalId="updates">
       <ModalContent
         transition={{ open: fadeIn }}
-        title={title ?? "실시간 확진 현황"}
+        title={title ?? t("updates.title")}
         showCloseButton
         className={css({
           column: true,

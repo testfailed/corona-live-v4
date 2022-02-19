@@ -3,15 +3,19 @@ import React from "react";
 import { styled, theme } from "@styles/stitches.config";
 
 interface Props {
-  color: string;
+  color?: string;
+  width?: number;
+  height?: number;
 }
 
 const Gradient: React.FC<Props> = ({
   color = theme.colors.white.computedValue,
+  width = 26,
+  height = 30,
 }) => {
   return (
     <Wrapper>
-      <svg width="30" height="30">
+      <svg width={width} height={height}>
         <defs>
           <linearGradient id="grad1" x1="100%" y1="0%" x2="0%" y2="0%">
             <stop
@@ -22,7 +26,7 @@ const Gradient: React.FC<Props> = ({
               }}
             />
             <stop
-              offset="35%"
+              offset="15%"
               style={{
                 stopColor: color,
                 stopOpacity: 1,
@@ -37,7 +41,7 @@ const Gradient: React.FC<Props> = ({
             />
           </linearGradient>
         </defs>
-        <rect width="30" height="30" fill="url(#grad1)" />
+        <rect width={width} height={height} fill="url(#grad1)" />
       </svg>
     </Wrapper>
   );

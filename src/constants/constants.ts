@@ -1,12 +1,35 @@
 import { t } from "i18next";
-import CITY_GU_NAMES from "./json/city-gu-names.json";
-import COUNTRY_NAMES from "./json/country-names.json";
 
-export const CITY_GU_NAME_LIST = Object.keys(CITY_GU_NAMES).map((id) => {
-  let [cityId, guId] = id.split("/");
-  if (!guId) return CITY_GU_NAMES[cityId];
-  return `${CITY_GU_NAMES[cityId]} ${CITY_GU_NAMES[id]}`;
-});
+import { range } from "@utils/array-util";
+import { getCityGuNameWithIds } from "@features/domestic/domestic-util";
+
+const CITY_GU_IDS = [
+  range(24), //서울
+  range(15), //부산
+  range(9), //인천
+  range(7), //대구
+  range(4), //광주
+  range(4), //대전
+  range(4), //대전
+  [], //세종
+  range(30), //경기
+  range(30), //경기
+  range(10), //충북
+  range(14), //충남
+  range(22), //경북
+  range(17), //경남
+  range(17), //경남
+  range(21), //전남
+  range(1), //제주
+];
+
+export const CITY_GU_NAME_LIST = CITY_GU_IDS.reduce((array, guIds, cityId) => {
+  array = [...array, getCityGuNameWithIds(cityId)];
+  guIds.forEach((guId) => {
+    array = [...array, getCityGuNameWithIds(cityId, guId)];
+  });
+  return array;
+}, [] as Array<string>);
 
 export const CITY_NAME_LIST: Array<string> = CITY_GU_NAME_LIST.filter(
   (a) => a.split(" ").length === 1
@@ -36,5 +59,3 @@ export const KDCA_DATA_SOURCE = () => ({
   text: t("chart.data_source.kdca"),
   url: "https://www.kdca.go.kr",
 });
-
-export { CITY_GU_NAMES, COUNTRY_NAMES };

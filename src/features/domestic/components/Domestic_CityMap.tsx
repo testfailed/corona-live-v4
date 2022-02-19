@@ -1,10 +1,10 @@
 import React, { useMemo, useState } from "react";
 
-import { css, styled } from "@styles/stitches.config";
-
 import { rem } from "polished";
+import { useTranslation } from "react-i18next";
 
 import useApi from "@hooks/useApi";
+import { css, styled } from "@styles/stitches.config";
 import { formatObjectValues } from "@utils/object-util";
 
 import Map from "@components/Map";
@@ -19,15 +19,17 @@ type StatType = Exclude<DomesticCityStatsType, "distanceLevel"> | "live";
 
 const statTypes: Array<StatType> = ["live", "confirmed", "deceased"];
 
-const statTypeToLable: Partial<Record<StatType, string>> = {
-  live: "오늘 확진자",
-  confirmed: "총 확진자",
-  deceased: "총 사망자",
-};
-
 const DomesticCityMap: React.FC = () => {
+  const { t } = useTranslation();
+
   const { data: live } = useApi(DomesticApi.live);
   const { data: stat } = useApi(DomesticApi.stat);
+
+  const statTypeToLable: Partial<Record<StatType, string>> = {
+    live: t("stat.confirmed_today"),
+    confirmed: t("stat.confirmed"),
+    deceased: t("stat.deceased"),
+  };
 
   const [statType, setStatType] = useState<StatType>("live");
 

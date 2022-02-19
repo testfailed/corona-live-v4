@@ -6,7 +6,10 @@ import {
   ChartProps,
   OptionValue,
 } from "../chart-type";
-import { chartRangeOptions, chartTypeOptions } from "../chart-util";
+import {
+  generateChartRangeSubOptions,
+  generateChartTypeSubOptions,
+} from "../chart-util";
 import { ChartReducerState } from "./useChartReducer.type";
 
 export const getInitialSelectedSubOptions = <
@@ -160,8 +163,10 @@ export const getSubOptions = <
 }) => {
   if (mode === "EXPANDED") {
     return parseSubOptionsList<SubOption>({
-      type: chartTypeOptions({ omit: ["accumulated", "live", "monthly"] }),
-      range: chartRangeOptions({ omit: ["all"] }),
+      type: generateChartTypeSubOptions({
+        omit: ["accumulated", "live", "monthly"],
+      }),
+      range: generateChartRangeSubOptions({ omit: ["all"] }),
     });
   }
 

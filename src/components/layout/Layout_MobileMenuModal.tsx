@@ -1,26 +1,27 @@
 import React from "react";
 
 import { rem } from "polished";
+import { useTranslation } from "react-i18next";
 
 import { useTheme } from "@contexts/ThemeContext";
 import { css, styled } from "@styles/stitches.config";
-import { fadeIn } from "@styles/animations/fade-animation";
 
 import Row from "@components/Row";
 import Switch from "@components/Switch";
+import Section from "@components/Section";
 import { Modal } from "@components/Modal";
 import NightIcon from "@components/icon/Icon_Night";
 import SendMessageIcon from "@components/icon/Icon_SendMessage";
 import ReportModalTrigger from "@components/modal/Modal_Report";
+
 import LayoutFooter from "./Layout_Footer";
-import Section, { SubSection } from "@components/Section";
-import { useTranslation } from "react-i18next";
 
 interface Props {}
 
 const LayoutMobileMenuModalTrigger: React.FC<Props> = ({ children }) => {
-  const { colorMode, toggleTheme } = useTheme();
   const { t } = useTranslation();
+
+  const { colorMode, toggleTheme } = useTheme();
 
   return (
     <Modal
@@ -93,6 +94,7 @@ const MenuThemeContainer = styled(MenuContainer, {
 const MenuText = styled("div", {
   body2: true,
   marginLeft: rem(12),
+  whiteSpace: "nowrap",
 });
 
 export default LayoutMobileMenuModalTrigger;

@@ -1,8 +1,8 @@
 import React, { lazy, Suspense, useEffect } from "react";
 
+import dayjs from "dayjs";
 import axios from "axios";
-import * as Sentry from "@sentry/react";
-import { BrowserTracing } from "@sentry/tracing";
+import { useTranslation } from "react-i18next";
 import { Switch, Redirect, Route, useLocation } from "react-router-dom";
 
 import {
@@ -12,6 +12,7 @@ import {
   VACCINE_PATH,
   WORLD_PATH,
 } from "@constants/route-constants";
+import { API_URL } from "@constants/constants";
 import { removeSlash } from "@utils/string-util";
 import { globalCss } from "@styles/stitches.config";
 
@@ -28,7 +29,6 @@ import VaccinePageSkeleton from "@pages/vaccine/Vaccine_PageSkeleton";
 import DomesticPageSkeleton from "@pages/domestic/Domestic_PageSkeleton";
 import SamsungDarkModeAlertModal from "@components/modal/Modal_SamsungDarkMode";
 import SocialDistancingPageSkeleton from "@pages/social-distancing/SocialDistancing_PageSkeleton";
-import { API_URL } from "@constants/constants";
 
 const CityPage = lazy(() => import("@pages/city/City_Page"));
 const WorldPage = lazy(() => import("@pages/world/World_Page"));
@@ -71,16 +71,16 @@ const globalStyles = globalCss({
   body: { color: "$gray900" },
 });
 
-Sentry.init({
-  dsn: process.env.SENTRY_DSN,
-  integrations: [new BrowserTracing()],
-  tracesSampleRate: 1.0,
-});
-
 const App: React.FC = () => {
   globalStyles();
   const location = useLocation();
   const { pathname } = location;
+
+  const { i18n } = useTranslation();
+
+  useEffect(() => {
+    dayjs.locale(i18n.language.includes("en") ? "en" : "ko");
+  }, [i18n.language]);
 
   useEffect(() => {
     if (window.location.hash) window.history.replaceState(null, "", " ");

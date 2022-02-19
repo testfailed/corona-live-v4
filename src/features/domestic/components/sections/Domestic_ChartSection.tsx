@@ -11,8 +11,8 @@ import { KDCA_DATA_SOURCE } from "@constants/constants";
 import Section from "@components/Section";
 
 import {
-  chartRangeOptions,
-  chartTypeOptions,
+  generateChartRangeSubOptions,
+  generateChartTypeSubOptions,
   createChartOptions,
   getDefaultChartConfig,
   getDefaultChartXAxis,
@@ -88,8 +88,8 @@ export const DomesticChartSection: React.FC = () => {
         confirmed: {
           label: t("stat.confirmed"),
           options: {
-            type: chartTypeOptions({ omit: ["accumulated"] }),
-            range: chartRangeOptions(),
+            type: generateChartTypeSubOptions({ omit: ["accumulated"] }),
+            range: generateChartRangeSubOptions(),
             compare: null,
           },
 
@@ -115,36 +115,38 @@ export const DomesticChartSection: React.FC = () => {
         "confirmed-critical": {
           label: t("stat.confirmed_critical"),
           options: {
-            type: chartTypeOptions({
+            type: generateChartTypeSubOptions({
               omit: ["live", "accumulated", "monthly"],
             }),
-            range: chartRangeOptions({ disable: ["all"] }),
+            range: generateChartRangeSubOptions({ disable: ["all"] }),
           },
         },
         deceased: {
           label: t("stat.deceased"),
 
           options: {
-            type: chartTypeOptions({ omit: ["live", "accumulated"] }),
-            range: chartRangeOptions(),
+            type: generateChartTypeSubOptions({
+              omit: ["live", "accumulated"],
+            }),
+            range: generateChartRangeSubOptions(),
           },
         },
         "tested-positive-rates": {
           label: t("stat.tested_positive_rates"),
           options: {
-            type: chartTypeOptions({
+            type: generateChartTypeSubOptions({
               omit: ["live", "accumulated", "monthly"],
             }),
-            range: chartRangeOptions({ disable: ["all"] }),
+            range: generateChartRangeSubOptions({ disable: ["all"] }),
           },
         },
         tested: {
           label: t("stat.tested"),
           options: {
-            type: chartTypeOptions({
+            type: generateChartTypeSubOptions({
               omit: ["live", "accumulated", "monthly"],
             }),
-            range: chartRangeOptions({ disable: ["all"] }),
+            range: generateChartRangeSubOptions({ disable: ["all"] }),
           },
         },
       }),
@@ -180,8 +182,8 @@ export const DomesticChartSection: React.FC = () => {
     const testedPositiveRatesChartConfig = getDefaultChartConfig(subOptions, {
       tooltipUnit: "%",
       tooltipLabel: "",
-      info: " = 확진자수 / 전일 검사건수",
-      statLabel: "확진율",
+      info: t("stat.tested_positive_rates.info"),
+      statLabel: t("stat.tested_positive_rates"),
     });
 
     if (mode === "EXPANDED") {
@@ -250,7 +252,7 @@ export const DomesticChartSection: React.FC = () => {
             data: today,
             config: getDefaultChartConfig(subOptions, {
               color: theme.colors.blue500,
-              tooltipLabel: "오늘",
+              tooltipLabel: t("live.today"),
               chartType: "line",
               showPoints: true,
             }),

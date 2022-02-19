@@ -15,6 +15,8 @@ import LiveUpdatesModal from "@components/live-updates/LiveUpdates_Modal";
 import Api from "@components/Api";
 import FadeIn from "@components/FadeIn";
 
+import { dayjs } from "@utils/date-util";
+
 const DomesticLiveUpdatesModalTrigger: React.FC<{ cityId?: string }> = ({
   children,
   cityId,
@@ -41,6 +43,7 @@ const DomesticLiveUpdatesModalTrigger: React.FC<{ cityId?: string }> = ({
             <FadeIn
               show={data?.updates !== undefined}
               fallback={<LiveUpdatesContentSkeleton hasCategories />}
+              id={dayjs().valueOf().toString()}
             >
               <LiveUpdatesContent {...{ updates, categories }} />
             </FadeIn>

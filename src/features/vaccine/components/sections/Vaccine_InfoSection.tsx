@@ -3,11 +3,12 @@ import React, { useState } from "react";
 import { rem } from "polished";
 
 import useApi from "@hooks/useApi";
-import VaccinApi from "@features/vaccine/vaccine-api";
 import { styled } from "@styles/stitches.config";
 
 import Section from "@components/Section";
 import { Tab, Tabs } from "@components/Tabs";
+
+import VaccinApi from "@features/vaccine/vaccine-api";
 
 import type { VaccineType } from "@features/vaccine/vaccine-type";
 
@@ -40,7 +41,7 @@ export const VaccineInfoSection: React.FC = () => {
 };
 
 export const VaccineInfoSectionSkeleton = () => {
-  return <Wrapper css={{ height: rem(310) }}></Wrapper>;
+  return <Wrapper css={{ height: rem(310) }} />;
 };
 
 const Wrapper = styled(Section, {

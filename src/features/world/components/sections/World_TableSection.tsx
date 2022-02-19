@@ -5,17 +5,18 @@ import { useTranslation } from "react-i18next";
 
 import useApi from "@hooks/useApi";
 import { styled } from "@styles/stitches.config";
-import { ASSETS_URL, COUNTRY_NAMES } from "@constants/constants";
+import { ASSETS_URL } from "@constants/constants";
 
 import Section from "@components/Section";
 import Table, { TableColumn, TableRow } from "@components/Table";
-import { WorldTableKey } from "@features/world/world-type";
+
 import WorldApi from "@features/world/world-api";
+import { WorldTableKey } from "@features/world/world-type";
 
 const WorldTableSection: React.FC = () => {
   const { data } = useApi(WorldApi.live);
   const [rowsCount, setRowsCount] = useState(15);
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
 
   const columns: Array<TableColumn<WorldTableKey | "index" | "countryName">> =
     useMemo(
@@ -28,39 +29,31 @@ const WorldTableSection: React.FC = () => {
         {
           id: "countryName",
           name: t("country"),
-          width: rem(110),
+          width: i18n.language === "en" ? rem(130) : rem(110),
           deltaPosition: "right",
         },
 
         {
           id: "confirmed",
           name: t("stat.confirmed"),
-
           width: rem(110),
-          sortable: true,
           deltaPosition: "bottom",
         },
         {
           id: "deceased",
           name: t("stat.deceased"),
-
           width: rem(90),
-          sortable: true,
           deltaPosition: "bottom",
         },
         {
           id: "recovered",
           name: t("stat.recovered"),
-
           width: rem(100),
-          sortable: true,
         },
         {
           id: "casesPerMil",
-          name: t("stat.confirmed_cases_per_100k"),
-
+          name: t("stat.confirmed_cases_per_1m"),
           width: rem(100),
-          sortable: true,
         },
       ],
       [t]
@@ -70,7 +63,7 @@ const WorldTableSection: React.FC = () => {
 
   const rows: Array<TableRow<ColumnKey>> = Object.keys(data.countries)
     .map((countryId, index) => {
-      const countryName = COUNTRY_NAMES[countryId];
+      const countryName = t(countryId) === countryId ? "" : t(countryId);
       const { confirmed, deceased, recovered, casesPerMil } =
         data.countries[countryId];
       return {

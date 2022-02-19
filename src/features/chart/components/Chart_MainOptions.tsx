@@ -4,6 +4,7 @@ import { rem } from "polished";
 
 import { css } from "@styles/stitches.config";
 import { Tab, TabProps, Tabs } from "@components/Tabs";
+import { useTranslation } from "react-i18next";
 
 interface Props<T> {
   value: T;
@@ -13,12 +14,21 @@ interface Props<T> {
 
 const ChartMainOptions = <T extends string>(props: Props<T>) => {
   const { value, onChange, mainOptions } = props;
+  const { i18n } = useTranslation();
 
   return (
     <Tabs
       {...{
         css: tabsCss,
-        tabCss,
+        tabCss: css({
+          paddingX: rem(i18n.language.includes("en") ? 8 : 12),
+          "&:first-of-type": {
+            paddingLeft: rem(20),
+          },
+          "&:last-of-type": {
+            paddingRight: rem(20),
+          },
+        }),
         tabTextCss,
         activeTabTextCss,
         tabIndicatorCss,
@@ -61,6 +71,7 @@ const tabTextCss = css({
   color: "$gray900",
   opacity: 0.5,
   transition: "opacity 300ms",
+  whiteSpace: "nowrap",
 
   "@md": {
     subtitle1: true,
@@ -70,6 +81,8 @@ const tabTextCss = css({
 const activeTabTextCss = css({
   subtitle2: true,
   color: "$gray900",
+  whiteSpace: "nowrap",
+
   "@md": {
     subtitle1: true,
   },

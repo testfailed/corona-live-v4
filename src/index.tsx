@@ -4,20 +4,22 @@ import "./i18n/i18n";
 import "@ungap/global-this";
 
 import React from "react";
-import dayjs from "dayjs";
-import utc from "dayjs/plugin/utc";
-import timezone from "dayjs/plugin/timezone";
-import { hydrate, render } from "react-dom";
-import { BrowserRouter as Router } from "react-router-dom";
 
-dayjs.extend(utc);
-dayjs.extend(timezone);
-dayjs.tz.setDefault("Asia/Seoul");
+import * as Sentry from "@sentry/react";
+import { hydrate, render } from "react-dom";
+import { BrowserTracing } from "@sentry/tracing";
+import { BrowserRouter as Router } from "react-router-dom";
 
 import reportWebVitals from "./reportWebVitals";
 import { ThemeProvider } from "./contexts/ThemeContext";
 
 import App from "./App";
+
+Sentry.init({
+  dsn: process.env.SENTRY_DSN,
+  integrations: [new BrowserTracing()],
+  tracesSampleRate: 1.0,
+});
 
 const rootElement = document.getElementById("root");
 

@@ -55,7 +55,8 @@ export const CityTableSection: React.FC = () => {
     },
     {
       id: "confirmed",
-      name: "총 확진자",
+      name: t("stat.confirmed"),
+
       width: rem(132),
       sortable: true,
     },
@@ -97,9 +98,9 @@ export const CityTableSection: React.FC = () => {
         <InfoWrapper>
           <InfoIcon size={16} />
           <InfoContainer>
-            최근 확진자 증가세로 인해서 {cityName} 내에 일부 지자체에서는 당일
-            발생 확진자 수를 당일이 아닌 다음 날 발표하도록 변경하였으므로 "오늘
-            확진자"가 0명을 표시된 지역이 있을 수 있습니다
+            최근 확진자 증가세로 인해 일부 지자체에서는 당일 발생 확진자 수를
+            당일이 아닌 다음 날 발표하도록 변경하였으므로 "오늘 확진자"가 0명을
+            표시된 지역이 있을 수 있습니다
           </InfoContainer>
         </InfoWrapper>
       )}
@@ -108,7 +109,7 @@ export const CityTableSection: React.FC = () => {
         <Table
           columns={columns}
           rows={rows}
-          statUnit="명"
+          statUnit={t("stat.unit")}
           css={{ width: "100%" }}
         />
       </Wrapper>
