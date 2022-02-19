@@ -10,7 +10,10 @@ import { numberWithCommas } from "@utils/number-util";
 import { css, styled } from "@styles/stitches.config";
 
 import { Modal } from "@components/Modal";
-import { InstagramIconBox, TwitterIconBox } from "@components/SnsIconBox";
+import {
+  InstagramIconButton,
+  TwitterIconButton,
+} from "@components/FooterIconButtons";
 import { useInterval } from "@hooks/useInterval";
 
 const ConfirmedCasesModal: React.FC = () => {
@@ -67,8 +70,8 @@ const ConfirmedCasesModal: React.FC = () => {
 
         <SnsContainer>
           <SnsIcons>
-            <TwitterIconBox type="profile" />
-            <InstagramIconBox />
+            <TwitterIconButton type="profile" />
+            <InstagramIconButton />
           </SnsIcons>
         </SnsContainer>
       </Wrapper>

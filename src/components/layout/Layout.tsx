@@ -16,8 +16,6 @@ interface Props {
   hideMobileHeader?: boolean;
 }
 
-const CITY_LIST = CITY_NAME_LIST.filter((city) => city !== "검역");
-
 const Layout: React.FC<Props> = ({ children, hideMobileHeader }) => {
   return (
     <Wrapper>
@@ -41,7 +39,7 @@ const Layout: React.FC<Props> = ({ children, hideMobileHeader }) => {
       </div>
 
       <div style={{ position: "absolute", top: rem(-9999) }}>
-        {CITY_LIST.map((cityName, index) => (
+        {CITY_NAME_LIST.map((cityName, index) => (
           <a key={index} href={`/city/${index}/`}>
             {cityName}
           </a>

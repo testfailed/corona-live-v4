@@ -7,6 +7,7 @@ import { styled, theme } from "@styles/stitches.config";
 
 import {
   EMAIL,
+  GITHUB_URL,
   INSTA_SNS_URL,
   TWITTER_SNS_URL,
   TWITTER_URL,
@@ -18,10 +19,11 @@ import { fadeInUp } from "@styles/animations/fade-animation";
 import LinkIcon from "./icon/Icon_Link";
 import EmailIcon from "./icon/Icon_Email";
 import CheckIcon from "./icon/Icon_Check";
+import GithubIcon from "./icon/Icon_Github";
 import TwitterIcon from "./icon/Icon_Twitter";
 import InstagramIcon from "./icon/Icon_Instagram";
 
-const IconBox = styled("a", {
+const IconButton = styled("a", {
   width: rem(34),
   height: rem(34),
   borderRadius: rem(8),
@@ -34,17 +36,17 @@ const IconBox = styled("a", {
 
 type SnsType = "profile" | "share";
 
-export const TwitterIconBox: React.FC<{ type: SnsType }> = ({ type }) => (
-  <IconBox
+export const TwitterIconButton: React.FC<{ type: SnsType }> = ({ type }) => (
+  <IconButton
     css={{ background: "$sky100" }}
     href={type === "share" ? TWITTER_URL : TWITTER_SNS_URL}
     target="_blank"
   >
     <TwitterIcon size={14} stroke={theme.colors.sky500} />
-  </IconBox>
+  </IconButton>
 );
 
-export const LinkIconBox: React.FC = () => {
+export const LinkIconButton: React.FC = () => {
   const [copied, setCopied] = useTimeoutState(false, 1000);
   return (
     <CopyToClipboard
@@ -53,7 +55,7 @@ export const LinkIconBox: React.FC = () => {
         setCopied(true);
       }}
     >
-      <IconBox css={{ background: "$gray300" }}>
+      <IconButton css={{ background: "$gray300" }}>
         {copied ? (
           <IconContainer key={"copied"}>
             <CheckIcon size={18} />
@@ -63,12 +65,12 @@ export const LinkIconBox: React.FC = () => {
             <LinkIcon size={14} />
           </IconContainer>
         )}
-      </IconBox>
+      </IconButton>
     </CopyToClipboard>
   );
 };
 
-export const EmailIconBox: React.FC = () => {
+export const EmailIconButton: React.FC = () => {
   const [copied, setCopied] = useTimeoutState(false, 1000);
   return (
     <CopyToClipboard
@@ -77,7 +79,7 @@ export const EmailIconBox: React.FC = () => {
         setCopied(true);
       }}
     >
-      <IconBox css={{ background: "$gray300" }}>
+      <IconButton css={{ background: "$gray300" }}>
         {copied ? (
           <IconContainer key={"copied"}>
             <CheckIcon size={18} />
@@ -87,7 +89,7 @@ export const EmailIconBox: React.FC = () => {
             <EmailIcon size={18} />
           </IconContainer>
         )}
-      </IconBox>
+      </IconButton>
     </CopyToClipboard>
   );
 };
@@ -97,12 +99,22 @@ const IconContainer = styled("div", {
   animation: `${fadeInUp} 350ms`,
 });
 
-export const InstagramIconBox: React.FC = () => (
-  <IconBox
+export const InstagramIconButton: React.FC = () => (
+  <IconButton
     css={{ background: "$pink100" }}
     href={INSTA_SNS_URL}
     target="_blank"
   >
     <InstagramIcon size={14} />
-  </IconBox>
+  </IconButton>
+);
+
+export const GithubIconButton: React.FC = () => (
+  <IconButton
+    css={{ background: "$gray300" }}
+    href={GITHUB_URL}
+    target="_blank"
+  >
+    <GithubIcon size={16} />
+  </IconButton>
 );

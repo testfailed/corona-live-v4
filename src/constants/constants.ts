@@ -13,12 +13,12 @@ const CITY_GU_IDS = [
   range(4), //대전
   [], //세종
   range(30), //경기
-  range(30), //경기
+  range(17), //강운
   range(10), //충북
   range(14), //충남
   range(22), //경북
   range(17), //경남
-  range(17), //경남
+  range(13), //전북
   range(21), //전남
   range(1), //제주
 ];
@@ -54,6 +54,7 @@ export const TWITTER_URL = `http://twitter.com/share?url=${WEBSITE_URL}&text=코
 export const KAKAOPAY_URL = `https://qr.kakaopay.com/281006011172839271003566`;
 export const TWITTER_SNS_URL = `https://twitter.com/corona__live`;
 export const INSTA_SNS_URL = `https://www.instagram.com/corona_live_official/`;
+export const GITHUB_URL = `https://github.com/chinchiilla/corona-live-v4`;
 
 export const KDCA_DATA_SOURCE = () => ({
   text: t("chart.data_source.kdca"),

@@ -6,12 +6,12 @@ import timezone from "dayjs/plugin/timezone";
 import updateLocale from "dayjs/plugin/updateLocale";
 import relativeTime from "dayjs/plugin/relativeTime";
 
-_dayjs.extend(relativeTime);
-_dayjs.extend(updateLocale);
-
 _dayjs.extend(utc);
 _dayjs.extend(timezone);
 _dayjs.tz.setDefault("Asia/Seoul");
+
+_dayjs.extend(relativeTime);
+_dayjs.extend(updateLocale);
 
 _dayjs.updateLocale("en", {
   relativeTime: {

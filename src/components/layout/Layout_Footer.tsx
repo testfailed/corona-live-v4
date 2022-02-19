@@ -6,10 +6,11 @@ import { useTranslation } from "react-i18next";
 import { styled } from "@styles/stitches.config";
 
 import {
-  EmailIconBox,
-  InstagramIconBox,
-  TwitterIconBox,
-} from "@components/SnsIconBox";
+  EmailIconButton,
+  GithubIconButton,
+  InstagramIconButton,
+  TwitterIconButton,
+} from "@components/FooterIconButtons";
 import Space from "@components/Space";
 import DonationIcon from "@components/icon/Icon_Donation";
 import DonationModalTrigger from "@components/modal/Modal_Donation";
@@ -45,9 +46,10 @@ const LayoutFooter: React.FC<Props> = ({ simplified }) => {
       <Space h={42} />
 
       <SnsContainer>
-        <TwitterIconBox type="profile" />
-        <InstagramIconBox />
-        <EmailIconBox />
+        <GithubIconButton />
+        <TwitterIconButton type="profile" />
+        <InstagramIconButton />
+        <EmailIconButton />
       </SnsContainer>
 
       {simplified ? (
