@@ -170,11 +170,11 @@ export const createChartOptions = <
 };
 
 const rangeTypeLabel: Record<ChartTypeOptionValue, string> = {
-  weekly: "일평균",
-  monthly: "일평균",
-  accumulated: "누적",
-  daily: "총",
-  live: "",
+  weekly: t("chart.label.range.weekly"),
+  monthly: t("chart.label.range.monthly"),
+  accumulated: t("chart.label.range.accumulated"),
+  daily: t("chart.label.range.daily"),
+  live: t("chart.label.range.live"),
 };
 
 export const getDefaultChartConfig = (
@@ -227,7 +227,7 @@ export const getDefaultChartConfig = (
 
     tooltipFormat: (value) => numberWithCommas(value),
     tooltipLabel: tooltipLabel ?? rangeTypeLabel[type],
-    tooltipUnit: "명",
+    tooltipUnit: t("stat.unit"),
     yAxisPosition: "right",
 
     ...chartConfig,
@@ -245,47 +245,42 @@ export const getDefaultChartXAxis = (
 
   return {
     format: (value) => {
-      let _value: Dayjs;
       switch (type) {
         case "live":
           return Number(value) && Number(value) !== 0
-            ? `${value}시`
+            ? `${value}${t("time.unit")}`
             : value.toString();
 
-        case "weekly":
-          _value = value as Dayjs;
-          return `${_value.month() + 1}월${Math.ceil(_value.date() / 7)}주`;
+        case "weekly": {
+          const weekNumber = Math.ceil((value as Dayjs).date() / 7);
+          return `${dayjs(value).format("MMM")}. ${weekNumber}"`;
+        }
 
         case "monthly":
-          _value = value as Dayjs;
-          return `${_value.month() + 1}월`;
+          return dayjs(value).format("MMM");
+
         default:
           return dayjs(value).format("MM.DD");
       }
     },
     tooltipFormat: (value) => {
-      let _value: Dayjs;
-
       override?.tooltipFormat?.(value);
       switch (type) {
         case "live":
           return Number(value) && Number(value) !== 0
-            ? `${value}시 기준`
+            ? `${value}${t("time.unit")}`
             : value?.toString();
-        case "weekly":
-          _value = value as Dayjs;
-          return `${_value.year()}년 ${_value.month() + 1}월${Math.ceil(
-            _value.date() / 7
-          )}주`;
+
+        case "weekly": {
+          const weekNumber = Math.ceil((value as Dayjs).date() / 7);
+          return `${dayjs(value).format("YYYY MMM")} ${weekNumber}"`;
+        }
 
         case "monthly":
-          _value = value as Dayjs;
-          return `${_value.year()}년 ${_value.month() + 1}월`;
+          return dayjs(value).format("YYYY MMM");
 
         case "daily":
-          const day = "일월화수목금토"[dayjs(value).day()];
-
-          return `${dayjs(value).format("YYYY.MM.DD")} (${day})`;
+          return `${dayjs(value).format("YYYY.MM.DD (ddd)")}`;
 
         default:
           return dayjs(value).format("YYYY.MM.DD");

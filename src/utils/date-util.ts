@@ -1,9 +1,37 @@
 import _dayjs, { Dayjs } from "dayjs";
+import relativeTime from "dayjs/plugin/relativeTime";
+import updateLocale from "dayjs/plugin/updateLocale";
+import "dayjs/locale/ko";
+
+_dayjs.extend(relativeTime);
+_dayjs.extend(updateLocale);
 
 const SECOND = 1000;
 const MINUTE = SECOND * 60;
 const HOUR = MINUTE * 60;
 const DAY = HOUR * 24;
+
+_dayjs.updateLocale("en", {
+  relativeTime: {
+    past: "%s ago",
+    s: "%ds",
+    m: "1m",
+    mm: "%dm",
+    h: "1h",
+    hh: "%dh",
+  },
+});
+
+_dayjs.updateLocale("ko", {
+  relativeTime: {
+    past: "%s 전",
+    s: "%d초",
+    m: "1분",
+    mm: "%d분",
+    h: "1시간",
+    hh: "%d시간",
+  },
+});
 
 export const dayjs = (date?: string | number | Date | Dayjs): Dayjs => {
   return _dayjs(date).tz("Asia/Seoul");
