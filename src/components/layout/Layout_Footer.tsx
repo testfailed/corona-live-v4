@@ -26,24 +26,24 @@ const LayoutFooter: React.FC<Props> = ({ simplified }) => {
     <Wrapper className="user-select" css={simplified && { padding: 0 }}>
       <Space h={simplified ? 12 : 24} />
 
-      <SubText>{t("footer.donate_title")}</SubText>
       {simplified ? (
-        <Text children={t("footer.donate_message")} />
+        <></>
       ) : (
-        <Text
-          style={{ whiteSpace: "nowrap" }}
-          dangerouslySetInnerHTML={{ __html: t("footer.donate_message.lb") }}
-        />
+        <>
+          <SubText>{t("footer.donate_title")}</SubText>
+          <Text
+            style={{ whiteSpace: "nowrap" }}
+            dangerouslySetInnerHTML={{ __html: t("footer.donate_message.lb") }}
+          />
+          <DonationModalTrigger>
+            <DonateButton>
+              <DonationIcon size={8} />
+              <span>{t("donate")}</span>
+            </DonateButton>
+          </DonationModalTrigger>
+          <Space h={42} />
+        </>
       )}
-
-      <DonationModalTrigger>
-        <DonateButton>
-          <DonationIcon size={8} />
-          <span>{t("donate")}</span>
-        </DonateButton>
-      </DonationModalTrigger>
-
-      <Space h={42} />
 
       <SnsContainer>
         <GithubIconButton />

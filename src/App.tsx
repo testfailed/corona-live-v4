@@ -79,8 +79,8 @@ const App: React.FC = () => {
   const { i18n } = useTranslation();
 
   useEffect(() => {
-    dayjs.locale(i18n.language.includes("en") ? "en" : "ko");
-  }, [i18n.language]);
+    dayjs.locale(i18n.resolvedLanguage);
+  }, [i18n.resolvedLanguage]);
 
   useEffect(() => {
     if (window.location.hash) window.history.replaceState(null, "", " ");

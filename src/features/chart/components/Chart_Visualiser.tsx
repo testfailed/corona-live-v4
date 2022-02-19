@@ -1069,7 +1069,6 @@ const ChartTooltip = styled("div", {
 
   "@md": {
     height: rem(54),
-    // marginTop: rem(16),
     border: `${rem(1)} solid $sectionBorder`,
   },
 

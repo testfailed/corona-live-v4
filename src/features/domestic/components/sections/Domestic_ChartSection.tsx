@@ -150,7 +150,7 @@ export const DomesticChartSection: React.FC = () => {
           },
         },
       }),
-    [shoulUpdate, i18n.language, showDomesticLiveChart]
+    [shoulUpdate, i18n.resolvedLanguage, showDomesticLiveChart]
   );
 
   const statLabel: Partial<Record<DomesticMainOption, string>> = useMemo(
@@ -161,7 +161,7 @@ export const DomesticChartSection: React.FC = () => {
       "confirmed-critical": t("stat.confirmed_critical"),
       "tested-positive-rates": t("stat.tested_positive_rates"),
     }),
-    [t]
+    [i18n.resolvedLanguage]
   );
 
   const getChartData: ChartProps<

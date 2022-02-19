@@ -15,13 +15,17 @@ import SendMessageIcon from "@components/icon/Icon_SendMessage";
 import ReportModalTrigger from "@components/modal/Modal_Report";
 
 import LayoutFooter from "./Layout_Footer";
+import LanguageIcon from "@components/icon/Icon_Language";
+import { useSwitchLanguage } from "@hooks/useSwitchLanguage";
 
 interface Props {}
 
 const LayoutMobileMenuModalTrigger: React.FC<Props> = ({ children }) => {
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
 
   const { colorMode, toggleTheme } = useTheme();
+
+  const switchLanguage = useSwitchLanguage();
 
   return (
     <Modal
@@ -48,6 +52,16 @@ const LayoutMobileMenuModalTrigger: React.FC<Props> = ({ children }) => {
               <MenuText>{t("menu.dark_mode")}</MenuText>
             </Row>
             <Switch onClick={toggleTheme} checked={colorMode === "dark"} />
+          </MenuThemeContainer>
+
+          <MenuThemeContainer onClick={switchLanguage}>
+            <Row centeredY>
+              <LanguageIcon size={16} />
+              <MenuText>{t(i18n.resolvedLanguage)}</MenuText>
+            </Row>
+            <LanguageButton>
+              {t(i18n.resolvedLanguage === "en" ? "ko" : "en")}
+            </LanguageButton>
           </MenuThemeContainer>
 
           <ReportModalTrigger>
@@ -89,6 +103,17 @@ const MenuThemeContainer = styled(MenuContainer, {
   justifyContent: "space-between",
   flex: 1,
   cursor: "default",
+});
+
+const LanguageButton = styled("div", {
+  caption1: true,
+  background: "$gray200",
+  color: "$gray800",
+  fontWeight: 500,
+  paddingX: rem(8),
+  paddingY: rem(2),
+  borderRadius: rem(4),
+  cursor: "pointer",
 });
 
 const MenuText = styled("div", {

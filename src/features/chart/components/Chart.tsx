@@ -26,12 +26,13 @@ import ExpandIcon from "@components/icon/Icon_Expand";
 
 import useChartReducer from "@features/chart/hooks/useChartReducer";
 import type { ChartMode, ChartProps } from "@features/chart/chart-type";
+import { useTranslation } from "react-i18next";
 
 const Chart = <MainOption extends string, SubOption extends string>(
   props: ChartProps<MainOption, SubOption>
 ) => {
   const { getChartData, forceUpdate, enableExpandMode = false } = props;
-
+  const { i18n } = useTranslation();
   const [
     {
       chartData,
@@ -54,6 +55,10 @@ const Chart = <MainOption extends string, SubOption extends string>(
   const setSelectedX = (value) => {
     dispatch({ type: "SET_SELECTEDX", payload: { value } });
   };
+
+  useEffect(() => {
+    dispatch({ type: "INIT_OPTIONS", payload: { props } });
+  }, [i18n.resolvedLanguage]);
 
   useEffect(() => {
     if (props?.defaultMode !== undefined && mode !== props?.defaultMode)
@@ -80,7 +85,7 @@ const Chart = <MainOption extends string, SubOption extends string>(
     if (isLoading === false || forceUpdate) {
       updateChartData();
     }
-  }, [selectedMainOption, selectedSubOptions]);
+  }, [selectedMainOption, selectedSubOptions, i18n.resolvedLanguage]);
 
   useUpdateEffect(() => {
     if (isLoading === false || forceUpdate) {

@@ -21,7 +21,7 @@ const ChartMainOptions = <T extends string>(props: Props<T>) => {
       {...{
         css: tabsCss,
         tabCss: css({
-          paddingX: rem(i18n.language.includes("en") ? 8 : 12),
+          paddingX: rem(i18n.resolvedLanguage === "en" ? 8 : 12),
           "&:first-of-type": {
             paddingLeft: rem(20),
           },

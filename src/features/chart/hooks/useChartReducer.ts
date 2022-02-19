@@ -105,6 +105,28 @@ const createReducer =
           ...state,
           selectedX: action.payload.value,
         };
+      case "INIT_OPTIONS": {
+        const { chartOptions } = action.payload.props;
+        const { mode, selectedMainOption, selectedSubOptions } = state;
+
+        const mainOptions = Object.keys(chartOptions).map((stat) => ({
+          value: stat as MainOption,
+          text: chartOptions[stat].label,
+        }));
+
+        const subOptions = getSubOptions({
+          chartOptions,
+          mode,
+          selectedMainOption,
+          selectedSubOptions,
+        });
+
+        return {
+          ...state,
+          mainOptions,
+          subOptions,
+        };
+      }
       default:
         throw new Error();
     }

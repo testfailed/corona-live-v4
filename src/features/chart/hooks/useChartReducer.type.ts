@@ -21,7 +21,10 @@ export type ChartReducerAction<
   MainOption extends string,
   SubOption extends string
 > =
-  | { type: "INIT"; payload: { props: ChartProps<MainOption, SubOption> } }
+  | {
+      type: "INIT_OPTIONS";
+      payload: { props: ChartProps<MainOption, SubOption> };
+    }
   | { type: "TOGGLE_MODE" }
   | {
       type: "SET_CHART_DATA";

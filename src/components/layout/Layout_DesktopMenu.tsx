@@ -25,13 +25,18 @@ import {
   WORLD_PATH,
 } from "@constants/route-constants";
 import { useTranslation } from "react-i18next";
+import LanguageIcon from "@components/icon/Icon_Language";
+
+import { useSwitchLanguage } from "@hooks/useSwitchLanguage";
 
 const LayoutMenu: React.FC = () => {
   const { push } = useHistory();
   const { pathname } = useLocation();
   const { colorMode, toggleTheme } = useTheme();
 
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
+
+  const switchLanguage = useSwitchLanguage();
 
   return (
     <Wrapper>
@@ -77,6 +82,16 @@ const LayoutMenu: React.FC = () => {
             <MenuText>{t("menu.dark_mode")}</MenuText>
           </Row>
           <Switch onClick={toggleTheme} checked={colorMode == "dark"} />
+        </MenuThemeContainer>
+
+        <MenuThemeContainer onClick={switchLanguage}>
+          <Row centeredY>
+            <LanguageIcon size={16} />
+            <MenuText>{t(i18n.resolvedLanguage)}</MenuText>
+          </Row>
+          <LanguageButton>
+            {t(i18n.resolvedLanguage === "en" ? "ko" : "en")}
+          </LanguageButton>
         </MenuThemeContainer>
 
         <ReportModalTrigger>
@@ -137,6 +152,17 @@ const Wrapper = styled("div", {
     top: rem(40),
     display: "flex",
   },
+});
+
+const LanguageButton = styled("div", {
+  caption1: true,
+  background: "$gray200",
+  color: "$gray800",
+  fontWeight: 500,
+  paddingX: rem(8),
+  paddingY: rem(2),
+  borderRadius: rem(4),
+  cursor: "pointer",
 });
 
 const MenuHeader = styled("div", {

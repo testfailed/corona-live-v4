@@ -37,12 +37,12 @@ export const DomesticLiveSection: React.FC = () => {
         delta: data.live.today - data.live.monthAgo,
       },
     ],
-    [data.live, i18n.language]
+    [data.live, i18n.resolvedLanguage]
   );
 
   const updates = useMemo(
     () => transformDomesticUpdates(data.updatesPreview),
-    [data.updatesPreview, i18n.language]
+    [data.updatesPreview, i18n.resolvedLanguage]
   );
 
   return (
