@@ -201,12 +201,14 @@ const Content = styled("div", {});
 
 const ChartHeadingContainer = styled(SubSection, {
   rowCenteredY: true,
+  justifyContent: "flex-end",
 });
 
 const ChartHeadingOptionsContainer = styled("div", {
   position: "relative",
   rowCenteredY: true,
   flex: 1,
+  overflowX: "auto",
 });
 
 const ChartHeadingOptionsOverflowGradient = styled("div", {
