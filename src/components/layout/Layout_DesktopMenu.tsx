@@ -28,6 +28,8 @@ import { useTranslation } from "react-i18next";
 import LanguageIcon from "@components/icon/Icon_Language";
 
 import { useSwitchLanguage } from "@hooks/useSwitchLanguage";
+import GithubIcon from "@components/icon/Icon_Github";
+import { GITHUB_URL } from "@constants/constants";
 
 const LayoutMenu: React.FC = () => {
   const { push } = useHistory();
@@ -93,13 +95,22 @@ const LayoutMenu: React.FC = () => {
             {t(i18n.resolvedLanguage === "en" ? "ko" : "en")}
           </LanguageButton>
         </MenuThemeContainer>
+      </Section>
 
+      <Section>
         <ReportModalTrigger>
           <MenuContainer>
             <SendMessageIcon />
             <MenuText>{t("menu.report")}</MenuText>
           </MenuContainer>
         </ReportModalTrigger>
+
+        <GithubLink target="_blank" href={GITHUB_URL}>
+          <MenuContainer>
+            <GithubIcon />
+            <MenuText>Github</MenuText>
+          </MenuContainer>
+        </GithubLink>
       </Section>
     </Wrapper>
   );
@@ -138,6 +149,11 @@ const tabIndicatorCss = css({
     height: "100%",
     background: `rgba($gray900rgb, 1)`,
   },
+});
+
+const GithubLink = styled("a", {
+  textDecoration: "none",
+  color: "$gray900",
 });
 
 const Wrapper = styled("div", {

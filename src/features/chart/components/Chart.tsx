@@ -56,7 +56,7 @@ const Chart = <MainOption extends string, SubOption extends string>(
     dispatch({ type: "SET_SELECTEDX", payload: { value } });
   };
 
-  useEffect(() => {
+  useUpdateEffect(() => {
     dispatch({ type: "INIT_OPTIONS", payload: { props } });
   }, [i18n.resolvedLanguage]);
 

@@ -125,6 +125,7 @@ const createReducer =
           ...state,
           mainOptions,
           subOptions,
+          props: action.payload.props,
         };
       }
       default:
