@@ -27,6 +27,7 @@ export const VaccineInfoSection: React.FC = () => {
         <Tab value="moderna" text="모더나" />
         <Tab value="jansen" text="얀센" />
         <Tab value="astrazeneca" text="AZ" />
+        <Tab value="novavax" text="노바백스" />
       </Tabs>
       <Container>
         {data[vaccineType].map(([label, content], index) => (
