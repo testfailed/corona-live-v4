@@ -2,7 +2,7 @@ import React, { FC, useMemo } from "react";
 
 import { rem } from "polished";
 
-import { dayjs } from "@utils/date-util";
+import { fromNow } from "@utils/date-util";
 import { styled } from "@styles/stitches.config";
 
 import NotificationIcon from "@components/icon/Icon_Notification";
@@ -11,7 +11,7 @@ interface Props {
   date: string;
 }
 const UpdatesTimeDisplay: FC<Props> = ({ date }) => {
-  const displayData = useMemo(() => dayjs(date).fromNow(), [date]);
+  const displayData = useMemo(() => fromNow(date), [date]);
 
   return (
     <Wrapper>
