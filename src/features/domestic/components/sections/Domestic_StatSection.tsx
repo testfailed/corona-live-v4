@@ -15,7 +15,8 @@ export const DomesticStatSection: React.FC = () => {
   const { data } = useApi(DomesticApi.stat);
   const { t } = useTranslation();
 
-  const { confirmed, deceased, confirmedCritical, recovered } = data.overview!;
+  const { confirmed, deceased, confirmedCritical, hospitalised } =
+    data.overview!;
 
   const stats: Array<StatsBoardStat> = [
     {
@@ -32,10 +33,10 @@ export const DomesticStatSection: React.FC = () => {
     },
 
     {
-      label: t("stat.recovered"),
+      label: t("stat.hospitalised"),
       color: "blue",
-      value: recovered[0],
-      delta: recovered[1],
+      value: hospitalised[0],
+      delta: hospitalised[1],
     },
 
     {

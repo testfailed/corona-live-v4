@@ -495,6 +495,8 @@
   "stat.confirmed": "Confirmed",
   "stat.deceased": "Deceased",
   "stat.recovered": "Recovered",
+
+  "stat.hospitalised": "Hospitalised",
   "stat.confirmed_critical": "Critical",
   "stat.tested": "Tested",
   "stat.tested_positive_rates": "Tested Positive",
@@ -605,5 +607,11 @@
   "en": "English",
   "ko": "한국어",
 
-  "language": "en"
+  "language": "en",
+
+  "date.ago": "ago",
+  "date.d": "d",
+  "date.h": "h",
+  "date.m": "m",
+  "date.s": "s"
 }

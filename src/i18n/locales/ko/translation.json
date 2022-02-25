@@ -491,6 +491,8 @@
   "stat.confirmed": "확진자",
   "stat.deceased": "사망자",
   "stat.recovered": "완치자",
+
+  "stat.hospitalised": "입원환자",
   "stat.confirmed_critical": "위중증자",
   "stat.tested": "검사자",
   "stat.tested_positive_rates": "확진율",
@@ -598,5 +600,11 @@
   "en": "English",
   "ko": "한국어",
 
-  "language": "ko"
+  "language": "ko",
+
+  "date.ago": "전",
+  "date.d": "일",
+  "date.h": "시간",
+  "date.m": "분",
+  "date.s": "초"
 }
