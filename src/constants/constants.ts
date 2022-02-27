@@ -43,7 +43,7 @@ export const HOUR = MINUTE * 60;
 export const DAY = HOUR * 24;
 
 export const ASSETS_URL = `https://assets.corona-live.com`;
-export const API_URL = process.env.API_URL;
+export const API_URL = process.env.API_URL || "https://apiv3.corona-live.com";
 export const WEB_URL = "https://corona-live.com";
 
 export const TOSS_URL = `https://toss.onelink.me/3563614660?af_ad=140541&af_adset=cashtag_20210412_khj&af_dp=supertoss://cashtag/send?_minVerAos%3D5.5.0%26_minVerIos%3D5.5.0%26refId%3D186231%26word%3Dchinchilla%26webSessionKey%3D098ae253-e0cd-4f22-ae2b-f3f3f7acef11&c=conversion_cashtag_performance&id=4226c2ce-7826-4280-af67-87321e80cf8f&is_retargeting=true&pid=referral`;
