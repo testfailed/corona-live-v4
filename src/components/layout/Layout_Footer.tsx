@@ -47,7 +47,7 @@ const LayoutFooter: React.FC<Props> = ({ simplified }) => {
 
       <SnsContainer>
         <GithubIconButton />
-        <TwitterIconButton type="profile" />
+        <TwitterIconButton />
         <InstagramIconButton />
         <EmailIconButton />
       </SnsContainer>

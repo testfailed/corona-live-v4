@@ -8,15 +8,12 @@ import { styled, theme } from "@styles/stitches.config";
 import {
   EMAIL,
   GITHUB_URL,
-  INSTA_SNS_URL,
-  TWITTER_SNS_URL,
+  INSTA_URL,
   TWITTER_URL,
-  WEB_URL,
 } from "@constants/constants";
 import { useTimeoutState } from "@hooks/useTimeoutState";
 import { fadeInUp } from "@styles/animations/fade-animation";
 
-import LinkIcon from "./icon/Icon_Link";
 import EmailIcon from "./icon/Icon_Email";
 import CheckIcon from "./icon/Icon_Check";
 import GithubIcon from "./icon/Icon_Github";
@@ -34,41 +31,15 @@ const IconButton = styled("a", {
   cursor: "pointer",
 });
 
-type SnsType = "profile" | "share";
-
-export const TwitterIconButton: React.FC<{ type: SnsType }> = ({ type }) => (
+export const TwitterIconButton: React.FC = () => (
   <IconButton
     css={{ background: "$sky100" }}
-    href={type === "share" ? TWITTER_URL : TWITTER_SNS_URL}
+    href={TWITTER_URL}
     target="_blank"
   >
     <TwitterIcon size={14} stroke={theme.colors.sky500} />
   </IconButton>
 );
-
-export const LinkIconButton: React.FC = () => {
-  const [copied, setCopied] = useTimeoutState(false, 1000);
-  return (
-    <CopyToClipboard
-      text={WEB_URL}
-      onCopy={() => {
-        setCopied(true);
-      }}
-    >
-      <IconButton css={{ background: "$gray300" }}>
-        {copied ? (
-          <IconContainer key={"copied"}>
-            <CheckIcon size={18} />
-          </IconContainer>
-        ) : (
-          <IconContainer key={"not-copied"}>
-            <LinkIcon size={14} />
-          </IconContainer>
-        )}
-      </IconButton>
-    </CopyToClipboard>
-  );
-};
 
 export const EmailIconButton: React.FC = () => {
   const [copied, setCopied] = useTimeoutState(false, 1000);
@@ -100,11 +71,7 @@ const IconContainer = styled("div", {
 });
 
 export const InstagramIconButton: React.FC = () => (
-  <IconButton
-    css={{ background: "$pink100" }}
-    href={INSTA_SNS_URL}
-    target="_blank"
-  >
+  <IconButton css={{ background: "$pink100" }} href={INSTA_URL} target="_blank">
     <InstagramIcon size={14} />
   </IconButton>
 );

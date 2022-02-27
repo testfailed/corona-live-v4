@@ -59,12 +59,6 @@ const DomesticCityTable: React.FC = () => {
       sortable: true,
     },
     {
-      id: "recovered",
-      name: t("stat.recovered"),
-      width: rem(126),
-      sortable: true,
-    },
-    {
       id: "per100k",
       name: t("stat.confirmed_cases_per_100k"),
       width: rem(100),
@@ -78,13 +72,13 @@ const DomesticCityTable: React.FC = () => {
     (_cityId) => {
       const cityId = Number(_cityId);
       const cityName = getCityGuNameWithIds(cityId);
-      const { confirmed, deceased, recovered, per100k } = stat.cities[cityId];
+      const { confirmed, deceased, per100k } = stat.cities[cityId];
       const casesLive = live.cities[cityId];
 
       const link = cityId !== 17 ? `/city/${cityId}/` : "/";
 
       return formatObjectValues(
-        { cityName, confirmed, deceased, recovered, per100k, casesLive, link },
+        { cityName, confirmed, deceased, per100k, casesLive, link },
         statToTableRowValue
       ) as TableRow<ColumnKey>;
     }

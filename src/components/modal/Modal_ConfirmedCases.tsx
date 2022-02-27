@@ -70,7 +70,7 @@ const ConfirmedCasesModal: React.FC = () => {
 
         <SnsContainer>
           <SnsIcons>
-            <TwitterIconButton type="profile" />
+            <TwitterIconButton />
             <InstagramIconButton />
           </SnsIcons>
         </SnsContainer>

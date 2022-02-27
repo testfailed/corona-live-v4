@@ -12,14 +12,12 @@ export interface DomesticStat {
     confirmed: Stat;
     confirmedCritical: Stat;
     deceased: Stat;
-    tested: Stat;
-    recovered: Stat;
+    hospitalised: Stat;
   };
   cities: {
     [cityId: string]: {
       confirmed: Stat;
       deceased: Stat;
-      recovered: Stat;
       per100k: [number, number] | number[];
     };
   };
